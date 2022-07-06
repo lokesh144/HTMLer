@@ -30,10 +30,12 @@ struct token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 			switch (str[currPosition]) {
 			case '<':
 				currState = TAG_OPEN;
+				shouldReturn = true;
+				//returnType=CHARACTER//default
 				break;
 			default:
 				currToken.push_back(str[currPosition]);
-				shouldReturn = true;
+				//shouldReturn = true;
 				//returnType=CHARACTER//default
 			}
 			break;
@@ -49,8 +51,16 @@ struct token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 				exit(EXIT_FAILURE);
 				break;
 			default:
-				currState = TAG_NAME;
-				increase = false;
+				if (isalpha(str[currPosition])) {
+					currState = TAG_NAME;
+					increase = false;
+					break;
+				}
+				else {
+					currToken.push_back('<');
+					increase = false;
+					break;
+				}
 			}
 			break;
 		case END_TAG_OPEN:

@@ -23,10 +23,10 @@ std::string str = "\
 <ul>  \
 <li>  \
 <a href='#'> Join Us </a>  \
-<!-- this  is a comment -->\
+<!-- this is is  is a comment -->\
 </li>  \
 </ul>  \
-</nav>  ";
+</nav>";
 
 
 int main() {
