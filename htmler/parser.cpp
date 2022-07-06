@@ -26,7 +26,6 @@ std::ostream& operator<<(std::ostream& out, struct token token) {
 	return out;
 }
 void Parser::parse(const std::string& str) {
-
 	Tokenizer tokenizer;
 	while (str[currPosition] != '\0') {
 		struct token token = tokenizer.getNextToken(str, currPosition);
