@@ -1,25 +1,28 @@
 #pragma once
-#include "tokenizer.h"
 #include<iostream>
+#include "tokenizer.h"
 #define endl '\n'
-using  std::cout;
 
 Tokenizer::Tokenizer()
 	:currState{ DATA },
 	currToken{ "" },
+	returnType{ CHARACTER },
 	//currPosition{ 0 },
 	shouldReturn{ false },
 	increase{ true }{
 }
+
 void Tokenizer::reset() {
 	increase = true;
 	currToken = "";
 	shouldReturn = false;
+	returnType = CHARACTER;//default
 }
 
-std::string_view Tokenizer::getNextToken(const std::string& str, int& currPosition) {
+struct token Tokenizer::getNextToken(const std::string& str, int& currPosition) {
 
 	reset();
+	//TODO: handle ampersand(&), EOF and '\0'
 	while (1) {
 		//tokenizer
 		switch (currState) {
@@ -31,6 +34,7 @@ std::string_view Tokenizer::getNextToken(const std::string& str, int& currPositi
 			default:
 				currToken.push_back(str[currPosition]);
 				shouldReturn = true;
+				//returnType=CHARACTER//default
 			}
 			break;
 		case TAG_OPEN:
@@ -73,6 +77,7 @@ std::string_view Tokenizer::getNextToken(const std::string& str, int& currPositi
 			case '>':
 				shouldReturn = true;
 				currState = DATA;
+				returnType = TAG;
 				break;
 			default:
 				currToken.push_back(str[currPosition]);
@@ -157,6 +162,7 @@ std::string_view Tokenizer::getNextToken(const std::string& str, int& currPositi
 			case '>':
 				currState = DATA;
 				shouldReturn = true;//return current tag
+				returnType = TAG;
 				break;
 			default:
 				currState = ATTRIBUTE_NAME;
@@ -179,6 +185,7 @@ std::string_view Tokenizer::getNextToken(const std::string& str, int& currPositi
 			case '>':
 				//TODO: handle later
 				shouldReturn = true;//return current tag
+				returnType = TAG;
 				exit(EXIT_FAILURE);
 				break;
 			default:
@@ -223,6 +230,7 @@ std::string_view Tokenizer::getNextToken(const std::string& str, int& currPositi
 				break;
 			case '>':
 				shouldReturn = true;//return current  tag 
+				returnType = TAG;
 				currState = DATA;
 				break;
 			case '"':
@@ -250,6 +258,7 @@ std::string_view Tokenizer::getNextToken(const std::string& str, int& currPositi
 			case '>':
 				currState = DATA;
 				shouldReturn = true;//return current tag
+				returnType = TAG;
 				break;
 			default:
 				//ERROR: missing whitespace
@@ -289,7 +298,7 @@ std::string_view Tokenizer::getNextToken(const std::string& str, int& currPositi
 			break;
 		case COMMENT:
 			switch (str[currPosition]) {
-			case '<': 
+			case '<':
 				currToken.push_back(str[currPosition]);//append to cmt token
 				currState = COMMENT_LESS_THAN_SIGN;
 				break;
@@ -361,6 +370,8 @@ std::string_view Tokenizer::getNextToken(const std::string& str, int& currPositi
 			case '>':
 				currState = DATA;
 				shouldReturn = true;//return cmt token
+				returnType = TOK_COMMENT;
+
 				break;
 			case '!':
 				currState = COMMENT_END_BANG;
@@ -400,7 +411,7 @@ std::string_view Tokenizer::getNextToken(const std::string& str, int& currPositi
 			increase = true;
 		}
 		if (shouldReturn) {
-			return currToken;
+			return (token{ .type = returnType,.token = currToken });
 		}
 	}
 }

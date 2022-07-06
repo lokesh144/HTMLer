@@ -10,9 +10,11 @@ private:
 	bool increase;
 	bool shouldReturn;
 	void reset();
+	tokenType returnType;//CHARACTER by default
+
 
 public:
 	Tokenizer();
-	std::string_view getNextToken(const std::string& str,int& currPosition);
+	struct token getNextToken(const std::string& str, int& currPosition);
 
 };

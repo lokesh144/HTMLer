@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
-#include "tokenizer.h"
+#include<stack>
+#include "parser.h"
 #define endl '\n'
 using std::cout;
 /*
@@ -16,7 +17,7 @@ using std::cout;
 </li>  \
 <li>  \
 */
-std::string str="\
+std::string str = "\
 <Body>   \
 <nav>  \
 <ul>  \
@@ -29,14 +30,7 @@ std::string str="\
 
 
 int main() {
-
-    Tokenizer tokenizer;
-    int currPosition{};
-    while (str[currPosition] != '\0') {
-        cout << tokenizer.getNextToken(str,currPosition)<<endl;
-        //cout << currPosition << endl;
-    }
-
-
-    return 0;
+	Parser parser;
+	parser.parse(str);
+	return 0;
 }

@@ -1,5 +1,14 @@
 #pragma once
 #include<string_view>
+enum tokenType {
+	CHARACTER,
+	TAG,
+	TOK_COMMENT,
+};
+struct token {
+	tokenType type;
+	std::string_view token;
+};
 enum parseState :int {
 	//LINK: https://html.spec.whatwg.org/multipage/parsing.html#the-insertion-mode
 	//NOTE: ofcourse, We don't intend to parse it all
@@ -76,6 +85,16 @@ enum tokenState {
 enum stackElement {
 
 };
+enum tag {
+	HTML,
+	HEAD,
+	BODY,
+	TITLE,
+	DIV,
+	H1, H2, H3, H4, H5, H6,
+	P
+};
+std::string_view getTokenType(tokenType t);
 
 /*std::string_view getTagState(tokenState s) {
 	switch (s) {
