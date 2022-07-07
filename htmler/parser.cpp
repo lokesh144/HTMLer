@@ -29,7 +29,14 @@ void Parser::parse(const std::string& str) {
 	Tokenizer tokenizer;
 	while (str[currPosition] != '\0') {
 		struct token token = tokenizer.getNextToken(str, currPosition);
-		//		cout << currPosition << endl;
+		if (token.type == TAG) {
+			stack.push(getTagNameAsEnum(token.token));
+		}
 		cout << token << endl;
 	}
+	while (!stack.empty()) {
+		cout << getTagName(stack.top())<<endl;
+		stack.pop();
+	}
+	
 }

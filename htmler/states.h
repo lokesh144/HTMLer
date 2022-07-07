@@ -1,15 +1,15 @@
 #pragma once
 #include<string_view>
-enum tokenType {
+enum TokenType {
 	CHARACTER,
 	TAG,
 	TOK_COMMENT,
 };
 struct token {
-	tokenType type;
+	TokenType type;
 	std::string_view token;
 };
-enum parseState :int {
+enum ParseState :int {
 	//LINK: https://html.spec.whatwg.org/multipage/parsing.html#the-insertion-mode
 	//NOTE: ofcourse, We don't intend to parse it all
 	INITIAL,
@@ -36,7 +36,7 @@ enum parseState :int {
 	AFTER_AFTER_BODY,
 	AFTER_AFTER_FRAMESET,
 };
-enum formatting_elements :int {
+enum FormattingElements :int {
 	A,
 	B,
 	BIG,
@@ -52,7 +52,7 @@ enum formatting_elements :int {
 	TT,
 	U
 };
-enum tokenState {
+enum TokenState {
 	DATA,
 	TAG_OPEN,
 	MARK_UP_DECLARATION_OPEN,
@@ -82,19 +82,30 @@ enum tokenState {
 
 
 };
-enum stackElement {
+enum StackElement {
 
 };
-enum tag {
+enum TagName {
 	HTML,
 	HEAD,
 	BODY,
 	TITLE,
 	DIV,
-	H1, H2, H3, H4, H5, H6,
-	P
+	H1,
+	H2,
+	H3,
+	H4,
+	H5,
+	H6,
+	P,
+	UL,
+	LI,
+	NAV,
 };
-std::string_view getTokenType(tokenType t);
+std::string_view getTokenType(TokenType t);
+TagName getTagNameAsEnum(const std::string_view& s);
+std::string_view getTagName(TagName t);
+
 
 /*std::string_view getTagState(tokenState s) {
 	switch (s) {

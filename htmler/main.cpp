@@ -18,15 +18,17 @@ using std::cout;
 <li>  \
 */
 std::string str = "\
-<Body>   \
+<body>   \
 <nav>  \
 <ul>  \
 <li>  \
-<a href='#'> Join Us </a>  \
+<a href='#'> join us hh </a>  \
 <!-- this is is  is a comment -->\
 </li>  \
 </ul>  \
-</nav>";
+</nav>\
+</body>\
+";
 
 
 int main() {

@@ -5,8 +5,8 @@
 #define endl '\n'
 class Parser {
 private:
-	std::stack<const char*> stack;
-	parseState insertionState;
+	std::stack<TagName> stack;
+	ParseState insertionState;
 	int currPosition;
 	
 public:

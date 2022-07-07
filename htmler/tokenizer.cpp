@@ -58,6 +58,7 @@ struct token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 				}
 				else {
 					currToken.push_back('<');
+					currState = DATA;
 					increase = false;
 					break;
 				}

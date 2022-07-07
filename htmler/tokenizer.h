@@ -4,13 +4,13 @@
 
 class Tokenizer {
 private:
-	tokenState currState;
+	TokenState currState;
 	std::string currToken;
 	//int currPosition;
 	bool increase;
 	bool shouldReturn;
 	void reset();
-	tokenType returnType;//CHARACTER by default
+	TokenType returnType;//CHARACTER by default
 
 
 public:
