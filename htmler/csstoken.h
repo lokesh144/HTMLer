@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
-enum TokenType {
+/*enum TokenType {
+	DATA,
 	COMMENT,
 	NEWLINE,
 	WHITESPACE,
@@ -25,22 +26,31 @@ enum TokenType {
 	COMMA,
 	HYPHEN_MINUS,
 	FULL_STOP,
-	COLON,
-	SEMI_COLON,
+
 	LESS_THAN_SIGN,
 	COMMERCIAL_AT,
 	LEFT_SQUARE_BRACKET,
 	RIGHT_SQUARE_BRACKET,
-	LEFT_CURLY_BRACKET,
-	RIGHT_CURLY_BRACKET,
 	REVERSE_SOLIDUS,
 	BAD_STRING_TOKEN
+};
+*/
+enum TokenState {
+	CHARACTER,
+};
+enum TokenType //return type of token
+{
+ DATA,
+ TOK_COMMENT,  
+ CURLY_BRACKET,
+ COLON,//:
+ SEMI_COLON
 };
 struct token {
 	TokenType type;
 	std::string_view token;
 };
-enum ParseState :int {
+/*enum ParseState :int {
 	//LINK: https://www.w3.org/TR/css-syntax-3/#consume-comments
 	//NOTE: ofcourse, We don't intend to parse it all
 	INITIAL,
@@ -66,4 +76,14 @@ enum ParseState :int {
 	AFTER_FRAMESET,
 	AFTER_AFTER_BODY,
 	AFTER_AFTER_FRAMESET,
+}; */
+enum Parsestate
+{
+	//DATA,
+	TAG_NAME,
+	CLASS,
+	LEFT_CURLY_BRACKET,
+	RIGHT_CURLY_BRACKET,
+	ID
 };
+
