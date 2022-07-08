@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="elements.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="node.cpp" />
     <ClCompile Include="parser.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="tokenizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="elements.h" />
     <ClInclude Include="node.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="states.h" />
