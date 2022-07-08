@@ -1,9 +1,12 @@
 #pragma once
 #include<string_view>
 enum TokenType {
+	DOCTYPE,
 	CHARACTER,
 	TAG,
+	END_TAG,
 	TOK_COMMENT,
+
 };
 struct token {
 	TokenType type;
@@ -101,6 +104,15 @@ enum TagName {
 	UL,
 	LI,
 	NAV,
+	BR,
+	LINK,
+	BASE,
+	BGSOUND,
+	BASEFONT,
+	META,
+	SCRIPT,
+	STYLE,
+	NOTAG
 };
 std::string_view getTokenType(TokenType t);
 TagName getTagNameAsEnum(const std::string_view& s);

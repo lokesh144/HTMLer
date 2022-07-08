@@ -25,6 +25,8 @@ TagName getTagNameAsEnum(const std::string_view& s) {
 	if (s == "li")return LI;
 	if (s == "ul")return UL;
 	if (s == "nav")return NAV;
+	if (s == "br")return BR;
+	return NOTAG;
 }
 std::string_view getTagName(TagName t) {
 
@@ -42,5 +44,6 @@ std::string_view getTagName(TagName t) {
 	if (t == LI)return "li";
 	if (t == UL)return "ul";
 	if (t == NAV)return "nav";
+	if (t == BR)return "br";
 }
 

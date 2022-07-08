@@ -25,6 +25,7 @@ struct token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 	//TODO: handle ampersand(&), EOF and '\0'
 	while (1) {
 		//tokenizer
+
 		switch (currState) {
 		case DATA:
 			switch (str[currPosition]) {
