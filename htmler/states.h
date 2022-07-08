@@ -4,6 +4,7 @@ enum TokenType {
 	CHARACTER,
 	TAG,
 	TOK_COMMENT,
+	END_OF_FILE,
 };
 struct token {
 	TokenType type;
@@ -79,6 +80,7 @@ enum TokenState {
 	COMMENT_LESS_THAN_SIGN_BANG_DASH,
 	COMMENT_LESS_THAN_SIGN_BANG_DASH_DASH,
 	COMMENT_END_BANG,
+	DOCTYPE,
 
 
 };
