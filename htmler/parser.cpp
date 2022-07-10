@@ -43,12 +43,14 @@ void Parser::parse(const std::string& str) {
 		case INITIAL:
 			switch (token.type) {
 			case DOCTYPE:
+				parseState = BEFORE_HTML;
 				break;//later
 			case COMMENT:
-				document.appendChild(Comment token.token);
+				////document.appendChild(Comment token.token);//document cant have more than one child so ignore for now
 				break;
 			default:
 				parseState = BEFORE_HTML;
+				reprocessToken = true;
 				//exit(EXIT_FAILURE);//TODO:
 			}
 			break;
@@ -59,7 +61,7 @@ void Parser::parse(const std::string& str) {
 				exit(EXIT_FAILURE);
 				break;
 			case COMMENT:
-				//document.appendChild(Comment token.token);
+				//document.appendChild(Comment token.token);//document can have only one child
 				break;
 			case TAG:
 				switch (token.type) {

@@ -460,6 +460,7 @@ class HTMLFrameElement : public HTMLElement {
 	string scrolling;
 	string src;
 };
+
 class HTMLIFrameElement : public HTMLElement {
 	string align;
 	string frameBorder;

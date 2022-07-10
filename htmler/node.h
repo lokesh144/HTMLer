@@ -9,26 +9,45 @@ enum NodeType {
 	TEXT_NODE,
 	COMMENT_NODE,
 	DOCUMENT_NODE,
-
 };
 class Node {
-	private:
+protected:
 	NodeType nodeType;
 	std::string nodeName;
 	std::string nodeValue;
 	std::vector<Node*> childNodes;
 	Node* parentNode = nullptr;
+	//NamedNodeMap attributes;//contains attribute if it is element
 	//NamedNodeMap attributes;//idk licwhat is this exactly
 public:
-	Node appendChild(const Node& nodeToAdd);
+
+	Node() = default;
+	Node(NodeType ntype, std::string nname, std::string nvalue);
+	Node appendChild(Node& childNode);//insert at last
 	bool hasChildNodes();
 };
 
-class Document:public Node {
-private:
-	HTML documentElement;//default html element
+class Document :public Node {
+protected:
+	 Element documentElement;//default html element
 public:
-	Element createElement(std::string_view tagName);
+	Document() = default;
+
+	Element createElement(const std::string& tname);
 };
 
-class Comment;
+class Element :public Node {
+protected:
+	std::string tagName;
+public:
+	Element(const std::string& tn);
+	void setAttribute(const std::string& name, const std::string& value);
+};
+
+class Attribute :public Node {
+protected:
+	std::string name;
+	std::string value;
+	bool specified;
+public:
+};
