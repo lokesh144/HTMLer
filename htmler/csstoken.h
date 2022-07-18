@@ -34,17 +34,20 @@
 	REVERSE_SOLIDUS,
 	BAD_STRING_TOKEN
 };
-*/
+*/   >{ } . # 
 enum TokenState {
 	CHARACTER,
+	COLON,//:
+	SEMI_COLON,
+	comma
+
 };
 enum TokenType //return type of token
 {
  DATA,
  TOK_COMMENT,  
- CURLY_BRACKET,
- COLON,//:
- SEMI_COLON
+ BRACKET,
+ symbol
 };
 struct token {
 	TokenType type;
@@ -85,5 +88,22 @@ enum Parsestate
 	LEFT_CURLY_BRACKET,
 	RIGHT_CURLY_BRACKET,
 	ID
+};
+enum TagName {
+	HTML,
+	HEAD,
+	BODY,
+	TITLE,
+	DIV,
+	H1,
+	H2,
+	H3,
+	H4,
+	H5,
+	H6,
+	P,
+	UL,
+	LI,
+	NAV,
 };
 

@@ -1,10 +1,10 @@
 #pragma once
 #include<iostream>
 #include "csstoken.h"
-class Csstoken
+class CssToken
 {
 private:
-	TokenType currState;
+	TokenState currState;
 	std::string currToken;
 	//int currPosition;
 	bool increase;
@@ -12,6 +12,8 @@ private:
 	void reset();
 	TokenType returnType;//CHARACTER by default
 public:
-	Csstoken();
-	~Csstoken();
+	CssToken();
+	struct token getNextToken(const std::string& str, int& currPosition);
+	//~Csstoken();
+	
 };
