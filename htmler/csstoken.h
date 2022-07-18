@@ -34,12 +34,11 @@
 	REVERSE_SOLIDUS,
 	BAD_STRING_TOKEN
 };
-*/   >{ } . # 
+*/   
 enum TokenState {
 	CHARACTER,
-	COLON,//:
-	SEMI_COLON,
-	comma
+	SYMBOL,
+	WHITESPACE
 
 };
 enum TokenType //return type of token
