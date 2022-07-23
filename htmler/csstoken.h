@@ -1,6 +1,6 @@
 #pragma once
 #include<iostream>
-/*enum TokenType {
+enum TokenType {
 	DATA,
 	COMMENT,
 	NEWLINE,
@@ -26,28 +26,33 @@
 	COMMA,
 	HYPHEN_MINUS,
 	FULL_STOP,
-
 	LESS_THAN_SIGN,
 	COMMERCIAL_AT,
 	LEFT_SQUARE_BRACKET,
 	RIGHT_SQUARE_BRACKET,
 	REVERSE_SOLIDUS,
-	BAD_STRING_TOKEN
+	BAD_STRING_TOKEN,
+	SOLIDUS //
 };
-*/   
+/* kadnfkjdsbfh8  kdbksb */
 enum TokenState {
-	CHARACTER,
-	SYMBOL,
+	INIT,
+	PROPERTY_START,
+	COMMENT_START,
+	COMMENT_END,
+	CLASS_NAME_BEGIN,
+	CLASS_NAME_END,
 	WHITESPACE
 
 };
-enum TokenType //return type of token
+/*enum TokenType //return type of token ReturnType
 {
  DATA,
  TOK_COMMENT,  
  BRACKET,
- symbol
-};
+ POUND_TOKEN,//#
+ DOT_TOKEN//.
+}; */
 struct token {
 	TokenType type;
 	std::string_view token;
@@ -105,4 +110,31 @@ enum TagName {
 	LI,
 	NAV,
 };
+/*enum 
+ IDENT_TOKEN,
+ FUNCTION_TOKEN,
+AT_KEYWORD_TOKEN,
+HASH_TOKEN,
+STRING_TOKEN,
+BAD_STRING_TOKEN,
+URL_TOKEN,
+BAD_URL_TOKEN,
+DELIM_TOKEN,
+NUMBER_TOKEN,
+PERCENTAGE_TOKEN,
+DIMESION_TOKEN,
+WHITESPACE_TOKEN,
+CDO_TOKEN,
+CDC_TOKEN,
+COLON_TOKEN,
+SEMICOLON_TOKEN,
+COMMA_TOKEN,
+[_TOKEN,
+]_TOKEN,
+(_TOKEN,
+)_TOKEN,
+{_TOKEN,
+}_TOKEN
+}
+*/
 

@@ -5,9 +5,10 @@
 #define endl '\n'
 
 CssToken::CssToken()
-	:currState{ CHARACTER },
+	:currState{ INIT },
 	currToken{ "" },
 	returnType{ DATA },
+
 	//currPosition{ 0 },
 	shouldReturn{ false },
 	increase{ true }{
@@ -25,19 +26,59 @@ struct token CssToken::getNextToken(const std::string& str, int& currPosition) {
 		reset();
 		switch (currState)
 		{
-		
+		case INIT:
 			switch (str[currPosition])
-			{
+				case '/':
+					currState = INIT;
+					shouldReturn = true;
+					increase = true;
+					switch (str[currPosition])
+					{
+					case '*':
+						currState = COMMENT_START;
+						shouldReturn = false;
+						increase = true;
+						switch (str[currPosition])
+						{
+						case '*':
+							increase = true;
+							case '\\':
+								currState = COMMENT_END;
+								shouldReturn = true;
+								increase = true;
+
+						default:
+							increase = true;
+							shouldReturn = false;
+							break;
+						}
+					default:
+						break;
+					}
+					break;
+
+				case ' ':
+					currState = WHITESPACE;
+					shouldReturn = false;
+					increase = true;
+				case '.':
+				currState:CLASS_NAME_BEGIN;
+				shouldReturn:true;
+				increase: true;
+
+
+
+			
 			default:
 				break;
 			}
 		case'/': {
 		case '*': {
-			cu
+		
 		}
 		}
-		default:
-			break;
+		//default:
+			//break;
 		}
 		if (increase) {
 			currPosition++;
