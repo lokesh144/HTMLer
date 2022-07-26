@@ -1,7 +1,7 @@
 #pragma once
 #include<string_view>
 enum TokenType {
-	DOCTYPE,
+	DOCTYPETOK,
 	CHARACTER,
 	TAG,
 	END_TAG,
@@ -83,8 +83,6 @@ enum TokenState {
 	COMMENT_LESS_THAN_SIGN_BANG_DASH_DASH,
 	COMMENT_END_BANG,
 	DOCTYPE,
-
-
 };
 enum StackElement {
 
