@@ -1,3 +1,4 @@
+/*
 #pragma once
 #include<string>
 #include "node.h"
@@ -473,3 +474,5 @@ class HTMLIFrameElement : public HTMLElement {
 	string src;
 	string width;
 };
+
+*/

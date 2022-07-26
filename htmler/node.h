@@ -1,3 +1,4 @@
+#pragma once
 #include<vector>
 #include<string>
 class HTML;
@@ -10,6 +11,8 @@ enum NodeType {
 	COMMENT_NODE,
 	DOCUMENT_NODE,
 };
+
+class ELement;
 class Node {
 protected:
 	NodeType nodeType;
@@ -27,23 +30,25 @@ public:
 	bool hasChildNodes();
 };
 
-class Document :public Node {
-protected:
-	 Element documentElement;//default html element
-public:
-	Document() = default;
-
-	Element createElement(const std::string& tname);
-};
-
 class Element :public Node {
 protected:
 	std::string tagName;
+	std::string localName;
 public:
-	Element(const std::string& tn);
+	Element() = default;
+	Element(const std::string_view& tn);
 	void setAttribute(const std::string& name, const std::string& value);
+	std::string getTagName();
 };
 
+
+class Document :public Node {
+protected:
+	Element documentElement;//default html element
+public:
+	Document() = default;
+	Element createElement(const std::string& tname);
+};
 class Attribute :public Node {
 protected:
 	std::string name;

@@ -6,13 +6,17 @@
 #define endl '\n'
 class Parser {
 private:
-	std::stack<TagName> stack;
+	std::stack<Element> mstack;
 	ParseState parseState;
+	ParseState originalParseState;
 	int currPosition;
 	Document document;
-	
+	Element* headptr = nullptr;
+
 public:
 	Parser();
 	void parse(const std::string& str);
 	void printStackOfOpenElements();
+	void  create_element_for_token(const std::string_view& tn);
+	void  generic_rcdata_parse(const std::string_view& tn);
 };
