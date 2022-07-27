@@ -23,21 +23,37 @@ std::string str = "\
 <title>Page Title</title>\
 </head>\
 <body>   \
-<nav>  \
-<ul>  \
-<li>  \
-<a> join us hh </a>  \
+<div>  \
+p<div>  \
+<div> join us hh </div>  \
 <!-- this is is  is a comment-->\
-</li>  \
-</ul>  \
-</nav>\
+</div>  \
+<p> hello world</p>\
+</div>\
+<div>\
+hello\
+</div>\
 </body>\
 </html>\
 ";
 
+/*
+html
+----head
+--------title
+----body
+--------nav
+------------ul
+----------------li
+--------------------a
+--------div
+*/
 
+#include "node.h" 
 int main() {
-	Parser parser;
+	Document* document =new Document;
+	Parser parser{document};
 	parser.parse(str);
+	delete document;
 	return 0;
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include<string_view>
+#include<string>
 enum TokenType {
 	DOCTYPETOK,
 	CHARACTER,
@@ -8,9 +8,22 @@ enum TokenType {
 	TOK_COMMENT,
 	END_OF_FILE,
 };
-struct token {
+enum iTTState {
+	/*
+	TAG_NAME,
+	BEFORE_ATTRIBUTE_NAME,
+	ATTRIBUTE_NAME,
+	BEFORE_ATTRIBUTE_VALUE,
+	AFTER_ATTRIBUTE_NAME,
+	ATTRIBUTE_VALUE_DOUBLE_QUOTE,
+	ATTRIBUTE_VALUE_SINGLE_QUOTE,
+	ATTRIBUTE_VALUE_UNQUOTED,
+	AFTER_ATTRIBUTE_VALUE_QUOTED,
+*/
+};
+struct Token {
 	TokenType type;
-	std::string_view token;
+	std::string token;
 };
 enum ParseState :int {
 	//LINK: https://html.spec.whatwg.org/multipage/parsing.html#the-insertion-mode
@@ -39,7 +52,7 @@ enum ParseState :int {
 	AFTER_AFTER_BODY,
 	AFTER_AFTER_FRAMESET,
 };
-enum FormattingElements :int {
+enum class FormattingElements :int {
 	A,
 	B,
 	BIG,
@@ -57,15 +70,12 @@ enum FormattingElements :int {
 };
 enum TokenState {
 	DATA,
-	TAG_OPEN,
 	MARK_UP_DECLARATION_OPEN,
 	END_TAG_OPEN,
-	TAG_NAME,
 	SELF_CLOSING_START_TAG,
+	TAG_OPEN,
+	TAG_NAME,
 	BEFORE_ATTRIBUTE_NAME,
-	RAWTEXT,
-	RAW_TEXT_LESS_THAN_SIGN,
-	COMMENT_START,
 	ATTRIBUTE_NAME,
 	BEFORE_ATTRIBUTE_VALUE,
 	AFTER_ATTRIBUTE_NAME,
@@ -73,6 +83,9 @@ enum TokenState {
 	ATTRIBUTE_VALUE_SINGLE_QUOTE,
 	ATTRIBUTE_VALUE_UNQUOTED,
 	AFTER_ATTRIBUTE_VALUE_QUOTED,
+	RAW_TEXT_LESS_THAN_SIGN,
+	COMMENT_START,
+	RAWTEXT,
 	COMMENT_START_DASH,
 	COMMENT,
 	COMMENT_END,
@@ -113,12 +126,12 @@ enum TagName {
 	STYLE,
 	NOTAG
 };
-std::string_view getTokenType(TokenType t);
-TagName getTagNameAsEnum(const std::string_view& s);
-std::string_view getTagName(TagName t);
+std::string getTokenType(TokenType t);
+TagName getTagNameAsEnum(const std::string& s);
+std::string getTagName(TagName t);
 
 
-/*std::string_view getTagState(tokenState s) {
+/*std::string getTagState(tokenState s) {
 	switch (s) {
 	case DATA:return "DATA";
 	case TAG_OPEN:return "TAG_OPEN";

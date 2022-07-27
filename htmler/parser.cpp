@@ -2,16 +2,18 @@
 #include "parser.h"
 #include "tokenizer.h"
 #include"node.h"
+#include"elements.h"
 using std::cout;
 #define endl '\n'
 
-Parser::Parser()
+Parser::Parser(Document* doc)
 	:parseState{ BEFORE_HTML },
+	mdocument{ doc },
 	//:parseState{ INITIAL },
 	currPosition{}
 {
 }
-std::ostream& operator<<(std::ostream& out, struct token token) {
+std::ostream& operator<<(std::ostream& out, struct Token token) {
 	out << getTokenType(token.type) << ": " << token.token << " ";
 	return out;
 }
@@ -26,24 +28,56 @@ typedef struct MockeElement {
 //Element create_element(Document* document, std::string ln) {
 
 //}
-void Parser::create_element_for_token(const std::string_view& tn) {
-	Element el{ tn };
+void Parser::create_element_for_token(const std::string& tn) {
+	Element* el;
+	switch(getTagNameAsEnum(tn)) {
+	case HTML:
+		el = new HTMLHtmlElement{};
+		break;
+	case HEAD:
+		el = new HTMLHeadElement{};
+		break;
+	case BODY:
+		el = new HTMLBodyElement{};
+		break;
+	case TITLE:
+		el = new HTMLTitleElement{};
+		break;
+	case P:
+		el = new HTMLParagraphElement{};
+		break;
+	case DIV:
+		el = new HTMLDivElement{};
+		break;
+	default:
+		el = new HTMLElement{"el"};
+		break;
+	}
+
+	cout << "create " << endl;
+	if (mstack.empty()) {
+		mdocument->appendChild(el);
+		mstack.push(el);//this must be a html element
+		return;
+	}
+	mstack.top()->appendChild(el);
 	//leave attribute for now
 	mstack.push(el);
 }
-void insert_character(const std::string_view& tn) {
+
+void Parser::insert_character(const std::string& ch) {
+	Text* te = new Text(ch);
+	mstack.top()->appendChild(te);
 	//if current node be document return
 	//if text node in previous node append to text node
-
-
 }
-void Parser::generic_rcdata_parse(const std::string_view& tn) {
+void Parser::generic_rcdata_parse(const std::string& tn) {
 	Element el{ tn };
 	originalParseState = parseState;
 	//switch tokenizer to rcdata state?
 	parseState = TEXT;
 	//leave attribute for now
-	mstack.push(el);
+	//mstack.push(el);
 }
 
 /*MockElement create_speculative_mock_element(std::string& ns, const std::string& tn, std::vector<std::pair<std::string, std::string>> al)
@@ -59,7 +93,7 @@ void Parser::generic_rcdata_parse(const std::string_view& tn) {
 */
 void Parser::parse(const std::string& str) {
 	Tokenizer tokenizer;
-	struct token token;
+	struct Token token;
 	bool reprocessToken = false;
 	while (str[currPosition] != '\0') {
 		if (!reprocessToken) {
@@ -255,7 +289,7 @@ void Parser::parse(const std::string& str) {
 			case END_TAG:
 			{
 				//todo: handle later with all cojnjditions 
-				TagName currOpenTag = getTagNameAsEnum(mstack.top().getTagName());
+				TagName currOpenTag = getTagNameAsEnum(mstack.top()->getTagName());
 				TagName currEndTag = getTagNameAsEnum(token.token);
 				switch (currEndTag) {
 				case BODY:
@@ -307,9 +341,6 @@ void Parser::parse(const std::string& str) {
 				break;
 			}
 			break;
-
-
-
 		}
 	}
 	cout << token << endl;

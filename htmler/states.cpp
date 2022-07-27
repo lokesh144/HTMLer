@@ -5,7 +5,7 @@
 #include <locale>
 #include"states.h"
 
-std::string_view getTokenType(TokenType t) {
+std::string getTokenType(TokenType t) {
 	switch (t) {
 	case CHARACTER:return "CHARACTER";
 	case TAG:return "TAG";
@@ -20,7 +20,6 @@ static inline std::string& ltrim( std::string& s) {
 	return s;
 }
 TagName getTagNameAsEnum(const std::string& ss) {
-	//temp workout
 	std::string s{ss};
 	ltrim(s);
 	if (s == "html")return HTML;
@@ -38,29 +37,10 @@ TagName getTagNameAsEnum(const std::string& ss) {
 	if (s == "ul")return UL;
 	if (s == "nav")return NAV;
 	if (s == "br")return BR;
+	if (s == "p")return P;
 	return NOTAG;
 }
-TagName getTagNameAsEnum(const std::string_view& ss) {
-	std::string s{ss};
-	ltrim(s);
-	if (s == "html")return HTML;
-	if (s == "head")return HEAD;
-	if (s == "body")return BODY;
-	if (s == "title")return TITLE;
-	if (s == "div")return DIV;
-	if (s == "h1")return H1;
-	if (s == "h2")return H2;
-	if (s == "h3")return H3;
-	if (s == "h4")return H4;
-	if (s == "h5")return H5;
-	if (s == "h6")return H6;
-	if (s == "li")return LI;
-	if (s == "ul")return UL;
-	if (s == "nav")return NAV;
-	if (s == "br")return BR;
-	return NOTAG;
-}
-std::string_view getTagName(TagName t) {
+std::string getTagName(TagName t) {
 
 	if (t == HTML)return "html";
 	if (t == HEAD)return "head";

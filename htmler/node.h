@@ -1,6 +1,7 @@
 #pragma once
 #include<vector>
 #include<string>
+#include<iostream>
 class HTML;
 class Element;
 typedef std::string DOMString;
@@ -26,8 +27,14 @@ public:
 
 	Node() = default;
 	Node(NodeType ntype, std::string nname, std::string nvalue);
-	Node appendChild(Node& childNode);//insert at last
+	Node* appendChild(Node* childNode);//insert at last
 	bool hasChildNodes();
+	virtual ~Node() {
+		for (std::vector<Node*>::iterator it = childNodes.begin(); it != childNodes.end(); it++) {
+			delete(*it);
+			std::cout << "delete " << std::endl;
+		}
+	}
 };
 
 class Element :public Node {
@@ -36,11 +43,25 @@ protected:
 	std::string localName;
 public:
 	Element() = default;
-	Element(const std::string_view& tn);
+	Element(const std::string& tn);
 	void setAttribute(const std::string& name, const std::string& value);
 	std::string getTagName();
 };
 
+class Text :public Node {
+private:
+	std::string mdata;
+public:
+	Text() = default;
+	Text(const std::string& s) :mdata{ s } { }
+	void appendData(const std::string& c) {
+		mdata += c;
+	}
+	~Text() {
+		//delete this;
+	}
+
+};
 
 class Document :public Node {
 protected:
@@ -55,4 +76,10 @@ protected:
 	std::string value;
 	bool specified;
 public:
+};
+
+class Attribute :public Node {
+private:
+	std::string name;
+	std::string value;
 };
