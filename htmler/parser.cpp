@@ -27,10 +27,8 @@ typedef struct MockeElement {
 } MockElement;
 //Element create_element(Document* document, std::string ln) {
 
-//}
-void Parser::create_element_for_token(const std::string& tn) {
-	Element* el;
-	switch(getTagNameAsEnum(tn)) {
+void Parser::createNewHtmlElement(TagName tn, Element*& el) {
+	switch (tn) {
 	case HTML:
 		el = new HTMLHtmlElement{};
 		break;
@@ -50,10 +48,28 @@ void Parser::create_element_for_token(const std::string& tn) {
 		el = new HTMLDivElement{};
 		break;
 	default:
-		el = new HTMLElement{"el"};
+		el = new HTMLElement{ "el" };
 		break;
 	}
+}
+void Parser::create_element_for_token(const TagTokenizer& tt) {
+	Element* el= nullptr;
+	createNewHtmlElement(tt.getTagName(), el);
+	el->setAttributes(tt.getAttributes());
+	cout << "create " << endl;
+	if (mstack.empty()) {
+		mdocument->appendChild(el);
+		mstack.push(el);//this must be a html element
+		return;
+	}
+	mstack.top()->appendChild(el);
+	//leave attribute for now
+	mstack.push(el);
+}
 
+void Parser::create_element_for_token(const std::string& tn) {
+	Element* el=nullptr;
+	createNewHtmlElement(getTagNameAsEnum(tn), el);
 	cout << "create " << endl;
 	if (mstack.empty()) {
 		mdocument->appendChild(el);
@@ -80,21 +96,12 @@ void Parser::generic_rcdata_parse(const std::string& tn) {
 	//mstack.push(el);
 }
 
-/*MockElement create_speculative_mock_element(std::string& ns, const std::string& tn, std::vector<std::pair<std::string, std::string>> al)
-{
-	struct MockeElement el {
-		._namespace = ns,
-			.localName = tn,
-			.attributeList = al
-	};
-
-	return el;
-}
-*/
 void Parser::parse(const std::string& str) {
 	Tokenizer tokenizer;
 	struct Token token;
 	bool reprocessToken = false;
+	TagTokenizer tt;
+
 	while (str[currPosition] != '\0') {
 		if (!reprocessToken) {
 			token = tokenizer.getNextToken(str, currPosition);
@@ -107,6 +114,7 @@ void Parser::parse(const std::string& str) {
 		}
 		if (token.type == TAG) {
 			//mstack.push(getTagNameAsEnum(token.token));
+			tt = token.token;
 		}
 		switch (parseState) {
 		case INITIAL:
@@ -132,10 +140,10 @@ void Parser::parse(const std::string& str) {
 				//document.appendChild(Comment token.token);//document can have only one child
 				break;
 			case TAG:
-				switch (getTagNameAsEnum(token.token)) {
+				switch (tt.getTagName()) {
 				case HTML:
 				{
-					create_element_for_token(token.token);
+					create_element_for_token(tt);
 					parseState = BEFORE_HEAD;
 					break;
 				}
@@ -170,14 +178,14 @@ void Parser::parse(const std::string& str) {
 				//document.appendChild(Comment token.token);
 				break;
 			case TAG:
-				switch (getTagNameAsEnum(token.token)) {
+				switch (tt.getTagName()) {
 				case HTML:
 					//Process the token using the rules for the "in body" insertion mode.
 					break;
 				case HEAD:
 					//insert html element
 					//set head pointer 
-					create_element_for_token(token.token);
+					create_element_for_token(tt);
 					//*headptr=
 					parseState = IN_HEAD;
 
@@ -208,7 +216,7 @@ void Parser::parse(const std::string& str) {
 				exit(EXIT_FAILURE);
 				break;
 			case TAG:
-				switch (getTagNameAsEnum(token.token)) {
+				switch (tt.getTagName()) {
 				case HTML:
 					// Process the token using the rules for the "in body" insertion mode.
 					break;
@@ -221,11 +229,11 @@ void Parser::parse(const std::string& str) {
 					break;
 				case META:
 					//TODO: 
-					this->create_element_for_token(token.token);
+					this->create_element_for_token(tt);
 					mstack.pop();
 					break;
 				case TITLE:
-					this->create_element_for_token(token.token);
+					this->create_element_for_token(tt);
 					originalParseState = parseState;
 					parseState = TEXT;
 					//rcdata parsing
@@ -273,9 +281,9 @@ void Parser::parse(const std::string& str) {
 				exit(EXIT_FAILURE);
 
 			case TAG:
-				switch (getTagNameAsEnum(token.token)) {
+				switch (tt.getTagName()) {
 				case BODY:
-					this->create_element_for_token(token.token);
+					this->create_element_for_token(tt);
 					parseState = IN_BODY;
 					break;
 				}
@@ -312,20 +320,25 @@ void Parser::parse(const std::string& str) {
 			}
 			case TAG:
 				TagName tn;
-				switch (tn = getTagNameAsEnum(token.token)) {
+				switch (tn=tt.getTagName()) {
 				case DIV:
 				case NAV:
 				case UL:
 				case LI:
 				case P:
 					//If the stack of open elements has a p element in button scope, then close a p element.
-					create_element_for_token(token.token);
+					create_element_for_token(tt);
 
 					//insert an html element
 					//check stuffs
 					break;
 					//case Headinfs:
 				}
+				break;
+			case CHARACTER:
+				insert_character(token.token);
+				break;
+
 			default:
 				break;
 			}
@@ -343,7 +356,6 @@ void Parser::parse(const std::string& str) {
 			break;
 		}
 	}
-	cout << token << endl;
 }
 
 void insertHtmlElement() {

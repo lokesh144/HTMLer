@@ -33,13 +33,13 @@ enum class TTstate {
 	AFTER_ATTRIBUTE_VALUE_QUOTED,
 	SELF_CLOSING_START_TAG
 };
-
 class TagTokenizer {
 private:
 	TagName tagName;
 	std::vector<Attribute> attributes;
 	bool selfClosingTag{ false };
 public:
+	TagTokenizer() = default;
 	TagTokenizer(const std::string& str) {
 		int currPosition = 0;
 		bool reconsume = false;
@@ -111,6 +111,8 @@ public:
 				case '>':
 					reconsume = true;
 					currState = TTstate::AFTER_ATTRIBUTE_NAME;
+					attributes.push_back(Attribute{ currToken,"true" });
+					//attributes[attributes.size()-1 ].setValue("true");
 					break;
 
 				case '=':
@@ -176,7 +178,7 @@ public:
 					break;
 				case '>':
 					//currState = DATA;
-					attributes[attributes.size()-1 ].setValue("true");
+					//attributes[attributes.size()-1 ].setValue("true");
 					//shouldReturn = true;//return current tag
 					//returnType = TAG;
 					break;
@@ -281,6 +283,7 @@ public:
 				currPosition++;
 			}
 		}
-
 	}
+	TagName getTagName()const { return tagName; }
+	const std::vector<Attribute> getAttributes()const { return attributes; }
 };

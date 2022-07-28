@@ -21,6 +21,11 @@ void Element::setAttribute(const std::string& name, const std::string& value) {
 
 }
 
+void Element::setAttributes(const std::vector<Attribute>& as) {
+	for (const auto& it : as) {
+		attributes.push_back(it);
+	}
+}
 std::string Element::getTagName() {
 	return tagName;
 

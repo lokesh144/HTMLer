@@ -4,6 +4,7 @@
 #include<iostream>
 class HTML;
 class Element;
+class Attribute;
 typedef std::string DOMString;
 enum NodeType {
 	ATTRIBUTE_NODE,
@@ -41,10 +42,13 @@ class Element :public Node {
 protected:
 	std::string tagName;
 	std::string localName;
+	std::vector<Attribute> attributes;
+
 public:
 	Element() = default;
 	Element(const std::string& tn);
 	void setAttribute(const std::string& name, const std::string& value);
+	void setAttributes(const std::vector<Attribute>& as);
 	std::string getTagName();
 };
 

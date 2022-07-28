@@ -53,6 +53,9 @@ struct Token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 					if (currToken.compare(std::string(currToken.size(), ' ')) != 0) {
 						shouldReturn = true;//yaha true nai hunxa
 					}
+					else {
+						currToken = "";
+					}
 				}
 				break;
 			default:
@@ -74,7 +77,7 @@ struct Token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 				break;
 			default:
 				if (isalpha(str[currPosition])) {
-					currState = TAG_NAME;
+					currState = INSIDE_TAG;
 					increase = false;
 					break;
 				}
@@ -104,6 +107,19 @@ struct Token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 					increase = false;
 					break;
 				}
+			}
+			break;
+		case INSIDE_TAG:
+			switch (str[currPosition]) {
+			case '>':
+				currState = DATA;
+				currToken.push_back(str[currPosition]);
+				shouldReturn = true;
+				returnType = TAG;
+				break;
+			default:
+				currToken.push_back(str[currPosition]);
+				break;
 			}
 			break;
 		case TAG_NAME:

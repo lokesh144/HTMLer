@@ -22,7 +22,7 @@ std::string str = "\
 <head > \
 <title>Page Title</title>\
 </head>\
-<body>   \
+<body hello=\"hifads\">   \
 <div>  \
 p<div>  \
 <div> join us hh </div>  \
@@ -50,7 +50,7 @@ html
 */
 
 #include "node.h" 
-int imain() {
+int main() {
 	Document* document =new Document;
 	Parser parser{document};
 	parser.parse(str);
@@ -58,8 +58,9 @@ int imain() {
 	return 0;
 }
 #include "tokenizer.h"
-int main() {
+int maiin() {
 
 	TagTokenizer("div hello=\"hi\" and=\"88\" hi/>");
+	return 0;
 
 }
