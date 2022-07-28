@@ -1,92 +1,124 @@
-/*
 #pragma once
 #include<string>
 #include "node.h"
-using std::string;
 //refrence URL="https://www.w3.org/TR/1998/REC-DOM-Level-1-19981001/level-one-html.html"
+class HTMLElement : public Element {
+protected:
+	std::string id;
+	std::string title;
+	std::string lang;
+	std::string dir;
+	std::string outerText;
+public:
+	HTMLElement(const std::string& tn) :Element{ tn } {}
+};
+
+class HTMLDivElement : public HTMLElement {
+public:
+	HTMLDivElement() :HTMLElement{ "div" } {}
+};
+
+class HTMLAnchorElement : public HTMLElement {
+private:
+	std::string taget;
+public:
+	HTMLAnchorElement() :HTMLElement{ "a" } {}
+};
+
+class HTMLParagraphElement : public HTMLElement {
+	std::string align;
+public:
+	HTMLParagraphElement() :HTMLElement{ "p" } {}
+
+};
+
+class HTMLHtmlElement : public HTMLElement {
+	std::string version;
+public:
+	HTMLHtmlElement() :HTMLElement{ "html" } {}
+};
+class HTMLHeadElement : public HTMLElement {
+	std::string profile;
+public:
+	HTMLHeadElement() :HTMLElement{ "head" } {}
+};
+
+class HTMLTitleElement : public HTMLElement {
+	std::string text;
+public:
+	HTMLTitleElement() :HTMLElement{ "title" } {}
+};
+
+class HTMLBodyElement : public HTMLElement {
+	std::string aLink;
+	std::string background;
+	std::string bgColor;
+	std::string link;
+	std::string text;
+	std::string vLink;
+public:
+	HTMLBodyElement():HTMLElement{"body"}{}
+};
+/*-----------------------------------------------------------------*/
 class HTMLCollection {
 public:
 	Node item(unsigned long int index);
-	Node namedItem(string name);
+	Node namedItem(std::string name);
 private:
 	unsigned long int length;
 };
-class HTMLDocument : public Document{ 
-public: 
+class HTMLDocument : public Document {
+public:
 	void open();
-	void close(); 
-	void write(string text); 
-	void writeln(string text); 
-	Element getElementById(string elementId);
-	NodeList getElementBYName(string elementName);
+	void close();
+	void write(std::string text);
+	void writeln(std::string text);
+	Element getElementById(std::string elementId);
+	//NodeList getElementBYName(std::string elementName);
 
-private: 
-	string title; 
-	string referrer; 
-	string domain; 
-	string URL; 
+private:
+	std::string title;
+	std::string referrer;
+	std::string domain;
+	std::string URL;
 	HTMLElement body;
 	HTMLCollection images;
 	HTMLCollection applets;
 	HTMLCollection links;
 	HTMLCollection forms;
 	HTMLCollection anchors;
-	string cookie;
+	std::string cookie;
 
-};
-class HTMLElement : public Element{
-	string id;
-	string title;
-	string lang;
-	string dir;
-	string ClassName;
-};
-class HTMLHtmlElement : public HTMLElement {
-	string version;
-};
-class HTMLHeadElement : public HTMLElement {
-	string profile;
 };
 class HTMLLinkElement : public HTMLElement {
 	bool disabled;
-	string charset;
-	string href;
-	string hreflang;
-	string media;
-	string rel;
-	string rev;
-	string target;
-	string type;
-};
-class HTMLTitleElement : public HTMLElement {
-	string text;
+	std::string charset;
+	std::string href;
+	std::string hreflang;
+	std::string media;
+	std::string rel;
+	std::string rev;
+	std::string target;
+	std::string type;
 };
 class HTMLMetaElement : public HTMLElement {
-	string content;
-	string httpEquiv;
-	string name;
-	string scheme;
+	std::string content;
+	std::string httpEquiv;
+	std::string name;
+	std::string scheme;
 };
 class HTMLBaseElement : public HTMLElement {
-	string href;
-	string target;
+	std::string href;
+	std::string target;
 };
 class HTMLIsIndexElement : public HTMLElement {
-	string form;
-	string prompt;
+	std::string form;
+	std::string prompt;
 };
 class HTMLStyleElement : public HTMLElement {
 	bool disabled;
-	string media;
-	string type;
-};
-class HTMLBodyElement : public HTMLElement {
-	string aLink;
-	string background;
-	string bgColor;
-	string link;
-	string text;
-	string vLink;
+	std::string media;
+	std::string type;
 };
 class HTMLFormElement : public HTMLElement {
 public:
@@ -95,12 +127,12 @@ public:
 private:
 	HTMLCollection elements;
 	int length;
-	string name;
-	string acceptCharset;
-	string action;
-	string enctype;
-	string method;
-	string target;
+	std::string name;
+	std::string acceptCharset;
+	std::string action;
+	std::string enctype;
+	std::string method;
+	std::string target;
 };
 class HTMLSelectElement : public HTMLElement {
 public:
@@ -109,31 +141,31 @@ public:
 	void blur();
 	void focus();
 private:
-	string type;
+	std::string type;
 	int selectedIndex;
-	string value;
+	std::string value;
 	int length;
 	HTMLFormElement form;
 	HTMLCollection options;
 	bool disabled;
 	bool multiple;
-	string name;
+	std::string name;
 	int size;
 	int tabindex;
 };
 class HTMLOptGroupElement : public HTMLElement {
 	bool disabled;
-	string label;
+	std::string label;
 };
 class HTMLOptionElement : public HTMLElement {
 	HTMLFormElement form;
 	bool defaultSelected;
-	string text;
+	std::string text;
 	int index;
 	bool disabled;
-	string label;
+	std::string label;
 	bool selected;
-	string value;
+	std::string value;
 };
 class HTMLInputElement : public HTMLElement {
 public:
@@ -142,24 +174,24 @@ public:
 	void select();
 	void click();
 private:
-	string defaultValue;
+	std::string defaultValue;
 	bool defaultChecked;
 	HTMLFormElement form;
-	string accept;
-	string accesskey;
-	string align;
-	string alt;
+	std::string accept;
+	std::string accesskey;
+	std::string align;
+	std::string alt;
 	bool checked;
 	bool disabled;
 	int maxLength;
-	string name;
+	std::string name;
 	bool readOnly;
-	string size;
-	string src;
+	std::string size;
+	std::string src;
 	int tabIndex;
-	string type;
-	string useMap;
-	string value;
+	std::string type;
+	std::string useMap;
+	std::string value;
 };
 class HTMLTextAreaElement : public HTMLElement {
 public:
@@ -168,55 +200,47 @@ public:
 	void select();
 private:
 	HTMLFormElement form;
-	string defaultValue;
-	string accessKey;
+	std::string defaultValue;
+	std::string accessKey;
 	int cols;
 	bool disabled;
-	string name;
+	std::string name;
 	bool readOnly;
 	int rows;
 	int tabIndex;
-	string type;
-	string value;
+	std::string type;
+	std::string value;
 };
 class HTMLButtonElement : public HTMLElement {
 	HTMLFormElement form;
-	string accessKey;
+	std::string accessKey;
 	bool disabled;
-	string name;
+	std::string name;
 	int tabIndex;
-	string type;
-	string value;
-};
-class HTMLLabelElement : public HTMLElement {
-	HTMLFormElement form;
-	string accesskey;
-	string hrmlFor;
+	std::string type;
+	std::string value;
 };
 class HTMLFieldSetElement : public HTMLElement {
 	HTMLFormElement form;
 };
 class HTMLLabelElement : public HTMLElement {
 	HTMLFormElement form;
-	string accessKey;
-	string htmlFor;
-};
-class HTMLFieldSetElement : public HTMLElement {
-	HTMLFormElement form;
+	std::string accessKey;
+	std::string htmlFor;
 };
 class HTMLLegendElement : public HTMLElement {
 	HTMLFormElement form;
-	string accessKey;
-	string align;
+	std::string accessKey;
+	std::string align;
 };
 class HTMLUListElement : public HTMLElement {
 	bool compact;
-	string type;
+	std::string type;
 };
 class HTMLOListElement : public HTMLElement {
 	bool compact;
 	int start;
-	string type;
+	std::string type;
 };
 class HTMLDListElement : public HTMLElement {
 	bool compact;
@@ -228,166 +252,142 @@ class HTMLMenuElement : public HTMLElement {
 	bool comapct;
 };
 class HTMLLIElement : public HTMLElement {
-	string type;
+	std::string type;
 	int value;
 };
 class HTMLBlockquoteElement : public HTMLElement {
-	string cite;
-};
-class HTMLDivElement : public HTMLElement {
-	string align;
-};
-class HTMLParagraphElement : public HTMLElement {
-	string align;
+	std::string cite;
 };
 class HTMLHeadingElement : public HTMLElement {
-	string align;
+	std::string align;
 };
 class HTMLQuoteElement : public HTMLElement {
-	string cite;
+	std::string cite;
 };
 class HTMLPreElement : public HTMLElement {
 	int width;
 };
 class HTMLBRElement : public HTMLElement {
-	string clear;
+	std::string clear;
 };
 class HTMLBaseFrontElement : public HTMLElement {
-	string color;
-	string face;
-	string size;
+	std::string color;
+	std::string face;
+	std::string size;
 };
 class HTMLFontElement : public HTMLElement {
-	string color;
-	string face;
-	string size;
+	std::string color;
+	std::string face;
+	std::string size;
 };
 class HTMLHRElement : public HTMLElement {
-	string align;
+	std::string align;
 	bool noShade;
-	string size;
-	string width;
+	std::string size;
+	std::string width;
 };
 class HTMLModElement : public HTMLElement {
-	string cite;
-	string dateTime;
-};
-class HTMLAnchorElement : public HTMLElement {
-public:
-	void blur();
-	void focus();
-private:
-	string accessKey;
-	string charset;
-	string coords;
-	string href;
-	string hreflang;
-	string name;
-	string rel;
-	string rev;
-	string shape;
-	int tabIndex;
-	string target;
-	string type;
+	std::string cite;
+	std::string dateTime;
 };
 class HTMLImageElement : public HTMLElement {
-	string lowSrc;
-	string name;
-	string align;
-	string alt;
-	string border;
-	string height;
-	string hspace;
+	std::string lowSrc;
+	std::string name;
+	std::string align;
+	std::string alt;
+	std::string border;
+	std::string height;
+	std::string hspace;
 	bool isMap;
-	string longDesc;
-	string src;
-	string useMap;
-	string vspace;
-	string width;
+	std::string longDesc;
+	std::string src;
+	std::string useMap;
+	std::string vspace;
+	std::string width;
 };
 class HTMLObjectElement : public HTMLElement {
 	HTMLFormElement form;
-	string code;
-	string align;
-	string archive;
-	string border;
-	string codeBase;
-	string codeType;
-	string data;
+	std::string code;
+	std::string align;
+	std::string archive;
+	std::string border;
+	std::string codeBase;
+	std::string codeType;
+	std::string data;
 	bool declare;
-	string height;
-	string hspace;
-	string name;
-	string standby;
+	std::string height;
+	std::string hspace;
+	std::string name;
+	std::string standby;
 	int tabIndex;
-	string type;
-	string useMap;
-	string vspace;
-	string width;
+	std::string type;
+	std::string useMap;
+	std::string vspace;
+	std::string width;
 };
 class HTMLParamElement : public HTMLElement {
-	string name;
-	string type;
-	string value;
-	string valueType;
+	std::string name;
+	std::string type;
+	std::string value;
+	std::string valueType;
 };
 class HTMLAppletElement : public HTMLElement {
-	string align;
-	string alt;
-	string archive;
-	string code;
-	string codeBase;
-	string height;
-	string hspace;
-	string name;
-	string object;
-	string vspace;
-	string width;
+	std::string align;
+	std::string alt;
+	std::string archive;
+	std::string code;
+	std::string codeBase;
+	std::string height;
+	std::string hspace;
+	std::string name;
+	std::string object;
+	std::string vspace;
+	std::string width;
 };
 class HTMLMapElement : public HTMLElement {
 	HTMLCollection areas;
-	string name;
+	std::string name;
 };
 class HTMLAreaElement : public HTMLElement {
-	string accessKey;
-	string alt;
-	string coords;
-	string href;
+	std::string accessKey;
+	std::string alt;
+	std::string coords;
+	std::string href;
 	bool noHref;
-	string shape;
+	std::string shape;
 	int tabIndex;
-	string target;
+	std::string target;
 };
 class HTMLScriptElement : public HTMLElement {
-	string text;
-	string htmlFor;
-	string event;
-	string charset;
+	std::string text;
+	std::string htmlFor;
+	std::string event;
+	std::string charset;
 	bool defer;
-	string src;
-	string type;
+	std::string src;
+	std::string type;
 
 };
 class HTMLTableCaptionElement : public HTMLElement {
-	string align;
+	std::string align;
 };
 class HTMLTableColElement : public HTMLElement {
-	string align;
-	string ch;
-	string chOff;
+	std::string align;
+	std::string ch;
+	std::string chOff;
 	int span;
-	string vAlign;
-	string width;
+	std::string vAlign;
+	std::string width;
 };
 class HTMLTableSectionElement : public HTMLElement {
 public:
 	HTMLElement insertRow(int index);
 	void deleteRow(int index);
 private:
-	string align;
-	string ch;
-	string chOff;
-	string vAlign;
+	std::string align;
+	std::string ch;
+	std::string chOff;
+	std::string vAlign;
 	HTMLCollection rows;
 };
 class HTMLTableRowElement : public HTMLElement {
@@ -398,28 +398,28 @@ private:
 	int rowIndex;
 	int sectionRowIndex;
 	HTMLCollection cells;
-	string align;
-	string bgcolor;
-	string ch;
-	string chOff;
-	string vAlign;
+	std::string align;
+	std::string bgcolor;
+	std::string ch;
+	std::string chOff;
+	std::string vAlign;
 };
 class HTMLTableCellElement : public HTMLElement {
 	int cellIndex;
-	string abbr;
-	string align;
-	string axis;
-	string bgColor;
-	string ch;
-	string chOff;
+	std::string abbr;
+	std::string align;
+	std::string axis;
+	std::string bgColor;
+	std::string ch;
+	std::string chOff;
 	int colSpan;
-	string headers;
-	string height;
+	std::string headers;
+	std::string height;
 	bool noWrap;
 	int rowSpan;
-	string scope;
-	string vAlign;
-	string width;
+	std::string scope;
+	std::string vAlign;
+	std::string width;
 };
 class HTMLTableElement : public HTMLElement {
 public:
@@ -437,42 +437,41 @@ private:
 	HTMLTableSectionElement tfoot;
 	HTMLCollection rows;
 	HTMLCollection tBodies;
-	string align;
-	string bgColor;
-	string border;
-	string cellpadding;
-	string cellSpacing;
-	string frame;
-	string rules;
-	string summary;
-	string width;
+	std::string align;
+	std::string bgColor;
+	std::string border;
+	std::string cellpadding;
+	std::string cellSpacing;
+	std::string frame;
+	std::string rules;
+	std::string summary;
+	std::string width;
 };
 class HTMLFrameSetElement : public HTMLElement {
-	string cols;
-	string rows;
+	std::string cols;
+	std::string rows;
 };
 class HTMLFrameElement : public HTMLElement {
-	string frameBorder;
-	string longDesc;
-	string marginHeight;
-	string marginWidth;
-	string name;
+	std::string frameBorder;
+	std::string longDesc;
+	std::string marginHeight;
+	std::string marginWidth;
+	std::string name;
 	bool noResize;
-	string scrolling;
-	string src;
+	std::string scrolling;
+	std::string src;
 };
 
 class HTMLIFrameElement : public HTMLElement {
-	string align;
-	string frameBorder;
-	string height;
-	string longDesc;
-	string marginHeight;
-	string marginWidth;
-	string name;
-	string scrolling;
-	string src;
-	string width;
+	std::string align;
+	std::string frameBorder;
+	std::string height;
+	std::string longDesc;
+	std::string marginHeight;
+	std::string marginWidth;
+	std::string name;
+	std::string scrolling;
+	std::string src;
+	std::string width;
 };
 
-*/

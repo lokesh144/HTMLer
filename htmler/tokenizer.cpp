@@ -29,7 +29,7 @@ bool isWordPresent(char* mainSting, int currPos, const char* strtoCheck) {
 	}
 	return flag;
 }
-struct token Tokenizer::getNextToken(const std::string& str, int& currPosition) {
+struct Token Tokenizer::getNextToken(const std::string& str, int& currPosition) {
 
 	reset();
 	//TODO: handle ampersand(&), EOF and '\0'
@@ -53,8 +53,10 @@ struct token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 					if (currToken.compare(std::string(currToken.size(), ' ')) != 0) {
 						shouldReturn = true;//yaha true nai hunxa
 					}
+					else {
+						currToken = "";
+					}
 				}
-				//returnType=CHARACTER//default
 				break;
 			default:
 				currToken.push_back(str[currPosition]);
@@ -75,7 +77,7 @@ struct token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 				break;
 			default:
 				if (isalpha(str[currPosition])) {
-					currState = TAG_NAME;
+					currState = INSIDE_TAG;
 					increase = false;
 					break;
 				}
@@ -105,6 +107,19 @@ struct token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 					increase = false;
 					break;
 				}
+			}
+			break;
+		case INSIDE_TAG:
+			switch (str[currPosition]) {
+			case '>':
+				currState = DATA;
+				currToken.push_back(str[currPosition]);
+				shouldReturn = true;
+				returnType = TAG;
+				break;
+			default:
+				currToken.push_back(str[currPosition]);
+				break;
 			}
 			break;
 		case TAG_NAME:
@@ -164,23 +179,15 @@ struct token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 			}
 			break;
 		default:
-			//char* cstr = new char[str.length() + 1];
-			//strcpy_s(cstr,strlen(cstr), str.c_str());
-
-			//if (isWordPresent(cstr, currPosition, "DOCTYPE"))
 			if (strncmp(str.c_str(), "DOCTYPE", 7)) {
 				currToken.append("DOCTYPE");
 				currState = DOCTYPE;
-
 			}
 			else if (strncmp(str.c_str(), "[CDATA[", 7)) {
-
 				exit(EXIT_FAILURE);
-
 			}
 			//else if (isWordPresent(cstr,currPosition,"[CDATA[")){
 				//currToken.push_back(str[currPosition]);
-
 //			}
 
 		case BEFORE_ATTRIBUTE_NAME:
@@ -494,10 +501,13 @@ struct token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 			increase = true;
 		}
 		if (shouldReturn) {
-			return (token{ .type = returnType,.token = currToken });
+			return (Token{ .type = returnType,.token = currToken });
 		}
 	}
 }
 
 
+/*
+
+*/
 //polymorphism

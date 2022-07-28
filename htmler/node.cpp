@@ -6,25 +6,29 @@ Node::Node(NodeType ntype, std::string nname, std::string nvalue = "")
 
 }
 
-
-Node Node::appendChild(Node& childNode) {
-	childNodes.push_back(&childNode);
-	return childNode;
+Node* Node::appendChild(Node* cn) {
+	childNodes.push_back(cn);
+	return cn;
 }
 
 bool Node::hasChildNodes() {
 	return childNodes.empty();
 }
 
-Element::Element(const std::string_view& tn) :tagName{ tn }, localName{ tn } {
+Element::Element(const std::string& tn) :tagName{ tn }, localName{ tn } {
 }
 void Element::setAttribute(const std::string& name, const std::string& value) {
 
 }
 
+void Element::setAttributes(const std::vector<Attribute>& as) {
+	for (const auto& it : as) {
+		attributes.push_back(it);
+	}
+}
 std::string Element::getTagName() {
 	return tagName;
-	
+
 }
 Element Document::createElement(const std::string& tname) {
 	return Element{ tname };
