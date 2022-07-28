@@ -50,10 +50,16 @@ html
 */
 
 #include "node.h" 
-int main() {
+int imain() {
 	Document* document =new Document;
 	Parser parser{document};
 	parser.parse(str);
 	delete document;
 	return 0;
+}
+#include "tokenizer.h"
+int main() {
+
+	TagTokenizer("div hello=\"hi\" and=\"88\" hi/>");
+
 }

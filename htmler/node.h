@@ -74,12 +74,12 @@ class Attribute :public Node {
 protected:
 	std::string name;
 	std::string value;
-	bool specified;
 public:
-};
-
-class Attribute :public Node {
-private:
-	std::string name;
-	std::string value;
+	Attribute(const std::string& n, const std::string& v) :name{ n }, value{ v }{}
+	void setName(const std::string& n) {
+		name = n;
+	}
+	void setValue(const std::string& v) {
+		value = v;
+	}
 };
