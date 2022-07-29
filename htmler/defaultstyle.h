@@ -36,7 +36,6 @@ namespace styles {
 	};
 }
 
-class Style;
 
 class Style {
 public:
@@ -45,21 +44,34 @@ public:
 	SDL_Color mcolor{ NULL };
 	SDL_Color mbackgroundColor{ NULL };
 	styles::FontStyle mfontStyle{ NULL };
-	std::array<int, 4> mmargin{ NULL };
-	std::array<int, 4> mpadding{ NULL };
-	std::array<styles::Border, 4> mborder{ NULL };
+	std::array<int, 4> mmargin{ NULL };//top right bottom left
+	std::array<int, 4> mpadding{ NULL };//top right bottom left
+	std::array<styles::Border, 4> mborder{ NULL };//top right bottom left
 };
 
 namespace SS {
 	using namespace styles;
-	class DivStyle :public Style {
-		DivStyle() {
+	class HTMLDivStyle :public Style {
+		HTMLDivStyle() {
 			mdisplay = Display::BLOCK;
 		}
 	};
 
-	class HTMLStyle :public Style {
-		HTMLStyle() {
+	class  HTMLHtmlStyle :public Style {
+		HTMLHtmlStyle() {
+
+		}
+	};
+	class HTMLPStyle :public Style {
+		HTMLPStyle() {
+		mdisplay=Display::BLOCK;
+		mmargin = { 1,0,1,0 };
+		//OR 
+		mmargin.at(0) = 1;
+		mmargin.at(1) = 0;
+		mmargin.at(2) = 1;
+		mmargin.at(3) = 0;
+		
 
 		}
 	};
