@@ -9,7 +9,8 @@ namespace styles {
 		INLINE,
 		INLINE_BLOCK,
 		NONE,
-		NOT_SPECIFIED
+		NOT_SPECIFIED,
+		LIST_ITEM;
 	};
 
 	enum class BoxSizing {
@@ -29,6 +30,16 @@ namespace styles {
 		SOLID,
 		DOTTED,
 	};
+	enum class ListStyleType {
+		DECIMAL,
+		DISC,
+	};
+	enum class FontWeight {
+		NORMAL,
+		BOLD,
+		LIGHT,
+		LIGHTER,
+	};
 	struct Border {
 		int width;
 		BorderStyle borderStyle;
@@ -40,6 +51,8 @@ namespace styles {
 class Style {
 public:
 	styles::Display mdisplay{ NULL };
+	styles::FontWeight mFontWeight{ NULL };
+	styles::ListStyleType mliststyletype{ NULL };
 	int mfontSize{ NULL };
 	SDL_Color mcolor{ NULL };
 	SDL_Color mbackgroundColor{ NULL };
@@ -75,4 +88,100 @@ namespace SS {
 
 		}
 	};
+	
+	class HTMLLiStyle {
+		HTMLLiStyle() {
+			mdisplay = Display::LIST_ITEM;
+		}
+	};
+	class HTMLOlStyle :public Style {
+		HTMLOlStyle() {
+			mdisplay = Display::BLOCK;
+			mliststyletype = ListStyleType::DECIMAL;
+			mmargin = { 1,0,1,0 };
+			mpadding = { 0,0,0,40 };
+		}
+	};
+	class HTMLUlStyle :public Style {
+		HTMLUlStyle() {
+			mdisplay = Display::BLOCK;
+			mliststyletype = ListStyleType::DISC;
+			mmargin = { 1,0,1,0 };
+			mpadding = { 0,0,0,40 };
+		}
+	};
+	class HTMLArticleStyle :public Style {
+		HTMLArticleStyle() {
+			mdisplay = Display::BLOCK;
+		}
+	};
+	class HTMLEmStyle :public Style {
+		HTMLArticleStyle() {
+			mfontStyle = FontStyle::ITALIC;
+		}
+	};
+	class HTMLEmStyle :public Style {
+		HTMLArticleStyle() {
+			mfontStyle = FontStyle::ITALIC;
+		}
+	};
+	class HTMLH1Style :public Style {
+		HTMLH1Style() {
+			mdisplay = Display::BLOCK;
+			mfontSize = 2;
+			mmargin = { 0.67,0,0.67,0 };
+			mFontWeight = FontWeight::BOLD;
+
+		}
+	};
+	class HTMLH2Style :public Style {
+		HTMLH2Style() {
+			mdisplay = Display::BLOCK;
+			mfontSize = 1.5;
+			mmargin = { 0.83,0,0.83,0 };
+			mFontWeight = FontWeight::BOLD;
+
+		}
+	};
+	class HTMLH3Style :public Style {
+		HTMLH3Style() {
+			mdisplay = Display::BLOCK;
+			mfontSize = 1,17;
+			mmargin = { 1,0,1,0 };
+			mFontWeight = FontWeight::BOLD;
+
+		}
+	};
+	class HTMLH4Style :public Style {
+		HTMLH4Style() {
+			mdisplay = Display::BLOCK;
+			mmargin = { 1.33,0,1.33,0 };
+			mFontWeight = FontWeight::BOLD;
+
+		}
+	};
+	class HTMLH5Style :public Style {
+		HTMLH5Style() {
+			mdisplay = Display::BLOCK;
+			mfontSize = 0.83;
+			mmargin = { 1.67,0,1.67,0 };
+			mFontWeight = FontWeight::BOLD;
+
+		}
+	}; 
+	class HTMLH6Style :public Style {
+		HTMLH6Style() {
+			mdisplay = Display::BLOCK;
+			mfontSize = 0.67;
+			mmargin = { 2.33,0,2.33,0 };
+			mFontWeight = FontWeight::BOLD;
+
+		}
+
+	};
+
+	
+	
+	
+
 };
