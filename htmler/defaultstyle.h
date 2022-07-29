@@ -30,6 +30,23 @@ namespace styles {
 		SOLID,
 		DOTTED,
 	};
+	/// 
+	/// ///
+	/// 
+	enum class TextDecoration { // Conflict
+		OVERLINE,
+		LINETHROUGH,
+		UNDERLINE
+	};
+	enum class FontWeight {
+		NORMAL,
+		BOLD,
+		LIGHT,
+		LIGHTER,
+	};
+	/// 
+	/// /
+	/// 
 	enum class ListStyleType {
 		DECIMAL,
 		DISC,
@@ -45,15 +62,21 @@ namespace styles {
 		BorderStyle borderStyle;
 		SDL_Color color;
 	};
+	
 }
 
 
 class Style {
 public:
+	//
+	styles::TextDecoration mTextDecoration{NULL};
+	styles::FontWeight mFontWeight{ NULL };
+	//
 	styles::Display mdisplay{ NULL };
 	styles::FontWeight mFontWeight{ NULL };
 	styles::ListStyleType mliststyletype{ NULL };
 	int mfontSize{ NULL };
+	int mborderWidth{};
 	SDL_Color mcolor{ NULL };
 	SDL_Color mbackgroundColor{ NULL };
 	styles::FontStyle mfontStyle{ NULL };
@@ -115,6 +138,44 @@ namespace SS {
 			mdisplay = Display::BLOCK;
 		}
 	};
+	class HTMLUStyle :public Style {
+		HTMLUStyle() {
+			mTextDecoration = TextDecoration::UNDERLINE;
+		}
+	};
+	class HTMLStyleStyle :public Style {
+		HTMLStyleStyle() {
+			mdisplay = Display::NONE;
+		}
+	};
+	class HTMLStrongStyle :public Style {
+		HTMLStrongStyle() {
+			mFontWeight = FontWeight::BOLD;
+		}
+	};
+	class HTMLStrikeStyle :public Style {
+		HTMLStrikeStyle() {
+			mTextDecoration = TextDecoration::LINETHROUGH;
+		}
+	};
+	class HTMLNavStyle :public Style {
+		HTMLNavStyle() {
+			mdisplay = Display::BLOCK;
+		}
+	};
+	class HTMLHrStyle :public Style {
+		HTMLHrStyle() {
+			mdisplay = Display::BLOCK;
+			mmargin = { 1,0,1,0 }; // auto {0.5 em ,auto ,0.5em ,auto }
+			//border style = inset;
+			// Border to add
+			mborderWidth = 1;
+		}
+	};
+
+
+};
+
 	class HTMLEmStyle :public Style {
 		HTMLArticleStyle() {
 			mfontStyle = FontStyle::ITALIC;
