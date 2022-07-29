@@ -26,18 +26,22 @@ hello\
 ";
 
 #include "node.h" 
-int mmain() {
+#include "rendertree.h" 
+int main(int mainc, char* argv[]) {
 	Document* document =new Document;
 	Parser parser{document};
 	parser.parse(str);
+	RenderTree* root=new RenderTree;
+	root->createFromDom(document);
+	delete root;
 	delete document;
 	return 0;
 }
 
 #include"window.h"
-int main(int argc,char* argv[]) {
+int mainm(int argc,char* argv[]) {
 	Window window;
-	window.init();
-	window.eventloop();
+	window.test();
+	//window.eventloop();
 	return 0;
 }

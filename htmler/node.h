@@ -6,6 +6,7 @@ class HTML;
 class Element;
 class Attribute;
 typedef std::string DOMString;
+class RenderTree;
 enum NodeType {
 	ATTRIBUTE_NODE,
 	ELEMENT_NODE,
@@ -27,6 +28,7 @@ protected:
 public:
 
 	Node() = default;
+	friend class RenderTree;
 	Node(NodeType ntype, std::string nname, std::string nvalue);
 	Node* appendChild(Node* childNode);//insert at last
 	bool hasChildNodes();
@@ -46,6 +48,7 @@ protected:
 
 public:
 	Element() = default;
+	friend class RenderTree;
 	Element(const std::string& tn);
 	void setAttribute(const std::string& name, const std::string& value);
 	void setAttributes(const std::vector<Attribute>& as);
@@ -72,6 +75,7 @@ protected:
 	Element documentElement;//default html element
 public:
 	Document() = default;
+	friend class RenderTree;
 	Element createElement(const std::string& tname);
 };
 class Attribute :public Node {

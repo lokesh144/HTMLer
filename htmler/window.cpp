@@ -1,9 +1,22 @@
 
 #include<iostream>
+#include<SDL_ttf.h>
 //#include"winuser.h"
 #include "window.h"
 #define endl '\n'
 using std::cout;
+
+void Window::test() {
+	int w, h;
+	SDL_GetWindowSize(mwindow, &w, &h);
+	cout << w << "  width  " << h << " height " << endl;
+	font.test("Hello");
+	font.test("iiiii");
+	font.test("abcde");
+	font.test("nepal");
+	font.test("zzzzz");
+	font.test("ooooo");
+}
 
 Window::Window() :
 	mSCREEN_HEIGHT{ 500 },
@@ -12,45 +25,55 @@ Window::Window() :
 	mrenderer{ nullptr },
 	mtexture{ nullptr }
 {
-
+	init();
+	font.loadFont("Roboto");
 }
 Window::~Window() {
+	cout << "closing window" << endl;
 	close();
-	cout << "closing" << endl;
 }
 bool Window::init() {
+	bool	success = true;
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		cout << "SDL couldnot be initialized\n" << SDL_GetError();
-		return false;
+		cout << "SDL couldnot be initialized\n" << SDL_GetError() << endl;
+		success = false;
 	}
 	//creating window
-	mwindow = SDL_CreateWindow("HTMLER", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mSCREEN_WIDTH, mSCREEN_HEIGHT, SDL_WINDOW_MAXIMIZED|SDL_WINDOW_SHOWN);
+	mwindow = SDL_CreateWindow("HTMLER", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mSCREEN_WIDTH, mSCREEN_HEIGHT, SDL_WINDOW_MAXIMIZED | SDL_WINDOW_SHOWN);
 	if (mwindow == NULL) {
-		cout << "winkdow couldnot be created";
-		return false;
+		cout << "window couldnot be created " << SDL_GetError() << endl;
+		success = false;
 	}
+	else {
 
-	mrenderer = SDL_CreateRenderer(mwindow, -1, SDL_RENDERER_PRESENTVSYNC);
-	if (mrenderer == NULL) {
-		cout << "Couldnot create renderer " << SDL_GetError() << endl;
-		return false;
+		mrenderer = SDL_CreateRenderer(mwindow, -1, SDL_RENDERER_PRESENTVSYNC);
+		if (mrenderer == NULL) {
+			cout << "Couldnot create renderer " << SDL_GetError() << endl;
+			success = false;
+		}
+		else {
+			SDL_SetRenderDrawColor(mrenderer, 255, 255, 255, 255);
+			if (TTF_Init() == -1) {
+				cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << endl;
+				exit(EXIT_FAILURE);
+			}
+		}
 	}
-
-	SDL_SetRenderDrawColor(mrenderer, 255, 255, 255, 255);
-	return true;
+	return success;
 }
 void Window::close() {
 	//deallocate surface
 	SDL_DestroyRenderer(mrenderer);
-	mrenderer = NULL;
+	mrenderer = nullptr;
 	//destroy window
 	SDL_DestroyWindow(mwindow);
-	mwindow = NULL;
+	mwindow = nullptr;
 	//destroy window
 	//SDL_FreeSurface(gimage);
 	//gimage = NULL;
 	//quitting SDL subsystem
 	//IMG_Quit();
+	TTF_Quit();
 	SDL_Quit();
 }
 void Window::eventloop() {
@@ -71,11 +94,32 @@ void Window::eventloop() {
 				}
 			}
 		}
-		SDL_SetRenderDrawColor(mrenderer, 255, 255, 255, 255);
-		SDL_RenderClear(mrenderer);
-
+		//SDL_SetRenderDrawColor(mrenderer, 255, 255, 255, 255);
+		//SDL_RenderClear(mrenderer);
 		SDL_RenderPresent(mrenderer);
 		refresh++;
 	}
-	cout <<" refresh rate" << refresh <<  " Hz"<<endl;
+	cout << " refresh rate" << refresh << " Hz" << endl;
+}
+
+Font::Font(const std::string& name) {
+}
+Font::~Font() {
+	cout << "closing font  " << mname << endl;
+	TTF_CloseFont(mfont);
+}
+bool Font::loadFont(const std::string& n) {
+	bool success = true;
+	mfont = TTF_OpenFont(("../fonts/" + n + ".ttf").c_str(), 16);
+	if (mfont == nullptr) {
+		cout << "couldnot load font: " << TTF_GetError() << endl;
+		success = false;
+	}
+	return success;
+}
+void Font::test(const std::string& t) {
+	int w{}, h{};
+	TTF_SizeText(mfont, t.c_str(), &w, &h);
+	cout << t << "  w " << w << " h " << h << endl;
+
 }
