@@ -42,7 +42,7 @@ public:
 	void addDefaultStyleSheets() {
 		switch (getTagNameAsEnum(this->element->tagName)) {
 		case DIV:
-
+			break;
 		}
 
 	}
