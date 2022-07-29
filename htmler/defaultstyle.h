@@ -29,16 +29,38 @@ namespace styles {
 		SOLID,
 		DOTTED,
 	};
+	/// 
+	/// ///
+	/// 
+	enum class TextDecoration { // Conflict
+		OVERLINE,
+		LINETHROUGH,
+		UNDERLINE
+	};
+	enum class FontWeight {
+		NORMAL,
+		BOLD,
+		LIGHT,
+		LIGHTER,
+	};
+	/// 
+	/// /
+	/// 
 	struct Border {
 		int width;
 		BorderStyle borderStyle;
 		SDL_Color color;
 	};
+	
 }
 
 
 class Style {
 public:
+	//
+	styles::TextDecoration mTextDecoration{NULL};
+	styles::FontWeight mFontWeight{ NULL };
+	//
 	styles::Display mdisplay{ NULL };
 	int mfontSize{ NULL };
 	SDL_Color mcolor{ NULL };
@@ -75,4 +97,39 @@ namespace SS {
 
 		}
 	};
+	class HTMLUStyle :public Style {
+		HTMLUStyle() {
+			mTextDecoration = TextDecoration::UNDERLINE;
+		}
+	};
+	class HTMLStyleStyle :public Style {
+		HTMLStyleStyle() {
+			mdisplay = Display::NONE;
+		}
+	};
+	class HTMLStrongStyle :public Style {
+		HTMLStrongStyle() {
+			mFontWeight = FontWeight::BOLD;
+		}
+	};
+	class HTMLStrikeStyle :public Style {
+		HTMLStrikeStyle() {
+			mTextDecoration = TextDecoration::LINETHROUGH;
+		}
+	};
+	class HTMLNavStyle :public Style {
+		HTMLNavStyle() {
+			mdisplay = Display::BLOCK;
+		}
+	};
+	class HTMLHrStyle :public Style {
+		HTMLHrStyle() {
+			mdisplay = Display::BLOCK;
+			mmargin = { 1,0,1,0 };
+			// Border to add
+		}
+	};
+
+
 };
+
