@@ -63,6 +63,7 @@ public:
 	//
 	styles::Display mdisplay{ NULL };
 	int mfontSize{ NULL };
+	int mborderWidth{};
 	SDL_Color mcolor{ NULL };
 	SDL_Color mbackgroundColor{ NULL };
 	styles::FontStyle mfontStyle{ NULL };
@@ -125,8 +126,10 @@ namespace SS {
 	class HTMLHrStyle :public Style {
 		HTMLHrStyle() {
 			mdisplay = Display::BLOCK;
-			mmargin = { 1,0,1,0 };
+			mmargin = { 1,0,1,0 }; // auto {0.5 em ,auto ,0.5em ,auto }
+			//border style = inset;
 			// Border to add
+			mborderWidth = 1;
 		}
 	};
 
