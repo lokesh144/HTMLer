@@ -2,21 +2,9 @@
 #include<iostream>
 #include<stack>
 #include "parser.h"
+#include "tokenizer.h"
 #define endl '\n'
 using std::cout;
-/*
-<a href='#'> Home </a>  \
-</li>  \
-<li>  \
-<a href='#'> About </a>  \
-</li>  \
-<li>  \
-<a href='#'> Contact </a>  \
-</li>  \
-<li> <a href='#'> Terms of use </a>  \
-</li>  \
-<li>  \
-*/
 std::string str = "\
 <html>\
 <head > \
@@ -37,30 +25,19 @@ hello\
 </html>\
 ";
 
-/*
-html
-----head
---------title
-----body
---------nav
-------------ul
-----------------li
---------------------a
---------div
-*/
-
 #include "node.h" 
-int main() {
+int mmain() {
 	Document* document =new Document;
 	Parser parser{document};
 	parser.parse(str);
 	delete document;
 	return 0;
 }
-#include "tokenizer.h"
-int maiin() {
 
-	TagTokenizer("div hello=\"hi\" and=\"88\" hi/>");
+#include"window.h"
+int main(int argc,char* argv[]) {
+	Window window;
+	window.init();
+	window.eventloop();
 	return 0;
-
 }
