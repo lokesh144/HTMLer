@@ -7,6 +7,8 @@ namespace styles {
 		PIXEL,
 		EM,
 		REM,
+		AUTO,
+		INHERIT,
 		NOT_SPECIFIED
 	};
 	class Length {
@@ -30,10 +32,8 @@ namespace styles {
 		LIST_ITEM
 	};
 	enum class BoxSizing {
-		BORDERBOX,
 		CONTENTBOX,
-		PADDINGBOX,
-		NOT_SPECIFIED
+		BORDERBOX,
 	};
 	enum class FontStyle {
 		NOT_SPECIFIED,
@@ -94,6 +94,9 @@ namespace SS {
 	class HTMLDivStyle :public Style {
 	public:
 		HTMLDivStyle() {
+			mmargin.at(0) = Length{ 2,LengthType::EM };
+			mmargin.at(1) = Length{ 4,LengthType::REM };
+
 			mdisplay = Display::BLOCK;
 		}
 	};
@@ -268,7 +271,7 @@ namespace SS {
 	class HTMLBodyStyle :public Style {
 	public:
 		HTMLBodyStyle() {
-			mdisplay = Display::NONE;
+			//mdisplay = Display::NONE;
 		}
 	};
 
