@@ -35,9 +35,17 @@ TagName getTagNameAsEnum(const std::string& ss) {
 	if (s == "h6")return H6;
 	if (s == "li")return LI;
 	if (s == "ul")return UL;
+	if (s == "ol")return OL;
 	if (s == "nav")return NAV;
 	if (s == "br")return BR;
 	if (s == "p")return P;
+	if (s == "article")return ARTICLE;
+	if (s == "hr")return HR;
+	if (s == "em")return EM;
+	if (s == "meta")return META;
+	if (s == "button")return BUTTON;
+	if (s == "span")return SPAN;
+
 	return NOTAG;
 }
 std::string getTagName(TagName t) {

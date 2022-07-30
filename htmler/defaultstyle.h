@@ -44,6 +44,7 @@ namespace styles {
 	enum class BorderStyle {
 		SOLID,
 		DOTTED,
+		INSET
 	};
 	enum class TextDecoration { // Conflict
 		OVERLINE,
@@ -110,7 +111,7 @@ namespace SS {
 	public:
 		HTMLPStyle() {
 			mdisplay = Display::BLOCK;
-			mmargin = { 1,0,1,0 };
+			mmargin = { Length(1,LengthType::EM),Length(0,LengthType::EM),Length(1,LengthType::EM),Length(0,LengthType::EM) };
 			//OR 
 		}
 	};
@@ -125,8 +126,8 @@ namespace SS {
 		HTMLOlStyle() {
 			mdisplay = Display::BLOCK;
 			mliststyletype = ListStyleType::DECIMAL;
-			mmargin = { 1,0,1,0 };//pixel
-			mpadding = { 0,0,0,40 };//pixel
+			mmargin = { Length(1,LengthType::EM),Length(),Length(1,LengthType::EM),Length() };//pixel
+			mpadding = { Length(),Length(),Length(),Length(40,LengthType::PIXEL) };//pixel
 		}
 	};
 	class HTMLUlStyle :public Style {
@@ -134,8 +135,8 @@ namespace SS {
 		HTMLUlStyle() {
 			mdisplay = Display::BLOCK;
 			mliststyletype = ListStyleType::DISC;
-			mmargin = { 1,0,1,0 };
-			mpadding = { 0,0,0,40 };
+			mmargin = { Length(1,LengthType::EM),Length(0,LengthType::EM),Length(1,LengthType::EM),Length(0,LengthType::EM) };
+			mpadding = { Length(),Length(),Length(),Length(40,LengthType::PIXEL) };
 		}
 	};
 	class HTMLArticleStyle :public Style {
@@ -178,10 +179,11 @@ namespace SS {
 	public:
 		HTMLHrStyle() {
 			mdisplay = Display::BLOCK;
-			mmargin = { 1,0,1,0 }; // auto {0.5 em ,auto ,0.5em ,auto }
+			mmargin = { Length(0.5,LengthType::EM),Length(0,LengthType::AUTO),Length(0.5,LengthType::EM),Length(0,LengthType::AUTO) }; // auto {0.5 em ,auto ,0.5em ,auto }
 			//border style = inset;
 			// Border to add
-			//mborderWidth = 1;
+			//mborder={Length(1,LengthType::PIXEL),INSET}
+			//TODO MANDIP
 		}
 	};
 	class HTMLEmStyle :public Style {
@@ -194,8 +196,8 @@ namespace SS {
 	public:
 		HTMLH1Style() {
 			mdisplay = Display::BLOCK;
-			mfontSize = 2;
-			mmargin = { 0.67,0,0.67,0 };
+			mfontSize = Length(2,LengthType::EM);
+			mmargin = { Length(0.67,LengthType::EM),Length(),Length(0.67,LengthType::EM),Length() };
 			mFontWeight = FontWeight::BOLD;
 
 		}
@@ -204,8 +206,8 @@ namespace SS {
 	public:
 		HTMLH2Style() {
 			mdisplay = Display::BLOCK;
-			mfontSize = 1.5;
-			mmargin = { 0.83,0,0.83,0 };
+			mfontSize = Length(1.5, LengthType::EM);
+			mmargin = { Length(0.83,LengthType::EM),Length(),Length(0.83,LengthType::EM),Length() };
 			mFontWeight = FontWeight::BOLD;
 
 		}
@@ -214,8 +216,8 @@ namespace SS {
 	public:
 		HTMLH3Style() {
 			mdisplay = Display::BLOCK;
-			mfontSize = 1, 17;
-			mmargin = { 1,0,1,0 };
+			mfontSize = Length(1.17, LengthType::EM);
+			mmargin = { Length(1,LengthType::EM),Length(),Length(1,LengthType::EM),Length() };
 			mFontWeight = FontWeight::BOLD;
 
 		}
@@ -224,7 +226,7 @@ namespace SS {
 	public:
 		HTMLH4Style() {
 			mdisplay = Display::BLOCK;
-			mmargin = { 1.33,0,1.33,0 };
+			mmargin = { Length(1.33,LengthType::EM),Length(),Length(1.33,LengthType::EM),Length() };
 			mFontWeight = FontWeight::BOLD;
 
 		}
@@ -233,8 +235,8 @@ namespace SS {
 	public:
 		HTMLH5Style() {
 			mdisplay = Display::BLOCK;
-			mfontSize = 0.83;
-			mmargin = { 1.67,0,1.67,0 };
+			mfontSize = Length(0.83, LengthType::EM);
+			mmargin = { Length(1.67,LengthType::EM),Length(),Length(1.67,LengthType::EM),Length() };
 			mFontWeight = FontWeight::BOLD;
 
 		}
@@ -243,8 +245,8 @@ namespace SS {
 	public:
 		HTMLH6Style() {
 			mdisplay = Display::BLOCK;
-			mfontSize = 0.67;
-			mmargin = { 2.33,0,2.33,0 };
+			mfontSize = Length(0.67, LengthType::EM);
+			mmargin = { Length(2.33,LengthType::EM),Length(),Length(2.33,LengthType::EM),Length() };
 			mFontWeight = FontWeight::BOLD;
 		}
 	};
@@ -274,5 +276,6 @@ namespace SS {
 			//mdisplay = Display::NONE;
 		}
 	};
-
 };
+//Elements with no default style 
+//SPAN, META, MAIN, BUTTON, BR
