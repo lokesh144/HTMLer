@@ -7,7 +7,7 @@ class Element;
 class Attribute;
 typedef std::string DOMString;
 class RenderTree;
-enum NodeType {
+enum class NodeType {
 	ATTRIBUTE_NODE,
 	ELEMENT_NODE,
 	TEXT_NODE,
@@ -29,7 +29,7 @@ public:
 
 	Node() = default;
 	friend class RenderTree;
-	Node(NodeType ntype, std::string nname, std::string nvalue);
+	Node(NodeType ntype);
 	Node* appendChild(Node* childNode);//insert at last
 	bool hasChildNodes();
 	virtual ~Node() {
@@ -37,6 +37,9 @@ public:
 			delete(*it);
 			std::cout << "delete " << std::endl;
 		}
+	}
+	void setParentNode(Node* n) {
+		parentNode = n;
 	}
 };
 
@@ -47,8 +50,9 @@ protected:
 	std::vector<Attribute> attributes;
 
 public:
-	Element() = default;
+	Element();
 	friend class RenderTree;
+	friend class Window;
 	Element(const std::string& tn);
 	void setAttribute(const std::string& name, const std::string& value);
 	void setAttributes(const std::vector<Attribute>& as);
@@ -59,11 +63,12 @@ class Text :public Node {
 private:
 	std::string mdata;
 public:
-	Text() = default;
-	Text(const std::string& s) :mdata{ s } { }
+	Text();
+	Text(const std::string& s);
 	void appendData(const std::string& c) {
 		mdata += c;
 	}
+	const std::string& getText() { return mdata; }
 	~Text() {
 		//delete this;
 	}
@@ -74,7 +79,7 @@ class Document :public Node {
 protected:
 	Element documentElement;//default html element
 public:
-	Document() = default;
+	Document();
 	friend class RenderTree;
 	Element createElement(const std::string& tname);
 };
@@ -83,11 +88,18 @@ protected:
 	std::string name;
 	std::string value;
 public:
+	Attribute();
 	Attribute(const std::string& n, const std::string& v) :name{ n }, value{ v }{}
 	void setName(const std::string& n) {
 		name = n;
 	}
 	void setValue(const std::string& v) {
 		value = v;
+	}
+	std::string getName() {
+		return name;
+	}
+	std::string getValue() {
+		return value;
 	}
 };

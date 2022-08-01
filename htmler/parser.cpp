@@ -18,15 +18,6 @@ std::ostream& operator<<(std::ostream& out, struct Token token) {
 	return out;
 }
 
-typedef struct MockeElement {
-	std::string _namespace;
-	std::string localName;
-	std::vector<std::pair<std::string, std::string>> attributeList;
-	std::vector<Element> elementList{};
-
-} MockElement;
-//Element create_element(Document* document, std::string ln) {
-
 void Parser::createNewHtmlElement(TagName tn, Element*& el) {
 	switch (tn) {
 	case HTML:
@@ -62,6 +53,7 @@ void Parser::create_element_for_token(const TagTokenizer& tt) {
 		mstack.push(el);//this must be a html element
 		return;
 	}
+	el->setParentNode(mstack.top());
 	mstack.top()->appendChild(el);
 	//leave attribute for now
 	mstack.push(el);

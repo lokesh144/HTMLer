@@ -5,43 +5,62 @@
 #include "tokenizer.h"
 #define endl '\n'
 using std::cout;
+//<!DOCTYPE html>
 std::string str = "\
-<html>\
+<html lang=\"en\">\
 <head > \
 <title>Page Title</title>\
 </head>\
 <body hello=\"hifads\">   \
-<div>  \
-p<div>  \
-<div> join us hh </div>  \
+<div id=\"1\">  \
+p<div id=\"2\">  \
+<div id=\"3\"> join us hh </div>  \
 <!-- this is is  is a comment-->\
 </div>  \
-<p> hello world</p>\
+<p id=\"4\"> hello world</p>\
 </div>\
-<div>\
+<div id=\"5\">\
 hello\
+</div>\
+<div id=\"6\">\
+Lokesh\
+</div>\
+<div id=\"6\">\
+Lokesh\
+</div>\
+<div id=\"6\">\
+Lokesh\
+</div>\
+<div id=\"6\">\
+Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh\
+</div>\
+<div id=\"6\">\
+Lokesh\
 </div>\
 </body>\
 </html>\
 ";
-
 #include "node.h" 
 #include "rendertree.h" 
+#include"window.h"
 int main(int mainc, char* argv[]) {
-	Document* document =new Document;
-	Parser parser{document};
+	Document* document = new Document;
+	Parser parser{ document };
 	parser.parse(str);
-	RenderTree* root=new RenderTree;
+	RenderTree* root = new RenderTree;
 	root->createFromDom(document);
+	Window window;
+	RenderTree::setStatic(&window);
+	int w{};
+	window.getWindowSize(&w);
+	root->calculateLayout(w);
+	window.eventloop(root);
 	delete root;
 	delete document;
 	return 0;
 }
-
-#include"window.h"
-int mainm(int argc,char* argv[]) {
-	Window window;
-	window.test();
+int mainm(int argc, char* argv[]) {
+	//window.test();
 	//window.eventloop();
 	return 0;
 }

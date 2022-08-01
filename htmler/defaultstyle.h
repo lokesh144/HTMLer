@@ -22,6 +22,33 @@ namespace styles {
 			mlengthType{ lt }
 		{
 		}
+		inline 	double toPixel()const {
+			switch (this->mlengthType)
+			{
+			case styles::LengthType::PIXEL:
+				return mvalue;
+				break;
+			case styles::LengthType::EM:
+				return mvalue * 16;//TODO: change
+				break;
+			case styles::LengthType::REM:
+				return mvalue * 16;
+				break;
+			case styles::LengthType::AUTO:
+				//TODO: later if css implemented
+				break;
+			case styles::LengthType::INHERIT:
+				//TODO
+				break;
+			case styles::LengthType::NOT_SPECIFIED:
+				return 0;
+				break;
+			}
+
+		}
+		friend double operator+(const styles::Length& l1, const styles::Length& l2) {
+			return l1.toPixel() + l2.toPixel();
+		}
 	};
 	enum  class Display {
 		BLOCK,
@@ -64,10 +91,14 @@ namespace styles {
 		DISC,
 		NOT_SPECIFIED
 	};
-	struct Border {
+	class Border {
 		Length borderWidth;
 		BorderStyle borderStyle;
 		SDL_Color color;
+	public:
+		friend inline  double operator+(const Border& b1, const Border& b2) {
+			return b1.borderWidth + b2.borderWidth;
+		}
 	};
 }
 
@@ -196,7 +227,7 @@ namespace SS {
 	public:
 		HTMLH1Style() {
 			mdisplay = Display::BLOCK;
-			mfontSize = Length(2,LengthType::EM);
+			mfontSize = Length(2, LengthType::EM);
 			mmargin = { Length(0.67,LengthType::EM),Length(),Length(0.67,LengthType::EM),Length() };
 			mFontWeight = FontWeight::BOLD;
 
