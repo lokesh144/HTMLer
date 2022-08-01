@@ -19,13 +19,14 @@ std::string str = "\
 <body hello=\"hifads\">   \
 <div id=\"1\">  \
 p<div id=\"2\">  \
-<div id=\"3\"> join us hh </div>  \
+<div id=\"3\">  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh join us hh </div>  \
 <!-- this is is  is a comment-->\
 </div>  \
+ Welcome to the internet\
 <p id=\"4\"> hello world</p>\
 </div>\
 <div id=\"6\">\
-1abcdefghijklmnop 2abcdefghijklmnop 3abcdefghijklmnop 4abcdefghijklmnop 5abcdefghijklmnop 6abcdefghijklmnop 7abcdefghijklmnop 8abcdefghijklmnop 9abcdefghijklmnop 10abcdefghijklmnop 11abcdefghijklmnop 12abcdefghijklmnop 13abcdefghijklmnop 14abcdefghijklmnop 15abcdefghijklmnop 16abcdefghijklmnop 17abcdefghijklmnop \
+ join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh  join us hh join us hh \
 </div>\
 <div id=\"7\">\
 Lokesh\
@@ -33,7 +34,8 @@ Lokesh\
 </body>\
 </html>\
 ";
-const char* str2 = "1abcdefghijklmnop 2abcdefghijklmnop 3abcdefghijklmnop 4abcdefghijklmnop 5abcdefghijklmnop 6abcdefghijklmnop 7abcdefghijklmnop 8abcdefghijklmnop 9abcdefghijklmnop 10abcdefghijklmnop 11abcdefghijklmnop 12abcdefghijklmnop 13abcdefghijklmnop";
+
+//const char* str2 = "1abcdefghijklmnop 2abcdefghijklmnop 3abcdefghijklmnop 4abcdefghijklmnop 5abcdefghijklmnop 6abcdefghijklmnop 7abcdefghijklmnop 8abcdefghijklmnop 9abcdefghijklmnop 10abcdefghijklmnop 11abcdefghijklmnop 12abcdefghijklmnop 13abcdefghijklmnop";
 int main(int mainc, char* argv[]) {
 	//std::ifstream file{ "index.html" };
 	//std::stringstream buffer;
@@ -50,7 +52,7 @@ int main(int mainc, char* argv[]) {
 	window.getWindowSize(&w);
 	root->calculateLayout(w);
 	window.eventloop(root);
-	auto hi = window.getFontSize(str2);
+	//auto hi = window.getFontSize(str2);
 	//cout << "=======================================" << endl;
 	//cout << "width " << hi.first << endl;
 	//cout << "=======================================" << endl;

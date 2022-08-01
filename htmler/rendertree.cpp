@@ -140,6 +140,10 @@ bool isBlockLevelElement(const std::string& tn) {
 }
 
 void RenderTree::calculateLayout() {
+	if (!RenderTree::windowptr) {
+		cout << "null winodowptr" << endl;
+		exit(EXIT_FAILURE);
+	}
 	if (isBlockLevelElement(this->element->tagName)) {
 		this->rect.w = this->parent->rect.w;
 	}
@@ -152,6 +156,7 @@ void RenderTree::calculateLayout() {
 	this->rect.y += this->parent->rect.y;
 	int i = 0;
 	for (auto node : this->parent->element->childNodes) {
+		//preceding textNode siblings
 		if (isTextNode(node)) {
 			auto textNodeptr = dynamic_cast<Text*>(node);
 			if (textNodeptr) {
@@ -163,12 +168,14 @@ void RenderTree::calculateLayout() {
 				if (width > pwidth * linecount) {
 					linecount++;
 				}
-				this->rect.y += linecount*height;
+				this->rect.y += linecount * height;
 			}
 		}
 		else {
 			if (this->parent->children[i++] == this) {
 				break;
+			}
+			else {
 			}
 		}
 	}
@@ -180,32 +187,28 @@ void RenderTree::calculateLayout() {
 			this->rect.y += child->rect.h;
 		}
 	}
+
 	for (auto& element : children) {
 		element->calculateLayout();
 	}
-	//after iterating through child if exists
-	if (!RenderTree::windowptr) {
-		cout << "null winodowptr" << endl;
-		exit(EXIT_FAILURE);
 
-	}
-	auto& childNodes = this->element->childNodes;
-	auto textNode = std::find_if(childNodes.begin(), childNodes.end(), isTextNode);
-	//assuming only one text node for now
-	//assume block level for now
-	if (textNode != childNodes.end()) {
-		auto textNodeptr = dynamic_cast<Text*>(*textNode);
+	i = 0;
+	for (auto node : this->element->childNodes) {
+		auto textNodeptr = dynamic_cast<Text*>(node);
 		if (textNodeptr) {
+			//curr Node is textNode
 			auto& text = textNodeptr->getText();
 			auto [width, height] = RenderTree::windowptr->getFontSize(text);
-			//this->rect.w = width;
 			auto pwidth = this->parent->rect.w;
 			int linecount = static_cast<int>(width / pwidth);
 			if (width > pwidth * linecount) {
 				linecount++;
 			}
-			this->rect.h = linecount * height;
+			this->rect.h += linecount * height;
 		}
+		//else {
+		//this->rect.h += rt->rect.h;
+		//}
 	}
 	for (auto rt : children) {
 		this->rect.h += rt->rect.h;

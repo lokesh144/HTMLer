@@ -96,7 +96,7 @@ void Window::eventloop(RenderTree* tree) {
 
 		//render(tree->children[0]);
 		//SDL_RenderPresent(mrenderer);
-	SDL_RenderPresent(mrenderer);
+		SDL_RenderPresent(mrenderer);
 		refresh++;
 	}
 	cout << " refresh rate" << refresh << " Hz" << endl;
@@ -107,7 +107,6 @@ void Window::getWindowSize(int* w) {
 std::pair<int, int> Window::getFontSize(const std::string& text) {
 	return mfont.fontSize(text.c_str());
 }
-
 
 void Window::render(const RenderTree* tree) {
 	//free texture
@@ -134,6 +133,7 @@ void Window::render(const RenderTree* tree) {
 	auto& childNodes = tree->element->childNodes;
 
 	int i = 0;
+	int sumOfSiblingsHeight{0};
 	for (auto node : childNodes) {
 		//iterating throught the childNode of current tree
 		auto textNodeptr = dynamic_cast<Text*>(node);
@@ -141,42 +141,44 @@ void Window::render(const RenderTree* tree) {
 			//curr Node is textNode
 			auto& text = textNodeptr->getText();
 			auto [width, height] = RenderTree::windowptr->getFontSize(text);
-			auto _width = tree->rect.w;
-			int linecount = static_cast<int>(width / _width);
-			if (width > _width * linecount) {
+			auto pwidth = tree->rect.w;
+			int linecount = static_cast<int>(width / pwidth);
+			if (width > pwidth * linecount) {
 				linecount++;
 			}
-
 			SDL_Color textColor = { 0,255,0 };
 			SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(mfont.mfont, text.c_str(), textColor, mSCREEN_WIDTH);
 			if (textSurface == nullptr) {
 				cout << "cannot load text" << endl;
 				exit(EXIT_FAILURE);
 			}
-
-				if (linecount > 1) {
-				cout << endl << endl;
-				cout << "==============================" << endl;
-				cout << tree->rect.h << " height: " << height << endl;
-				cout << "==============================" << endl;
-				cout << endl << endl;
+			if (linecount > 1) {
+				//cout << endl << endl;
+				//cout << "==============================" << endl;
+				//cout << tree->rect.h << " height: " << height << endl;
+				//cout << "==============================" << endl;
+				//cout << endl << endl;
 			}
 			SDL_Rect fillRect = {
 				tree->rect.x,
-				tree->rect.y,
+				//tree->rect.y,//prev sibling ->y ++prev->sibling height
+				tree->rect.y+sumOfSiblingsHeight,
 				//tree->rect.w,
-				width>tree->rect.w?tree->rect.w:width,
+				width > tree->rect.w ? tree->rect.w : width,
 				//height
-				tree->rect.h
+				linecount*height
 			};
+			sumOfSiblingsHeight += linecount * height;
 			mtexture = SDL_CreateTextureFromSurface(mrenderer, textSurface);
 			SDL_RenderCopyEx(mrenderer, mtexture, NULL, &fillRect, 0.0, NULL, SDL_FLIP_NONE);
 			SDL_FreeSurface(textSurface);
 
+			SDL_RenderPresent(mrenderer);
 		}
 		else {
 			//if not text node apply recursion
 			render(tree->children[i++]);
+			sumOfSiblingsHeight += tree->children[i - 1]->rect.h;
 		}
 	}
 }
