@@ -9,7 +9,7 @@ class Font {
 private:
 	std::string mname;
 	TTF_Font* mfont;
-	int size{ 16 };
+	int size{ 18 };
 public:
 	friend class Window;
 	Font(const std::string& nam = "Roboto");
@@ -39,6 +39,15 @@ public:
 	void render(const RenderTree* tree);
 
 };
+
+
+
+
+
+
+
+
+
 
 
 

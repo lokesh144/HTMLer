@@ -47,7 +47,7 @@ void Parser::create_element_for_token(const TagTokenizer& tt) {
 	Element* el= nullptr;
 	createNewHtmlElement(tt.getTagName(), el);
 	el->setAttributes(tt.getAttributes());
-	cout << "create " << endl;
+	//cout << "create " << endl;
 	if (mstack.empty()) {
 		mdocument->appendChild(el);
 		mstack.push(el);//this must be a html element
@@ -62,7 +62,7 @@ void Parser::create_element_for_token(const TagTokenizer& tt) {
 void Parser::create_element_for_token(const std::string& tn) {
 	Element* el=nullptr;
 	createNewHtmlElement(getTagNameAsEnum(tn), el);
-	cout << "create " << endl;
+	//cout << "create " << endl;
 	if (mstack.empty()) {
 		mdocument->appendChild(el);
 		mstack.push(el);//this must be a html element
@@ -98,7 +98,7 @@ void Parser::parse(const std::string& str) {
 		if (!reprocessToken) {
 			token = tokenizer.getNextToken(str, currPosition);
 			if (token.type == TAG || token.type == END_TAG) {
-				cout << token.token << endl;
+				//cout << token.token << endl;
 			}
 		}
 		else {

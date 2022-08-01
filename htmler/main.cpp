@@ -1,8 +1,13 @@
 #pragma once
 #include<iostream>
+#include<fstream>
+#include<sstream>
 #include<stack>
 #include "parser.h"
 #include "tokenizer.h"
+#include "node.h" 
+#include "rendertree.h" 
+#include"window.h"
 #define endl '\n'
 using std::cout;
 //<!DOCTYPE html>
@@ -19,33 +24,23 @@ p<div id=\"2\">  \
 </div>  \
 <p id=\"4\"> hello world</p>\
 </div>\
-<div id=\"5\">\
-hello\
-</div>\
 <div id=\"6\">\
-Lokesh\
+1abcdefghijklmnop 2abcdefghijklmnop 3abcdefghijklmnop 4abcdefghijklmnop 5abcdefghijklmnop 6abcdefghijklmnop 7abcdefghijklmnop 8abcdefghijklmnop 9abcdefghijklmnop 10abcdefghijklmnop 11abcdefghijklmnop 12abcdefghijklmnop 13abcdefghijklmnop 14abcdefghijklmnop 15abcdefghijklmnop 16abcdefghijklmnop 17abcdefghijklmnop \
 </div>\
-<div id=\"6\">\
-Lokesh\
-</div>\
-<div id=\"6\">\
-Lokesh\
-</div>\
-<div id=\"6\">\
-Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh Lokesh\
-</div>\
-<div id=\"6\">\
+<div id=\"7\">\
 Lokesh\
 </div>\
 </body>\
 </html>\
 ";
-#include "node.h" 
-#include "rendertree.h" 
-#include"window.h"
+const char* str2 = "1abcdefghijklmnop 2abcdefghijklmnop 3abcdefghijklmnop 4abcdefghijklmnop 5abcdefghijklmnop 6abcdefghijklmnop 7abcdefghijklmnop 8abcdefghijklmnop 9abcdefghijklmnop 10abcdefghijklmnop 11abcdefghijklmnop 12abcdefghijklmnop 13abcdefghijklmnop";
 int main(int mainc, char* argv[]) {
+	//std::ifstream file{ "index.html" };
+	//std::stringstream buffer;
+	//buffer << file.rdbuf();
 	Document* document = new Document;
 	Parser parser{ document };
+	//parser.parse(buffer.str());
 	parser.parse(str);
 	RenderTree* root = new RenderTree;
 	root->createFromDom(document);
@@ -55,6 +50,10 @@ int main(int mainc, char* argv[]) {
 	window.getWindowSize(&w);
 	root->calculateLayout(w);
 	window.eventloop(root);
+	auto hi = window.getFontSize(str2);
+	//cout << "=======================================" << endl;
+	//cout << "width " << hi.first << endl;
+	//cout << "=======================================" << endl;
 	delete root;
 	delete document;
 	return 0;

@@ -139,23 +139,16 @@ bool isBlockLevelElement(const std::string& tn) {
 	return false;
 }
 
-//The y value of a element is :
-//if first child:
-//y of parent 
-//if not first child 
-//y of parent+height of parent + height of its previous siblings only (not upcoming siblings)+ hieght of its preceding textnode
 void RenderTree::calculateLayout() {
 	if (isBlockLevelElement(this->element->tagName)) {
 		this->rect.w = this->parent->rect.w;
 	}
-
 	auto isTextNode = [](Node* node) {
 		if (dynamic_cast<Text*>(node))
 			return true;
 		else
 			return false;
 	};
-
 	this->rect.y += this->parent->rect.y;
 	int i = 0;
 	for (auto node : this->parent->element->childNodes) {
@@ -164,7 +157,13 @@ void RenderTree::calculateLayout() {
 			if (textNodeptr) {
 				auto& text = textNodeptr->getText();
 				auto [width, height] = RenderTree::windowptr->getFontSize(text);
-				this->rect.y += height;
+				//this->rect.w = width;
+				auto pwidth = this->parent->rect.w;
+				int linecount = static_cast<int>(width / pwidth);
+				if (width > pwidth * linecount) {
+					linecount++;
+				}
+				this->rect.y += linecount*height;
 			}
 		}
 		else {
@@ -173,7 +172,6 @@ void RenderTree::calculateLayout() {
 			}
 		}
 	}
-
 	for (auto child : this->parent->children) {
 		//preceding sibling
 		if (child == this)
@@ -206,7 +204,7 @@ void RenderTree::calculateLayout() {
 			if (width > pwidth * linecount) {
 				linecount++;
 			}
-			this->rect.h = height;
+			this->rect.h = linecount * height;
 		}
 	}
 	for (auto rt : children) {

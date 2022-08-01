@@ -29,10 +29,10 @@ namespace styles {
 				return mvalue;
 				break;
 			case styles::LengthType::EM:
-				return mvalue * 16;//TODO: change
+				return mvalue * 18;//TODO: change
 				break;
 			case styles::LengthType::REM:
-				return mvalue * 16;
+				return mvalue * 18;
 				break;
 			case styles::LengthType::AUTO:
 				//TODO: later if css implemented
