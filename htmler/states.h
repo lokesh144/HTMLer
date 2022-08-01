@@ -8,19 +8,6 @@ enum TokenType {
 	TOK_COMMENT,
 	END_OF_FILE,
 };
-enum iTTState {
-	/*
-	TAG_NAME,
-	BEFORE_ATTRIBUTE_NAME,
-	ATTRIBUTE_NAME,
-	BEFORE_ATTRIBUTE_VALUE,
-	AFTER_ATTRIBUTE_NAME,
-	ATTRIBUTE_VALUE_DOUBLE_QUOTE,
-	ATTRIBUTE_VALUE_SINGLE_QUOTE,
-	ATTRIBUTE_VALUE_UNQUOTED,
-	AFTER_ATTRIBUTE_VALUE_QUOTED,
-*/
-};
 struct Token {
 	TokenType type;
 	std::string token;
@@ -97,6 +84,8 @@ enum TokenState {
 	COMMENT_LESS_THAN_SIGN_BANG_DASH_DASH,
 	COMMENT_END_BANG,
 	DOCTYPE,
+	BEFORE_DOCTYPE_NAME,
+	DOCTYPE_NAME,
 };
 enum StackElement {
 
@@ -119,8 +108,6 @@ enum TagName {
 	OL,
 	LINK,
 	BASE,
-	BGSOUND,
-	BASEFONT,
 	META,
 	SCRIPT,
 	STYLE,
@@ -131,6 +118,7 @@ enum TagName {
 	EM,
 	BUTTON,
 	SPAN,
+	A,
 	NOTAG
 };
 std::string getTokenType(TokenType t);

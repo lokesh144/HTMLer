@@ -38,10 +38,23 @@ struct Token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 		if (str[currPosition] == EOF)
 		{
 			currToken = END_OF_FILE;
+			if (currState == DATA) {
+				return (Token{ .type = END_OF_FILE,.token = currToken });
+			}
+			else {
+				//exit on encounter of EOF
+				std::cout << "FIle ended in abnormal state" << endl;
+				exit(EXIT_FAILURE);
+			}
 		}
 		switch (currState) {
 		case DATA:
 			switch (str[currPosition]) {
+			case ' ':
+			case '\n':
+			case '\t':
+			case '\f':
+				break;
 			case '&':
 				currState = DATA;
 				shouldReturn = true;
@@ -74,6 +87,11 @@ struct Token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 				break;
 			case '?':
 				exit(EXIT_FAILURE);
+				break;
+			case EOF:
+				currToken.push_back('<');
+				shouldReturn = true;
+				increase = false;
 				break;
 			default:
 				if (isalpha(str[currPosition])) {
@@ -176,20 +194,66 @@ struct Token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 					currState = COMMENT_START;
 				}
 				break;
+			default:
+				if (strncmp(str.c_str(), "DOCTYPE", 7)) {
+					currToken.append("DOCTYPE");
+					//currState = DOCTYPE;
+					while (str[currPosition] != '>') {
+						//ignore doctype token
+						currPosition++;
+						currToken = "";
+						currState = DATA;
+					}
+				}
+				else if (strncmp(str.c_str(), "[CDATA[", 7)) {
+					exit(EXIT_FAILURE);
+				}
 			}
 			break;
-		default:
-			if (strncmp(str.c_str(), "DOCTYPE", 7)) {
-				currToken.append("DOCTYPE");
-				currState = DOCTYPE;
-			}
-			else if (strncmp(str.c_str(), "[CDATA[", 7)) {
-				exit(EXIT_FAILURE);
-			}
 			//else if (isWordPresent(cstr,currPosition,"[CDATA[")){
 				//currToken.push_back(str[currPosition]);
 //			}
-
+		case DOCTYPE:
+			switch (str[currPosition]) {
+			case ' ':
+			case '\t':
+			case '\r':
+			case '\f':
+				currState = BEFORE_DOCTYPE_NAME;
+			case '>':
+				increase = false;
+				currState = BEFORE_DOCTYPE_NAME;
+				//missing doctype name error
+			default:
+				increase = false;
+				currState = BEFORE_DOCTYPE_NAME;
+			}
+			break;
+		case BEFORE_DOCTYPE_NAME:
+			switch (str[currPosition]) {
+			case ' ':
+			case '\t':
+			case '\r':
+			case '\n':
+			case '\f':
+				break;
+			case '>':
+				returnType = DOCTYPETOK;
+				shouldReturn = true;
+				break;
+			default:
+				if (isupper(str[currPosition])) {
+					currToken.push_back(tolower(str[currPosition]));
+				}
+				else {
+					currToken.push_back(tolower(str[currPosition]));
+				}
+			}
+			break;
+		case DOCTYPE_NAME:
+			switch (str[currPosition]) {
+			}
+			break;
 		case BEFORE_ATTRIBUTE_NAME:
 			switch (str[currPosition]) {
 				//READ: formfeed character

@@ -13,7 +13,7 @@ private:
 	int currPosition;
 	Document* mdocument;
 	Element* headptr = nullptr;
-	void createNewHtmlElement(TagName tn, Element*&);
+	Element* createNewHtmlElement(TagName tn);
 
 public:
 	Parser(Document* doc);

@@ -18,7 +18,8 @@ std::ostream& operator<<(std::ostream& out, struct Token token) {
 	return out;
 }
 
-void Parser::createNewHtmlElement(TagName tn, Element*& el) {
+Element* Parser::createNewHtmlElement(TagName tn) {
+	Element* el = nullptr;
 	switch (tn) {
 	case HTML:
 		el = new HTMLHtmlElement{};
@@ -38,14 +39,17 @@ void Parser::createNewHtmlElement(TagName tn, Element*& el) {
 	case DIV:
 		el = new HTMLDivElement{};
 		break;
+	case SPAN:
+		el = new HTMLSpanElement{};
+		break;
 	default:
 		el = new HTMLElement{ "el" };
 		break;
 	}
+	return el;
 }
 void Parser::create_element_for_token(const TagTokenizer& tt) {
-	Element* el= nullptr;
-	createNewHtmlElement(tt.getTagName(), el);
+	Element* el = createNewHtmlElement(tt.getTagName());
 	el->setAttributes(tt.getAttributes());
 	//cout << "create " << endl;
 	if (mstack.empty()) {
@@ -60,8 +64,7 @@ void Parser::create_element_for_token(const TagTokenizer& tt) {
 }
 
 void Parser::create_element_for_token(const std::string& tn) {
-	Element* el=nullptr;
-	createNewHtmlElement(getTagNameAsEnum(tn), el);
+	Element* el = createNewHtmlElement(getTagNameAsEnum(tn));
 	//cout << "create " << endl;
 	if (mstack.empty()) {
 		mdocument->appendChild(el);
@@ -126,10 +129,10 @@ void Parser::parse(const std::string& str) {
 		case BEFORE_HTML:
 			switch (token.type) {
 			case DOCTYPE:
-				exit(EXIT_FAILURE);
+				//ignore the token
 				break;
 			case COMMENT:
-				//document.appendChild(Comment token.token);//document can have only one child
+				//ignore 
 				break;
 			case TAG:
 				switch (tt.getTagName()) {
@@ -145,16 +148,19 @@ void Parser::parse(const std::string& str) {
 				break;
 			case END_TAG:
 				TagName tempTagName;
-				tempTagName = getTagNameAsEnum(token.token);//for no error
+				tempTagName = getTagNameAsEnum(token.token);//for no compiler error
 				if (tempTagName == HTML || tempTagName == HEAD || tempTagName == BODY
 					|| tempTagName == BR) {
 					//will fallthrough to default;
 										//NOTE: the case END_TAG must always be just above default case
 				}
-				else { exit(EXIT_FAILURE); break; }
-				//[[fallthrough]];
+				else {
+					//ignore the token
+					break;
+				}
+				[[fallthrough]];
 			default:
-				//Create an html element whose node document is the Document object. Append it to the Document object. Put this element in the stack of open elements.
+				create_element_for_token("html");
 				parseState = BEFORE_HEAD;
 				reprocessToken = true;
 				break;
@@ -164,18 +170,18 @@ void Parser::parse(const std::string& str) {
 		case BEFORE_HEAD:
 			switch (token.type) {
 			case DOCTYPE:
-				exit(EXIT_FAILURE);
+				//ignore
 				break;
 			case COMMENT:
-				//document.appendChild(Comment token.token);
+				//ignore
 				break;
 			case TAG:
 				switch (tt.getTagName()) {
 				case HTML:
+					//TODO: 
 					//Process the token using the rules for the "in body" insertion mode.
 					break;
 				case HEAD:
-					//insert html element
 					//set head pointer 
 					create_element_for_token(tt);
 					//*headptr=
@@ -191,9 +197,13 @@ void Parser::parse(const std::string& str) {
 					//will fallthrough to default
 					//NOTE: the case END_TAG must always be just above default case
 				}
-				else { exit(EXIT_FAILURE); break; }
+				else {
+					//ignore 
+					break;
+				}
+				[[fallthrough]];
 			default:
-				//insert html element for head start tag token
+				create_element_for_token("head");
 				//set head element pointer
 				parseState = IN_HEAD;
 				reprocessToken = true;
@@ -202,27 +212,35 @@ void Parser::parse(const std::string& str) {
 		case IN_HEAD:
 			switch (token.type) {
 			case COMMENT:
-				//insert comment
+				//ignore 
 				break;
 			case DOCTYPE:
-				exit(EXIT_FAILURE);
+				//ignore
 				break;
 			case TAG:
 				switch (tt.getTagName()) {
 				case HTML:
+					//TODO:
 					// Process the token using the rules for the "in body" insertion mode.
 					break;
 				case BASE:
-				case BASEFONT:
-				case BGSOUND:
+				//case BASEFONT:
+				//case BGSOUND:
 				case LINK:
+				case STYLE:
+				case SCRIPT:
+					exit(EXIT_FAILURE);
+					break;
+					cout << "UNECOGNIZED TAG NAME" << endl;
+					exit(EXIT_FAILURE);
 					//idk ept
 					//Insert an HTML element for the token. Immediately pop the current node off the stack of open elements.
 					break;
 				case META:
 					//TODO: 
-					this->create_element_for_token(tt);
-					mstack.pop();
+					//ignore for now
+					//this->create_element_for_token(tt);
+					//mstack.pop();//self closing tag
 					break;
 				case TITLE:
 					this->create_element_for_token(tt);
@@ -230,14 +248,8 @@ void Parser::parse(const std::string& str) {
 					parseState = TEXT;
 					//rcdata parsing
 					break;
-				case STYLE:
-					//raw text parsing element
-					break;
-				case SCRIPT:
-					exit(EXIT_FAILURE);
-					break;
 				case HEAD:
-					exit(EXIT_FAILURE);
+					//ignore: parse error
 					break;
 				}
 				break;
@@ -255,11 +267,11 @@ void Parser::parse(const std::string& str) {
 					//NOTE: the case END_TAG must always be just above default case
 				}
 				else {
-					exit(EXIT_FAILURE);
+					//ignore : parse error
 					break;
 				}
 			default:
-				//pop the head from stack
+				mstack.pop();
 				parseState = AFTER_HEAD;
 				reprocessToken = false;
 			}
@@ -268,24 +280,126 @@ void Parser::parse(const std::string& str) {
 			switch (token.type)
 			{
 			case COMMENT:
+				//ignore
 				break;
 			case DOCTYPE:
-				exit(EXIT_FAILURE);
-
+				//ignore: parse error
+				break;
 			case TAG:
 				switch (tt.getTagName()) {
+				case HEAD:
+					//ignore: parse error
+					break;
+				case HTML:
+					//TODO:
+					// Process the token using the rules for the "in body" insertion mode.
+					break;
 				case BODY:
 					this->create_element_for_token(tt);
 					parseState = IN_BODY;
 					break;
+				default:
+					cout << "UNECOGNIZED TAG NAME" << endl;
+					exit(EXIT_FAILURE);
 				}
+				break;
+			case END_TAG:
+				TagName tempTagName;
+				tempTagName = getTagNameAsEnum(token.token);
+				if (tempTagName == BODY || tempTagName == HTML || tempTagName == BR)
+				{
+					//will fallthrough to default
+					//NOTE: the case END_TAG must always be just above default case
+				}
+				else {
+					//ignore : parse error
+					break;
+				}
+				[[fallthrough]];
 			default:
+				this->create_element_for_token("body");
+				parseState = IN_BODY;
+				reprocessToken = true;
 				break;
 			}
 			break;
 		case IN_BODY:
 			switch (token.type)
 			{
+			case CHARACTER:
+				//Reconstruct the active formatting elements, if any.
+				insert_character(token.token);
+				break;
+			case COMMENT:
+			case DOCTYPETOK:
+				//ignore
+				break;
+			case TAG:
+				TagName tn;
+				switch (tn = tt.getTagName()) {
+				case HTML:
+				case BODY:
+					//ignore : parser erro #additional
+					break;
+				case EOF:
+					cout << "UNEXPECTED END OF FILE" << endl;
+					exit(EXIT_FAILURE);
+				case DIV:
+				case P:
+				case NAV:
+				case ARTICLE:
+					//case ADDRESS: case ASIDE: case BLOCKQUOTE: case CENTER: case DETAILS: case DIALOG: case DIR: case DL: case FIELDSET: case FIGCAPTION: case FIGURE: case FOOTER: case HEADER: case HGROUP: case MAIN: case MENU: case SECTION: case SUMMARY: 
+					if (mstack.top()->getTagName() == "p") {
+						mstack.pop();
+					}
+					this->create_element_for_token(tt);
+					//insert an html element
+					break;
+				case H1:
+				case H2:
+				case H3:
+				case H4:
+				case H5:
+				case H6:
+					if (mstack.top()->getTagName() == "p") {
+						mstack.pop();
+					}
+					switch (getTagNameAsEnum(mstack.top()->getTagName())) {
+					case H1: case H2: case H3: case H4: case H5: case H6:
+						//parse error
+						mstack.pop();
+					}
+					this->create_element_for_token(tt);
+					break;
+				case BUTTON:
+					//Reconstruct the active formatting elements, if any.
+					this->create_element_for_token(tt);
+					break;
+				case A:
+					cout << "A IMPLEMENTATION WOULD BE MEANINGLESS" << endl;
+					exit(EXIT_FAILURE);
+					break;
+				case LI:
+				case UL:
+				case OL:
+					//no time to implement
+					cout << "UNIMPLEMENTED TAG" << endl;
+					exit(EXIT_FAILURE);
+					break;
+				default:
+					//TODO: exit for unhandled tags
+					//TODO: Reconstruct the active formatting elements, if any.
+					//TODO: handle other start tags
+					//create_element_for_token(tt);//ordinary elements
+					cout << "UNKNOWN START TAG" << endl;
+					exit(EXIT_FAILURE);
+				}
+				break;
+
+				//TODO:macros
+				//case FORMATTING ELEMENTS:
+				//exit 
+
 			case END_TAG:
 			{
 				//todo: handle later with all cojnjditions 
@@ -293,46 +407,39 @@ void Parser::parse(const std::string& str) {
 				TagName currEndTag = getTagNameAsEnum(token.token);
 				switch (currEndTag) {
 				case BODY:
-					if (currOpenTag != BODY)exit(EXIT_FAILURE);
+					if (currOpenTag != BODY) {
+						cout << "UNCLOSEED TAG IN BODY" << endl;
+						exit(EXIT_FAILURE);
+					}
 					mstack.pop();
+					//TODO: additional
 					parseState = AFTER_BODY;
 					break;
-				case DIV:
-				case NAV:
-				case UL:
-				case LI:
-				case P:
-					if (currEndTag = currOpenTag) {
-						//exit(EXIT_FAILURE);
-						mstack.pop();
-					}
-					//check stuffs
-				}
-				break;
-			}
-			case TAG:
-				TagName tn;
-				switch (tn=tt.getTagName()) {
-				case DIV:
-				case NAV:
-				case UL:
-				case LI:
-				case P:
-					//If the stack of open elements has a p element in button scope, then close a p element.
-					create_element_for_token(tt);
-
-					//insert an html element
-					//check stuffs
+				case HTML:
+					cout << "NO END TAG FOR BODY" << endl;
+					exit(EXIT_FAILURE);
 					break;
-					//case Headinfs:
+				case H1: case H2: case H3: case H4: case H5: case H6:
+				case DIV:
+				case P:
+				case NAV:
+				case ARTICLE:
+				case SPAN://MUST: this is not the way to handle span
+					if (currEndTag = currOpenTag) {
+						mstack.pop();
+						break;
+					}
+					else {
+						//strict
+						cout << "UNCLOSED TAGS" << endl;
+						exit(EXIT_FAILURE);
+					}
+				default:
+					cout << "UNKNOWN END TAGS" << endl;
+					exit(EXIT_FAILURE);
 				}
-				break;
-			case CHARACTER:
-				insert_character(token.token);
-				break;
-
-			default:
-				break;
+			}//case end brace
+			break;
 			}
 			break;
 		case TEXT:
@@ -341,8 +448,18 @@ void Parser::parse(const std::string& str) {
 				insert_character(token.token);//todo
 				break;
 			case END_TAG:
+				if (getTagNameAsEnum(mstack.top()->getTagName()) != getTagNameAsEnum(token.token)) {
+					//strict
+					cout << "UNEXPECTED END TOOKEN" << endl;
+					exit(EXIT_FAILURE);
+				}
 				mstack.pop();
 				parseState = originalParseState;
+				break;
+			case EOF:
+				//parse error
+				mstack.pop();
+				reprocessToken = true;
 				break;
 			}
 			break;
@@ -389,4 +506,20 @@ case P:
 case SECTION:
 case SUMMARY:
 case UL:
+*/
+
+/*
+KNOWINGLY NOT IMPLEMENTED
+A
+UL
+LI
+OL
+FORM
+all form related elements
+FORMATTING ELEMENTS
+HR - might work on it
+
+
+
+
 */

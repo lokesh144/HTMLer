@@ -35,6 +35,30 @@ void RenderTree::createFromDom(Document* document) {
 	}
 	this->addChild(document->childNodes[0]);
 }
+void RenderTree::addChild(Node* node) {
+	for (const auto& currNode : node->childNodes) {
+		Element* elptr = nullptr;
+		elptr = dynamic_cast<Element*>(currNode);
+		if (elptr) {
+			Style* styleptr = nullptr;
+			addDefaultStyleSheets(elptr, styleptr);
+			if (!isRenderable(styleptr)) {
+				delete styleptr;
+				continue;
+			}
+			RenderTree* rt = new RenderTree{ elptr,styleptr };
+			rt->parent = this;
+			this->children.push_back(rt);
+			if (currNode->childNodes.size() == 0) {
+				//this->calculateLayout();
+			}
+			else {
+				rt->addChild(currNode);
+				//this->calculateLayout();
+			}
+		}
+	}
+}
 
 void RenderTree::addDefaultStyleSheets(Element* el, Style*& styleptr) {
 	switch (getTagNameAsEnum(el->tagName)) {
@@ -67,36 +91,15 @@ void RenderTree::addDefaultStyleSheets(Element* el, Style*& styleptr) {
 		break;
 		//case MAIN:
 			//styleptr = new Style;
+	case SPAN:
+		styleptr=new SS::HTMLStrikeStyle{};
+		break;
 	default:
 		cout << "NOT IMPLEMENTED" << endl;
 		exit(EXIT_FAILURE);
 	}
 }
 
-void RenderTree::addChild(Node* node) {
-	for (const auto& currNode : node->childNodes) {
-		Element* elptr = nullptr;
-		elptr = dynamic_cast<Element*>(currNode);
-		if (elptr) {
-			Style* styleptr = nullptr;
-			addDefaultStyleSheets(elptr, styleptr);
-			if (!isRenderable(styleptr)) {
-				delete styleptr;
-				continue;
-			}
-			RenderTree* rt = new RenderTree{ elptr,styleptr };
-			rt->parent = this;
-			this->children.push_back(rt);
-			if (currNode->childNodes.size() == 0) {
-				//this->calculateLayout();
-			}
-			else {
-				rt->addChild(currNode);
-				//this->calculateLayout();
-			}
-		}
-	}
-}
 
 void RenderTree::calculateLayout(int w) {
 	this->rect.w = w;
@@ -146,6 +149,10 @@ void RenderTree::calculateLayout() {
 	}
 	if (isBlockLevelElement(this->element->tagName)) {
 		this->rect.w = this->parent->rect.w;
+	}
+	else {
+
+
 	}
 	auto isTextNode = [](Node* node) {
 		if (dynamic_cast<Text*>(node))
@@ -206,31 +213,14 @@ void RenderTree::calculateLayout() {
 			}
 			this->rect.h += linecount * height;
 		}
-		//else {
-		//this->rect.h += rt->rect.h;
-		//}
 	}
 	for (auto rt : children) {
 		this->rect.h += rt->rect.h;
 	}
-	//for (auto child : this->parent->children) {
-		//if (child == this)
-			//break;
-		//this->rect.y += child->rect.h;
-	//}
-	//for (auto node : this->element->childNodes) {
-		//if (isTextNode(node)) {
-			//auto textNodeptr = dynamic_cast<Text*>(*textNode);
-			//if (textNodeptr) {
-				//auto& text = textNodeptr->getText();
-				//auto [width, height] = RenderTree::windowptr->getFontSize(text);
-				//this->rect.y += height;
-			//}
-		//}
-	//}
-
 	cout << this->element->tagName
-		<< "   " << this->element->attributes[0].getName() << " : " << this->element->attributes[0].getValue() << endl;
+		<< "   ";
+	cout << endl;
+	//cout<< this->element->attributes[0].getName() << " : " << this->element->attributes[0].getValue() << endl;
 	cout << "(x,y)= " << this->rect.x << "," << this->rect.y << ")" << endl;
 	cout << "width: " << this->rect.w << " height: " << rect.h << endl << endl;
 }

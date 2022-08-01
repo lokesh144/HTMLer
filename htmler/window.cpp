@@ -223,3 +223,7 @@ std::pair<int, int> Font::fontSize(const char* text) {
 		exit(EXIT_FAILURE);
 	};
 }
+
+
+//TODO: add previous sibling whil initializing node
+//TODO: active formatting elements

@@ -18,6 +18,11 @@ public:
 	HTMLDivElement() :HTMLElement{ "div" } {}
 };
 
+class HTMLSpanElement : public HTMLElement {
+public:
+	HTMLSpanElement() :HTMLElement{ "span" } {}
+};
+
 class HTMLAnchorElement : public HTMLElement {
 private:
 	std::string taget;
@@ -57,7 +62,7 @@ class HTMLBodyElement : public HTMLElement {
 	std::string text;
 	std::string vLink;
 public:
-	HTMLBodyElement():HTMLElement{"body"}{}
+	HTMLBodyElement() :HTMLElement{ "body" } {}
 };
 /*-----------------------------------------------------------------*/
 class HTMLCollection {

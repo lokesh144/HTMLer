@@ -23,6 +23,7 @@ protected:
 	std::string nodeValue;
 	std::vector<Node*> childNodes;
 	Node* parentNode = nullptr;
+	Node* prevSibling = nullptr;
 	//NamedNodeMap attributes;//contains attribute if it is element
 	//NamedNodeMap attributes;//idk licwhat is this exactly
 public:
