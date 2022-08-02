@@ -92,7 +92,7 @@ void RenderTree::addDefaultStyleSheets(Element* el, Style*& styleptr) {
 		//case MAIN:
 			//styleptr = new Style;
 	case SPAN:
-		styleptr=new SS::HTMLStrikeStyle{};
+		styleptr = new SS::HTMLStrikeStyle{};
 		break;
 	default:
 		cout << "NOT IMPLEMENTED" << endl;
@@ -220,7 +220,10 @@ void RenderTree::calculateLayout() {
 	cout << this->element->tagName
 		<< "   ";
 	cout << endl;
-	//cout<< this->element->attributes[0].getName() << " : " << this->element->attributes[0].getValue() << endl;
+	if (this->element->attributes.size() != 0) {
+
+		cout << this->element->attributes[0].getName() << " : " << this->element->attributes[0].getValue() << endl;
+	}
 	cout << "(x,y)= " << this->rect.x << "," << this->rect.y << ")" << endl;
 	cout << "width: " << this->rect.w << " height: " << rect.h << endl << endl;
 }

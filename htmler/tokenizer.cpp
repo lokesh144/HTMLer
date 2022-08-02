@@ -35,7 +35,17 @@ struct Token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 	//TODO: handle ampersand(&), EOF and '\0'
 	while (1) {
 		//tokenizer
-		if (str[currPosition] == EOF)
+		if (currPosition >= str.length()) {
+			if (currState == DATA) {
+				return (Token{ .type = END_OF_FILE,.token = currToken });
+			}
+			else {
+				//exit on encounter of EOF
+				std::cout << "FIle ended in abnormal state" << endl;
+				exit(EXIT_FAILURE);
+			}
+		}
+		else if (str[currPosition] == EOF)
 		{
 			currToken = END_OF_FILE;
 			if (currState == DATA) {
@@ -54,6 +64,13 @@ struct Token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 			case '\n':
 			case '\t':
 			case '\f':
+				//IllegalArgumentException
+
+				if (currToken == "") {
+					break;
+				}
+				if (currToken.back() == ' ')break;
+				currToken.push_back(' ');
 				break;
 			case '&':
 				currState = DATA;
@@ -63,12 +80,19 @@ struct Token Tokenizer::getNextToken(const std::string& str, int& currPosition) 
 			case '<':
 				currState = TAG_OPEN;
 				if (currToken.length() != 0) {
-					if (currToken.compare(std::string(currToken.size(), ' ')) != 0) {
-						shouldReturn = true;//yaha true nai hunxa
+					std::string trimmedToken = ltrim(currToken);
+					//if (currToken.compare(std::string(currToken.size(), ' ')) != 0) {
+					if (trimmedToken == "") {
+						currToken = "";
+						break;
 					}
 					else {
-						currToken = "";
+						shouldReturn = true;
 					}
+					//if (currToken.compare(std::string(currToken.size(), ' ')) != 0) {
+					//else {
+						//currToken = "";
+					//?/}
 				}
 				break;
 			default:

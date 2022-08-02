@@ -14,7 +14,7 @@ std::string getTokenType(TokenType t) {
 	}
 }
 
-static inline std::string& ltrim( std::string& s) {
+ inline std::string& ltrim( std::string& s) {
 	//https://stackoverflow.com/a/44973498/16531138
 	s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int c) {return !std::isspace(c); }));
 	return s;

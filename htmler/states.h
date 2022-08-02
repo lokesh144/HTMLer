@@ -124,18 +124,20 @@ enum TagName {
 std::string getTokenType(TokenType t);
 TagName getTagNameAsEnum(const std::string& s);
 std::string getTagName(TagName t);
+std::string& ltrim(std::string& s);
 
 
-/*std::string getTagState(tokenState s) {
-	switch (s) {
-	case DATA:return "DATA";
-	case TAG_OPEN:return "TAG_OPEN";
-	case MARK_UP_DECLARATION_OPEN:return "MARK_UP_DECLARATION_OPEN";
-	case END_TAG_OPEN:return "END_TAG_OPEN";
-	case TAG_NAME:return "TAG_NAME";
-	case SELF_CLOSING_START_TAG:return "SELF_CLOSING_START_TAG";
-	case BEFORE_ATTRIBUTE_NAME:return "BEFORE_ATTRIBUTE_NAME";
-	default: return "NOT A TAG";
+
+	/*std::string getTagState(tokenState s) {
+		switch (s) {
+		case DATA:return "DATA";
+		case TAG_OPEN:return "TAG_OPEN";
+		case MARK_UP_DECLARATION_OPEN:return "MARK_UP_DECLARATION_OPEN";
+		case END_TAG_OPEN:return "END_TAG_OPEN";
+		case TAG_NAME:return "TAG_NAME";
+		case SELF_CLOSING_START_TAG:return "SELF_CLOSING_START_TAG";
+		case BEFORE_ATTRIBUTE_NAME:return "BEFORE_ATTRIBUTE_NAME";
+		default: return "NOT A TAG";
+		}
 	}
-}
-*/
+	*/

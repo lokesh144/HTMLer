@@ -97,7 +97,7 @@ void Parser::parse(const std::string& str) {
 	bool reprocessToken = false;
 	TagTokenizer tt;
 
-	while (str[currPosition] != '\0') {
+	while (currPosition < str.length()) {
 		if (!reprocessToken) {
 			token = tokenizer.getNextToken(str, currPosition);
 			if (token.type == TAG || token.type == END_TAG) {
@@ -224,8 +224,8 @@ void Parser::parse(const std::string& str) {
 					// Process the token using the rules for the "in body" insertion mode.
 					break;
 				case BASE:
-				//case BASEFONT:
-				//case BGSOUND:
+					//case BASEFONT:
+					//case BGSOUND:
 				case LINK:
 				case STYLE:
 				case SCRIPT:
