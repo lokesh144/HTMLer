@@ -37,6 +37,7 @@ public:
 	void getWindowSize(int* w);
 	std::pair<int, int> getFontSize(const std::string& text);
 	void render(const RenderTree* tree);
+	void renderBox(const RenderTree* tree,  SDL_Rect& box);
 
 };
 

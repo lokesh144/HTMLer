@@ -12,6 +12,7 @@ namespace styles {
 		NOT_SPECIFIED
 	};
 	class Length {
+	public:
 		LengthType mlengthType;
 		double mvalue;
 	public:
@@ -22,17 +23,17 @@ namespace styles {
 			mlengthType{ lt }
 		{
 		}
-		inline 	double toPixel()const {
+		inline 	double toPixel(int size = 18)const {
 			switch (this->mlengthType)
 			{
 			case styles::LengthType::PIXEL:
 				return mvalue;
 				break;
 			case styles::LengthType::EM:
-				return mvalue * 18;//TODO: change
+				return mvalue * size;//TODO: change
 				break;
 			case styles::LengthType::REM:
-				return mvalue * 18;
+				return mvalue * size;
 				break;
 			case styles::LengthType::AUTO:
 				//TODO: later if css implemented
@@ -92,6 +93,7 @@ namespace styles {
 		NOT_SPECIFIED
 	};
 	class Border {
+	public:
 		Length borderWidth;
 		BorderStyle borderStyle;
 		SDL_Color color;
@@ -100,6 +102,21 @@ namespace styles {
 			return b1.borderWidth + b2.borderWidth;
 		}
 	};
+
+	struct Dimension {
+		Length top;
+		Length right;
+		Length bottom;
+		Length left;
+	};
+	struct BorderData {
+		Border top;
+		Border right;
+		Border bottom;
+		Border left;
+
+	};
+
 }
 
 using namespace styles;
@@ -113,9 +130,11 @@ public:
 	SDL_Color mcolor;
 	SDL_Color mbackgroundColor;
 	styles::FontStyle mfontStyle{ FontStyle::NOT_SPECIFIED };
-	std::array<styles::Length, 4> mmargin;
-	std::array<styles::Length, 4> mpadding;
-	std::array<styles::Border, 4> mborder;
+	styles::Dimension mmargin;
+	styles::Dimension mpadding;
+	styles::BorderData mborder;
+	//styles::Dimension mborder;
+	//std::array<styles::Border, 4> mborder;
 	styles::Display getDisplay() {
 		return mdisplay;
 	}
@@ -126,9 +145,6 @@ namespace SS {
 	class HTMLDivStyle :public Style {
 	public:
 		HTMLDivStyle() {
-			mmargin.at(0) = Length{ 2,LengthType::EM };
-			mmargin.at(1) = Length{ 4,LengthType::REM };
-
 			mdisplay = Display::BLOCK;
 		}
 	};
@@ -142,8 +158,7 @@ namespace SS {
 	public:
 		HTMLPStyle() {
 			mdisplay = Display::BLOCK;
-			mmargin = { Length(1,LengthType::EM),Length(0,LengthType::EM),Length(1,LengthType::EM),Length(0,LengthType::EM) };
-			//OR 
+			mmargin = { {1,LengthType::EM},{},{1,LengthType::EM} ,{} };
 		}
 	};
 	class HTMLLiStyle :public Style {
@@ -157,7 +172,7 @@ namespace SS {
 		HTMLOlStyle() {
 			mdisplay = Display::BLOCK;
 			mliststyletype = ListStyleType::DECIMAL;
-			mmargin = { Length(1,LengthType::EM),Length(),Length(1,LengthType::EM),Length() };//pixel
+			mmargin = { {1,LengthType::EM},{},{1,LengthType::EM} ,{} };
 			mpadding = { Length(),Length(),Length(),Length(40,LengthType::PIXEL) };//pixel
 		}
 	};

@@ -29,8 +29,13 @@ public:
 	~RenderTree();
 	bool isRenderable(Style* styleptr);
 	void createFromDom(Document* document);
-	void addDefaultStyleSheets(Element* el, Style*& styleptr);
+	Style* addDefaultStyleSheets(Element* el);
 	void addChild(Node* node);
 	void calculateLayout(int);
+	SDL_Color getColor();
+	//if html has color let the color be that color
+	//if not let the color of html be white
+	//parse till the html element until it gets color
+	//ifnot found: not possible html shoulud have color white by defualt
 };
 

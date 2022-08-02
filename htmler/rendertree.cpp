@@ -40,8 +40,7 @@ void RenderTree::addChild(Node* node) {
 		Element* elptr = nullptr;
 		elptr = dynamic_cast<Element*>(currNode);
 		if (elptr) {
-			Style* styleptr = nullptr;
-			addDefaultStyleSheets(elptr, styleptr);
+			Style* styleptr = addDefaultStyleSheets(elptr);
 			if (!isRenderable(styleptr)) {
 				delete styleptr;
 				continue;
@@ -60,7 +59,8 @@ void RenderTree::addChild(Node* node) {
 	}
 }
 
-void RenderTree::addDefaultStyleSheets(Element* el, Style*& styleptr) {
+Style* RenderTree::addDefaultStyleSheets(Element* el) {
+	Style* styleptr = nullptr;
 	switch (getTagNameAsEnum(el->tagName)) {
 	case HTML:
 		styleptr = new SS::HTMLHtmlStyle{};
@@ -98,8 +98,9 @@ void RenderTree::addDefaultStyleSheets(Element* el, Style*& styleptr) {
 		cout << "NOT IMPLEMENTED" << endl;
 		exit(EXIT_FAILURE);
 	}
+	//
+	//SDL_Color c=this->getColor();
 }
-
 
 void RenderTree::calculateLayout(int w) {
 	this->rect.w = w;
@@ -221,9 +222,14 @@ void RenderTree::calculateLayout() {
 		<< "   ";
 	cout << endl;
 	if (this->element->attributes.size() != 0) {
-
 		cout << this->element->attributes[0].getName() << " : " << this->element->attributes[0].getValue() << endl;
 	}
 	cout << "(x,y)= " << this->rect.x << "," << this->rect.y << ")" << endl;
 	cout << "width: " << this->rect.w << " height: " << rect.h << endl << endl;
+}
+
+SDL_Color RenderTree::getColor() {
+	
+	return { 0,0,0 };
+
 }

@@ -18,6 +18,7 @@ std::ostream& operator<<(std::ostream& out, struct Token token) {
 	return out;
 }
 
+//either element or cildText Node
 Element* Parser::createNewHtmlElement(TagName tn) {
 	Element* el = nullptr;
 	switch (tn) {

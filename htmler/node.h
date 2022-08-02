@@ -7,6 +7,7 @@ class Element;
 class Attribute;
 typedef std::string DOMString;
 class RenderTree;
+
 enum class NodeType {
 	ATTRIBUTE_NODE,
 	ELEMENT_NODE,
@@ -16,6 +17,7 @@ enum class NodeType {
 };
 
 class ELement;
+
 class Node {
 protected:
 	NodeType nodeType;
@@ -24,24 +26,14 @@ protected:
 	std::vector<Node*> childNodes;
 	Node* parentNode = nullptr;
 	Node* prevSibling = nullptr;
-	//NamedNodeMap attributes;//contains attribute if it is element
-	//NamedNodeMap attributes;//idk licwhat is this exactly
 public:
-
-	Node() = default;
+	Node();
 	friend class RenderTree;
 	Node(NodeType ntype);
 	Node* appendChild(Node* childNode);//insert at last
 	bool hasChildNodes();
-	virtual ~Node() {
-		for (std::vector<Node*>::iterator it = childNodes.begin(); it != childNodes.end(); it++) {
-			delete(*it);
-			std::cout << "delete " << std::endl;
-		}
-	}
-	void setParentNode(Node* n) {
-		parentNode = n;
-	}
+	virtual ~Node();
+	void setParentNode(Node* n);
 };
 
 class Element :public Node {
@@ -66,14 +58,9 @@ private:
 public:
 	Text();
 	Text(const std::string& s);
-	void appendData(const std::string& c) {
-		mdata += c;
-	}
-	const std::string& getText() { return mdata; }
-	~Text() {
-		//delete this;
-	}
-
+	void appendData(const std::string& c);
+	const std::string& getText();
+	~Text();
 };
 
 class Document :public Node {
@@ -84,23 +71,16 @@ public:
 	friend class RenderTree;
 	Element createElement(const std::string& tname);
 };
+
 class Attribute :public Node {
 protected:
 	std::string name;
 	std::string value;
 public:
 	Attribute();
-	Attribute(const std::string& n, const std::string& v) :name{ n }, value{ v }{}
-	void setName(const std::string& n) {
-		name = n;
-	}
-	void setValue(const std::string& v) {
-		value = v;
-	}
-	std::string getName() {
-		return name;
-	}
-	std::string getValue() {
-		return value;
-	}
+	Attribute(const std::string& n, const std::string& v);
+	void setName(const std::string& n);
+	void setValue(const std::string& v);
+	std::string getName();
+	std::string getValue();
 };

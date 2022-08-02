@@ -32,7 +32,6 @@ int main(int mainc, char* argv[]) {
 	buffer << file.rdbuf();
 	Document* document = new Document;
 	Parser parser{ document };
-	cout << buffer.str() << endl;
 	parser.parse(buffer.str());
 	//parser.parse(str);
 	RenderTree* root = new RenderTree;
