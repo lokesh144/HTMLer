@@ -152,8 +152,6 @@ void RenderTree::calculateLayout() {
 		this->rect.w = this->parent->rect.w;
 	}
 	else {
-
-
 	}
 	auto isTextNode = [](Node* node) {
 		if (dynamic_cast<Text*>(node))
@@ -218,6 +216,15 @@ void RenderTree::calculateLayout() {
 	for (auto rt : children) {
 		this->rect.h += rt->rect.h;
 	}
+	if (this->element->attributes.size() != 0) {
+		if (this->element->attributes[0].getValue() == "4") {
+			this->styles->mpadding.left = { 100,styles::LengthType::PIXEL };
+			this->styles->mpadding.top = { 10,styles::LengthType::PIXEL };
+			this->styles->mpadding.bottom = { 10,styles::LengthType::PIXEL };
+		}
+	}
+	this->rect.h += this->styles->mpadding.top.toPixel();
+	this->rect.h += this->styles->mpadding.bottom.toPixel();
 	cout << this->element->tagName
 		<< "   ";
 	cout << endl;
@@ -229,7 +236,7 @@ void RenderTree::calculateLayout() {
 }
 
 SDL_Color RenderTree::getColor() {
-	
+
 	return { 0,0,0 };
 
 }
