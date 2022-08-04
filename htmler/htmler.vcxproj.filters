@@ -30,13 +30,7 @@
     <ClCompile Include="node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="elements.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rendertree.cpp">
+    <ClCompile Include="csstoken.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,19 +47,16 @@
     <ClInclude Include="node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="elements.h">
+    <ClInclude Include="csstoken.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="token.h">
+    <ClInclude Include="csstokenizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="window.h">
+    <ClInclude Include="cssparserr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rendertree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="defaultstyle.h">
+    <ClInclude Include="csstokenizerr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
