@@ -139,6 +139,11 @@ void Window::render(const RenderTree* tree) {
 	int sumOfSiblingsHeight{ 0 };
 	for (auto node : childNodes) {
 		//iterating throught the childNode of current tree
+		//calculate the width and height of line of the required text
+		//get Parent width(assume block level)
+		//this->render box() and find the content width 
+		//now calculate the content height 
+		//then calculate remaining
 		auto textNodeptr = dynamic_cast<Text*>(node);
 		if (textNodeptr) {
 			//curr Node is textNode
@@ -164,10 +169,11 @@ void Window::render(const RenderTree* tree) {
 				linecount * height
 			};
 			if (tree->element->attributes.size() != 0) {
-				if (tree->element->attributes[0].getValue() == "4") {
+				if (tree->element->attributes[0].getValue() == "imp") {
 					tree->styles->mpadding.left = { 100,styles::LengthType::PIXEL };
 					tree->styles->mpadding.top = { 10,styles::LengthType::PIXEL };
 			tree->styles->mpadding.bottom = { 10,styles::LengthType::PIXEL };
+					tree->styles->mpadding.right = { 100,styles::LengthType::PIXEL };
 					this->renderBox(tree, fillRect);
 				}
 			}
@@ -227,6 +233,8 @@ void Window::renderBox(const RenderTree* tree, SDL_Rect& box) {
 	padding.right.w = tree->styles->mpadding.right.toPixel();
 	padding.right.h = tree->rect.h - border.top.h - border.bottom.h;
 
+
+
 	padding.top.x = padding.left.x;
 	padding.top.y = padding.right.y;
 	padding.top.w = border.top.w - border.left.w - border.right.w;
@@ -273,6 +281,7 @@ void Window::renderBox(const RenderTree* tree, SDL_Rect& box) {
 		box.h
 	};
 
+	box = content;
 	SDL_SetRenderDrawColor(mrenderer, 100, 100, 100, 100);
 }
 

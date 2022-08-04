@@ -1,55 +1,31 @@
 #pragma once
 #include<vector>
 #include<array>
+#include<string>
 #include<SDL.h>
+#include<iostream>
+#include"states.h"
+#define endl '\n'
+using std::cout;
+
 namespace styles {
 	enum class LengthType {
 		PIXEL,
 		EM,
 		REM,
 		AUTO,
-		INHERIT,
 		NOT_SPECIFIED
 	};
 	class Length {
 	public:
 		LengthType mlengthType;
-		double mvalue;
+		int mvalue;
 	public:
-		Length() :
-			mvalue{ 0 }, mlengthType{ LengthType::NOT_SPECIFIED }{}
-		Length(double val, LengthType lt = LengthType::PIXEL) :
-			mvalue{ val },
-			mlengthType{ lt }
-		{
-		}
-		inline 	double toPixel(int size = 18)const {
-			switch (this->mlengthType)
-			{
-			case styles::LengthType::PIXEL:
-				return mvalue;
-				break;
-			case styles::LengthType::EM:
-				return mvalue * size;//TODO: change
-				break;
-			case styles::LengthType::REM:
-				return mvalue * size;
-				break;
-			case styles::LengthType::AUTO:
-				//TODO: later if css implemented
-				break;
-			case styles::LengthType::INHERIT:
-				//TODO
-				break;
-			case styles::LengthType::NOT_SPECIFIED:
-				return 0;
-				break;
-			}
+		Length();
+		Length(int val, LengthType lt = LengthType::PIXEL);
+		inline 	int toPixel(int size = 18)const;
+		friend int operator+(const styles::Length& l1, const styles::Length& l2);
 
-		}
-		friend double operator+(const styles::Length& l1, const styles::Length& l2) {
-			return l1.toPixel() + l2.toPixel();
-		}
 	};
 	enum  class Display {
 		BLOCK,
@@ -98,9 +74,7 @@ namespace styles {
 		BorderStyle borderStyle;
 		SDL_Color color;
 	public:
-		friend inline  double operator+(const Border& b1, const Border& b2) {
-			return b1.borderWidth + b2.borderWidth;
-		}
+		friend inline  int operator+(const Border& b1, const Border& b2);
 	};
 
 	struct Dimension {
@@ -109,15 +83,18 @@ namespace styles {
 		Length bottom;
 		Length left;
 	};
+	static int getLength(const std::string& str);
+	LengthType getLengthType(const std::string& str);
+	Length parseLength(const std::string& length);
+	struct Dimension parseLengthList(std::string lengths);
 	struct BorderData {
 		Border top;
 		Border right;
 		Border bottom;
 		Border left;
-
 	};
 
-}
+};
 
 using namespace styles;
 class Style {

@@ -3,6 +3,13 @@
 #include"states.h"
 #include"defaultstyle.h"
 #include"window.h"
+#include"csstypes.h"
+
+//#include "cssparser.h"
+
+class CssParser;
+
+
 struct Rect {
 	float x;
 	float y;
@@ -18,7 +25,10 @@ private:
 	Rect rect;
 	RenderTree* parent{ nullptr };
 	std::vector<RenderTree*> children;
+	int applyCss(const CSSRule& rule);
+	void applyStyle(const Declaration& style);
 	void calculateLayout();
+	void calculateBox();
 public:
 	static void setStatic(Window* window) {
 		windowptr = window;
@@ -32,6 +42,7 @@ public:
 	Style* addDefaultStyleSheets(Element* el);
 	void addChild(Node* node);
 	void calculateLayout(int);
+	void addStyle(const CssParser& css);
 	SDL_Color getColor();
 	//if html has color let the color be that color
 	//if not let the color of html be white

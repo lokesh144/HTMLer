@@ -45,6 +45,9 @@
     <ClCompile Include="cssparser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="defaulstyle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="states.h">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="csstokenizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="csstypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

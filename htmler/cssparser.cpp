@@ -1,35 +1,35 @@
 #include"cssparser.h"
 
-static inline std::string getPropertyName(Property prop) {
+static inline std::string getPropertyName(CSSProperty prop) {
 	switch (prop) {
-	case Property::COLOR:return "color";
-	case Property::MARGIN:return "margin";
-	case Property::MARGIN_TOP:return "margin_top";
-	case Property::MARGIN_RIGHT:return "margin_right";
-	case Property::MARGIN_BOTTOM:return "margin_bottom";
-	case Property::MARGIN_LEFT:return "margin_left";
-	case Property::BORDER:return "border";
-	case Property::BORDER_TOP:return "border_top";
-	case Property::BORDER_RIGHT:return "border_right";
-	case Property::BORDER_BOTTOM:return "border_bottom";
-	case Property::BORDER_LEFT:return "border_left";
-	case Property::PADDING:return "padding";
-	case Property::PADDING_TOP:return "padding_top";
-	case Property::PADDING_RIGHT:return "padding_right";
-	case Property::PADDING_BOTTOM:return "padding_bottom";
-	case Property::PADDING_LEFT:return "padding_left";
-	case Property::WIDTH:return "width";
-	case Property::UNKNOWN:return "unknownn ";
+	case CSSProperty::COLOR:return "color";
+	case CSSProperty::MARGIN:return "margin";
+	case CSSProperty::MARGIN_TOP:return "margin_top";
+	case CSSProperty::MARGIN_RIGHT:return "margin_right";
+	case CSSProperty::MARGIN_BOTTOM:return "margin_bottom";
+	case CSSProperty::MARGIN_LEFT:return "margin_left";
+	case CSSProperty::BORDER:return "border";
+	case CSSProperty::BORDER_TOP:return "border_top";
+	case CSSProperty::BORDER_RIGHT:return "border_right";
+	case CSSProperty::BORDER_BOTTOM:return "border_bottom";
+	case CSSProperty::BORDER_LEFT:return "border_left";
+	case CSSProperty::PADDING:return "padding";
+	case CSSProperty::PADDING_TOP:return "padding_top";
+	case CSSProperty::PADDING_RIGHT:return "padding_right";
+	case CSSProperty::PADDING_BOTTOM:return "padding_bottom";
+	case CSSProperty::PADDING_LEFT:return "padding_left";
+	case CSSProperty::WIDTH:return "width";
+	case CSSProperty::UNKNOWN:return "unknownn ";
 	}
 }
 
-inline Property getPropertyNameAsEnum(const std::string& prop) {
-	if (prop == "color")return Property::COLOR;
-	if (prop == "padding")return Property::PADDING;
-	if (prop == "width")return Property::WIDTH;
-	if (prop == "border")return Property::BORDER;
-	if (prop == "margin")return Property::MARGIN;
-	else return Property::UNKNOWN;
+inline CSSProperty getPropertyNameAsEnum(const std::string& prop) {
+	if (prop == "color")return CSSProperty::COLOR;
+	if (prop == "padding")return CSSProperty::PADDING;
+	if (prop == "width")return CSSProperty::WIDTH;
+	if (prop == "border")return CSSProperty::BORDER;
+	if (prop == "margin")return CSSProperty::MARGIN;
+	else return CSSProperty::UNKNOWN;
 }
 
 inline void CssParser::ignoreWhiteSpace(const std::string& str, int& pos) {
@@ -54,7 +54,21 @@ void CssParser::parse(const std::string& str) {
 	while (currPosition < str.length()) {
 		CssToken token = tokenizer.getNextToken(str, currPosition);
 		if (token.first == ReturnType::SELECTOR) {
-			cssRules.push_back({ token.second ,{} });
+			if (token.second.empty()) {
+				cout << "Token cannot be empty" << endl;
+				exit(EXIT_FAILURE);
+			}
+			if (token.second[0] == '.') {
+				cssRules.push_back({ {SelectorType::CLASS,token.second.erase(0,1)},{} });
+			}
+			else if (token.second[0] == '#') {
+				cssRules.push_back({ {SelectorType::ID,token.second.erase(0,1)},{} });
+			}
+			else {
+				cout << "Unknow selector" << endl;
+				exit(EXIT_FAILURE);
+
+			}
 			cout << "Selector: " << token.second << endl;
 		}
 		else if (token.first == ReturnType::DECLARATION) {
@@ -91,13 +105,15 @@ Declaration CssParser::parsePropValue(const std::string& propValue) {
 			cout << "Multiple whitespace in propvaluepair" << endl;
 		}
 	}
-		if (!propValue[pos++] == ':') {
-			cout << "Illegal property Value Pair";
-			exit(EXIT_FAILURE);
-		}
+	if (!propValue[pos++] == ':') {
+		cout << "Illegal property Value Pair";
+		exit(EXIT_FAILURE);
+	}
 	ignoreWhiteSpace(propValue, pos);
 	while (pos < propValue.length()) {
 		decl.value += propValue[pos++];
+		//TODO: must check if value is empty
+		//MUST
 	}
 	return decl;
 }

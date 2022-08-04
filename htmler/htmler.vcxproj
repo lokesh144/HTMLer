@@ -154,6 +154,7 @@
     <ClCompile Include="node.cpp" />
     <ClCompile Include="parser.cpp" />
     <ClCompile Include="rendertree.cpp" />
+    <ClCompile Include="defaulstyle.cpp" />
     <ClCompile Include="states.cpp" />
     <ClCompile Include="tokenizer.cpp" />
     <ClCompile Include="window.cpp" />
@@ -161,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="cssparser.h" />
     <ClInclude Include="csstokenizer.h" />
+    <ClInclude Include="csstypes.h" />
     <ClInclude Include="defaultstyle.h" />
     <ClInclude Include="rendertree.h" />
     <ClInclude Include="window.h" />

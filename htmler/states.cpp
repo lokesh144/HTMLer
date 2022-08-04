@@ -14,13 +14,25 @@ std::string getTokenType(TokenType t) {
 	}
 }
 
- inline std::string& ltrim( std::string& s) {
+inline std::string& ltrim(std::string& s) {
 	//https://stackoverflow.com/a/44973498/16531138
 	s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int c) {return !std::isspace(c); }));
 	return s;
 }
+
+// trim from end (in place)
+inline void rtrim(std::string& s) {
+	s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+		return !std::isspace(ch);
+		}).base(), s.end());
+}
+void trim(std::string& s) {
+	s = ltrim(s);
+	rtrim(s);
+}
+
 TagName getTagNameAsEnum(const std::string& ss) {
-	std::string s{ss};
+	std::string s{ ss };
 	ltrim(s);
 	if (s == "html")return HTML;
 	if (s == "head")return HEAD;

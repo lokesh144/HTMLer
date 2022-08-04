@@ -45,20 +45,23 @@ int main(int mainc, char* argv[]) {
 	CssParser cssparser{ };
 	cssparser.parse(cssbuffer.str());
 
-	RenderTree* root = new RenderTree;
-	root->createFromDom(document);
+	RenderTree* rendertree = new RenderTree;
+	rendertree->createFromDom(document);
+	rendertree->addStyle(cssparser);
+
+
 	Window window;
 	RenderTree::setStatic(&window);
 	int w{};
 	window.getWindowSize(&w);
-	root->calculateLayout(w);
-	window.eventloop(root);
+	rendertree->calculateLayout(w);
+	window.eventloop(rendertree);
 
 	//auto hi = window.getFontSize(str2);
 	//cout << "=======================================" << endl;
 	//cout << "width " << hi.first << endl;
 	//cout << "=======================================" << endl;
-	delete root;
+	delete rendertree;
 	delete document;
 	return 0;
 }
