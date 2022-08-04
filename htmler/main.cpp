@@ -1,7 +1,7 @@
 #pragma once
 #include<iostream>
 #include<stack>
-#include "parser.h"
+//#include "parser.h"
 #define endl '\n'
 using std::cout;
 /*
@@ -30,9 +30,24 @@ std::string str = "\
 </body>\
 ";
 
+std::string css = "\
+.container{\
+	margin: 100%;\
+}\
+.clr{\
+	padding: 0;\
+	margin: 0;\
+}\
+.main{\
+	width: 1000px         ;\
+	margin: 0 auto   ;\
+}\
+\
+";
 
+#include "cssparserr.h"
 int main() {
-	Parser parser;
-	parser.parse(str);
+	CssParser cparser{css};
+	cparser.parse(css);
 	return 0;
 }

@@ -149,8 +149,10 @@
     <ClCompile Include="tokenizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cssparserr.h" />
     <ClInclude Include="csstoken.h" />
     <ClInclude Include="csstokenizer.h" />
+    <ClInclude Include="csstokenizerr.h" />
     <ClInclude Include="node.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="states.h" />

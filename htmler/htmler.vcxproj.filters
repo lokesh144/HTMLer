@@ -53,5 +53,11 @@
     <ClInclude Include="csstokenizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cssparserr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="csstokenizerr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
