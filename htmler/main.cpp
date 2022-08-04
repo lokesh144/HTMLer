@@ -4,6 +4,7 @@
 #include<sstream>
 #include<stack>
 #include "parser.h"
+#include "cssparser.h"
 #include "tokenizer.h"
 #include "node.h" 
 #include "rendertree.h" 
@@ -28,12 +29,22 @@ std::string str = "\
 //const char* str2 = "1abcdefghijklmnop 2abcdefghijklmnop 3abcdefghijklmnop 4abcdefghijklmnop 5abcdefghijklmnop 6abcdefghijklmnop 7abcdefghijklmnop 8abcdefghijklmnop 9abcdefghijklmnop 10abcdefghijklmnop 11abcdefghijklmnop 12abcdefghijklmnop 13abcdefghijklmnop";
 int main(int mainc, char* argv[]) {
 	std::ifstream file{ "index.html" };
+	std::ifstream cssfile{ "style.css" };
+	if (!file || !cssfile) {
+		cout << "Cannot open file" << endl;
+		exit(EXIT_FAILURE);
+	}
 	std::stringstream buffer;
+	std::stringstream cssbuffer;
 	buffer << file.rdbuf();
+	cssbuffer << cssfile.rdbuf();
+
 	Document* document = new Document;
 	Parser parser{ document };
 	parser.parse(buffer.str());
-	//parser.parse(str);
+	CssParser cssparser{ };
+	cssparser.parse(cssbuffer.str());
+
 	RenderTree* root = new RenderTree;
 	root->createFromDom(document);
 	Window window;
@@ -42,6 +53,7 @@ int main(int mainc, char* argv[]) {
 	window.getWindowSize(&w);
 	root->calculateLayout(w);
 	window.eventloop(root);
+
 	//auto hi = window.getFontSize(str2);
 	//cout << "=======================================" << endl;
 	//cout << "width " << hi.first << endl;

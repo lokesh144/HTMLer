@@ -1,0 +1,19 @@
+
+.container{
+	margin: 2px   ;
+	color: red    ;
+}
+
+.hello{
+	margin: 4rem;
+	padding : 4px;
+	color: white;
+	border: 2px solid green;
+}
+
+#more{
+	width:1000px;
+	margin-left: 20px;
+	padding-top: 3em;
+}
+
