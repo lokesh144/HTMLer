@@ -461,3 +461,10 @@ void RenderTree::applyStyle(Declaration& style) {
 	}
 
 }
+
+
+//todos
+//add way to aduse multiple font
+//add other border style
+//UPdate title
+//allow empty value in css

@@ -1,18 +1,18 @@
-#i1 {
-	color: red;
+#id1 {
+	color: aqua;
 	margin: 20px;
 }
 
 #id80 {
-	color: green;
+	color: blue;
 }
 
 #i80 {
 	background-color: green;
 }
 
-#i2 {
 
+#i2 {
 	margin-left: 3em;
 	background-color: red;
 	color: green;

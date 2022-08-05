@@ -1,8 +1,22 @@
 #include<iostream>
+#include<sys/stat.h>
+#include <ctime>
+#include <chrono>
+#include<filesystem>
 #include<SDL_ttf.h>
+#include<iostream>
+#include<fstream>
+#include<sstream>
+#include<stack>
 //#include"winuser.h"
 #include "window.h"
 #include "rendertree.h"
+#include "parser.h"
+#include "cssparser.h"
+#include "tokenizer.h"
+#include "node.h" 
+#include "rendertree.h" 
+#define endl '\n'
 #define endl '\n'
 using std::cout;
 
@@ -74,11 +88,50 @@ void Window::close() {
 	//IMG_Quit();
 }
 void Window::eventloop(RenderTree* tree) {
+
+	std::ifstream file{ "index.html" };
+	std::ifstream cssfile{ "style.css" };
+	if (!file || !cssfile) {
+		cout << "Cannot open file" << endl;
+		exit(EXIT_FAILURE);
+	}
+	std::stringstream buffer;
+	std::stringstream cssbuffer;
+	buffer << file.rdbuf();
+	cssbuffer << cssfile.rdbuf();
+
+	Document* document = new Document;
+	Parser parser{ document };
+	parser.parse(buffer.str());
+	CssParser cssparser{ };
+	cssparser.parse(cssbuffer.str());
+
+	RenderTree* rendertree = new RenderTree;
+	tree = rendertree;
+	rendertree->createFromDom(document);
+
+	rendertree->addRootStyle();
+	rendertree->addStyle(cssparser);
+
+	int w{};
+	this->getWindowSize(&w);
+	rendertree->calculateLayout(w);
+
+	this->setRootColor();
+
 	bool quit = false;
 	SDL_Event event;
 	Uint8 r{ 255 }, g{ 255 }, b{ 255 };
 	int refresh{};
+
 	render(tree->children[0]);
+
+	using std::filesystem::last_write_time;
+	using std::chrono::time_point;
+	time_point htmlModTime = last_write_time("index.html");
+	time_point cssModTime = last_write_time("style.css");
+	int count = 0;
+
 	while (!quit) {//main loop
 		while (SDL_PollEvent(&event) != 0) {//event loop 
 			if (event.type == SDL_QUIT) {
@@ -97,12 +150,57 @@ void Window::eventloop(RenderTree* tree) {
 
 		//render(tree->children[0]);
 		//SDL_RenderPresent(mrenderer);
-		this->setRootColor();
+		if (!(htmlModTime == last_write_time("index.html") && cssModTime == last_write_time("style.css"))) {
+			cout << "rerendering " << endl;
+			htmlModTime = last_write_time("index.html");
+			cssModTime = last_write_time("style.css");
+			file.close();
+			cssfile.close();
+			file.open({ "index.html" });
+			cssfile.open({ "style.css" });
+			if (!file || !cssfile) {
+				cout << "Cannot open file" << endl;
+				exit(EXIT_FAILURE);
+			}
+			buffer << file.rdbuf();
+			cssbuffer << cssfile.rdbuf();
+
+			delete document;
+			document = new Document;
+			parser = Parser{ document };
+			parser.parse(buffer.str());
+			cssparser.parse(cssbuffer.str());
+
+			delete rendertree;
+			rendertree = new RenderTree;
+			tree = rendertree;
+			rendertree->createFromDom(document);
+
+			rendertree->addRootStyle();
+			rendertree->addStyle(cssparser);
+
+			rendertree->calculateLayout(w);
+			//render(tree->children[0]);
+			SDL_RenderClear(mrenderer);
+			render(tree->children[0]);
+
+		}
+		if (count > 120) {
+			cout << count << endl;
+			//std::time_t ht = std::chrono::system_clock::to_time_t(htmlModTime);
+			//std::time_t ct = std::chrono::system_clock::to_time_t(cssModTime);
+			cout << "html  " << htmlModTime.time_since_epoch().count() << "  " << last_write_time("index.html").time_since_epoch().count() << endl;
+			cout << "css  " << cssModTime.time_since_epoch().count() << "  " << last_write_time("style.css").time_since_epoch().count() << endl;
+			count = 0;
+		}
 		SDL_RenderPresent(mrenderer);
-		this->setRootColor();
 		refresh++;
+		count++;
 	}
-	cout << " refresh rate" << refresh << " Hz" << endl;
+	cout << " Total refresh " << refresh << " Hz" << endl;
+
+	delete rendertree;
+	delete document;
 }
 void Window::getWindowSize(int* w) {
 	SDL_GetWindowSize(mwindow, w, nullptr);
@@ -166,6 +264,8 @@ void Window::render(const RenderTree* tree) {
 			}
 			SDL_Color textColor{ tree->getColor() };
 			SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(mfont.mfont, text.c_str(), textColor, textwidth);
+
+			//cout<<textSurface->clip_rect.
 			if (textSurface == nullptr) {
 				cout << "cannot load text" << endl;
 				exit(EXIT_FAILURE);
@@ -174,8 +274,8 @@ void Window::render(const RenderTree* tree) {
 			SDL_Rect textRect = {
 				tree->rect.x + tree->styles->mpadding.left.toPixel() + tree->styles->mborder.left.toPixel(),
 				tree->rect.y + tree->styles->mpadding.top.toPixel() + tree->styles->mborder.top.toPixel(),
-				width<textwidth?width:textwidth,
-				linecount * height
+				width < textwidth ? width : textwidth,
+				linecount* height
 			};
 
 			/*
