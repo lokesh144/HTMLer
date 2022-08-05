@@ -35,6 +35,7 @@ void RenderTree::createFromDom(Document* document) {
 		cout << "Document has no child html" << endl;
 		exit(EXIT_FAILURE);
 	}
+	this->styles = new SS::HTMLHtmlStyle{};
 	this->addChild(document->childNodes[0]);
 }
 void RenderTree::addChild(Node* node) {
@@ -49,6 +50,9 @@ void RenderTree::addChild(Node* node) {
 			}
 			RenderTree* rt = new RenderTree{ elptr,styleptr };
 			rt->parent = this;
+			if (!this->children.empty()) {
+				rt->prevSibling = this->children.back();
+			}
 			this->children.push_back(rt);
 			if (currNode->childNodes.size() == 0) {
 				//this->calculateLayout();
@@ -139,6 +143,10 @@ bool isBlockLevelElement(const std::string& tn) {
 }
 
 void RenderTree::calculateLayout(int w) {
+	if (!RenderTree::windowptr) {
+		cout << "null winodowptr" << endl;
+		exit(EXIT_FAILURE);
+	}
 	this->rect.w = w;
 	for (auto& element : children) {
 		element->calculateLayout();
@@ -149,7 +157,7 @@ void RenderTree::calculateLayout(int w) {
 /*
 this applies to bock level element only
 
-//the width of a element is equal to the width of its parent
+//the width of a element is equal to the innerwidth(content) of its parent
 //the height of the element is equal to the sum of the height of its childnodes and its margin padding and border
 
 The layout of a element depends upon its childNodes.
@@ -163,20 +171,87 @@ The layout of a element depends upon its childNodes.
 - calculate height required to render the text
 -calculate the height for margin,border and padding (bottom)
 
+no margin case
+The x-coordinates of an element is equal to its parent
+if first child
+the y-coordinates of an element is equal to its parent
+else
+the y-coordinates will be the y-coordinates of its preceding sibling(Node) + its height
 
 */
 void RenderTree::calculateLayout() {
-	if (!RenderTree::windowptr) {
-		cout << "null winodowptr" << endl;
-		exit(EXIT_FAILURE);
-	}
+	//x
+	this->rect.x = this->parent->rect.x +
+		this->styles->mmargin.left.toPixel() +
+		this->parent->styles->mpadding.left.toPixel() +
+		this->parent->styles->mborder.left.toPixel()
+		;
 
-	if (isBlockLevelElement(this->element->tagName)) {
-		this->rect.w = this->parent->rect.w;
-	}
+	//y
 
+	//if prev sibling is text node then 
+	if (auto textNodeptr = dynamic_cast<Text*>(this->element->prevSibling)) {
+		auto& text = textNodeptr->getText();
+		auto [width, height] = RenderTree::windowptr->getFontSize(text);
+
+		int pwidth = this->parent->rect.w -
+			this->parent->styles->mpadding.left.toPixel() -
+			this->parent->styles->mpadding.right.toPixel() -
+			this->parent->styles->mborder.left.toPixel() -
+			this->parent->styles->mborder.right.toPixel();
+		//the parent of its prevSibling is same a s its parent
+
+		int linecount = static_cast<int>(width / pwidth);
+		if (width > pwidth * linecount) {
+			linecount++;
+		}
+		this->rect.y = this->prevSibling->rect.y +
+			this->prevSibling->rect.h +
+			this->prevSibling->styles->mmargin.bottom.toPixel() +
+			linecount * height +
+			this->styles->mmargin.top.toPixel();
+	}
+	else if (this->prevSibling) {
+		//if prev sibling is not text node 
+		//then it must be element node(if it exist)
+		//then this->prevSibling exists only if this->element->prevSibling was renderable
+
+		//auto currPrev = this->element->prevSibling;
+		//while (!this->isRenderable(currPrev->styles)) {
+		//	currPrev = currPrev->prevSibling;
+		//	if (!currPrev) {
+		//		//prev currPrev was first chid
+		//		//MUST what if currprev sibling is text node
+		//		this->rect.y = this->parent->rect.y +
+		//			this->parent->styles->mpadding.top.toPixel() +
+		//			this->parent->styles->mborder.top.toPixel();
+		//		break;
+		//	}
+		//}
+		this->rect.y = this->prevSibling->rect.y +
+			this->prevSibling->rect.h +
+			this->prevSibling->styles->mmargin.bottom.toPixel() +
+			this->styles->mmargin.top.toPixel();
+	}
 	else {
+		this->rect.y = this->parent->rect.y +
+			this->parent->styles->mpadding.top.toPixel() +
+			this->parent->styles->mborder.top.toPixel();
 	}
+	this->rect.y += this->styles->mmargin.top.toPixel();
+
+	//width
+	if (isBlockLevelElement(this->element->tagName))
+	{
+		this->rect.w = this->parent->rect.w -
+			this->parent->styles->mpadding.left.toPixel() -
+			this->parent->styles->mpadding.right.toPixel() -
+			this->parent->styles->mborder.left.toPixel() -
+			this->parent->styles->mborder.right.toPixel();
+		this->rect.w -= this->styles->mmargin.left.toPixel();
+		this->rect.w -= this->styles->mmargin.right.toPixel();
+	}
+	else;
 
 	auto isTextNode = [](Node* node) {
 		if (dynamic_cast<Text*>(node))
@@ -185,55 +260,24 @@ void RenderTree::calculateLayout() {
 			return false;
 	};
 
-	this->rect.y += this->parent->rect.y;
-	int i = 0;
-
-	for (auto node : this->parent->element->childNodes) {
-		//preceding textNode siblings
-		if (isTextNode(node)) {
-			auto textNodeptr = dynamic_cast<Text*>(node);
-			if (textNodeptr) {
-				auto& text = textNodeptr->getText();
-				auto [width, height] = RenderTree::windowptr->getFontSize(text);
-				//this->rect.w = width;
-				auto pwidth = this->parent->rect.w;
-				int linecount = static_cast<int>(width / pwidth);
-				if (width > pwidth * linecount) {
-					linecount++;
-				}
-				this->rect.y += linecount * height;
-			}
-		}
-		else {
-			if (this->parent->children[i++] == this) {
-				break;
-			}
-			else {
-			}
-		}
-	}
-
-	for (auto child : this->parent->children) {
-		//preceding sibling
-		if (child == this)
-			break;
-		else {
-			this->rect.y += child->rect.h;
-		}
-	}
-
 	for (auto& element : children) {
 		element->calculateLayout();
 	}
 
-	i = 0;
+	//height
 	for (auto node : this->element->childNodes) {
+		//iterate through child text nodes
 		auto textNodeptr = dynamic_cast<Text*>(node);
 		if (textNodeptr) {
 			//curr Node is textNode
 			auto& text = textNodeptr->getText();
 			auto [width, height] = RenderTree::windowptr->getFontSize(text);
-			auto pwidth = this->parent->rect.w;
+			int pwidth = this->rect.w -
+				this->styles->mpadding.left.toPixel() -
+				this->styles->mpadding.right.toPixel() -
+				this->styles->mborder.left.toPixel() -
+				this->styles->mborder.right.toPixel();
+
 			int linecount = static_cast<int>(width / pwidth);
 			if (width > pwidth * linecount) {
 				linecount++;
@@ -241,18 +285,18 @@ void RenderTree::calculateLayout() {
 			this->rect.h += linecount * height;
 		}
 	}
+
 	for (auto rt : children) {
-		this->rect.h += rt->rect.h;
+		//iterate through child element nodes
+		this->rect.h += rt->rect.h +
+			rt->styles->mmargin.top.toPixel() +
+			rt->styles->mmargin.bottom.toPixel();
 	}
-	if (this->element->attributes.size() != 0) {
-		if (this->element->attributes[0].getValue() == "4") {
-			this->styles->mpadding.left = { 100,styles::LengthType::PIXEL };
-			this->styles->mpadding.top = { 10,styles::LengthType::PIXEL };
-			this->styles->mpadding.bottom = { 10,styles::LengthType::PIXEL };
-		}
-	}
-	this->rect.h += this->styles->mpadding.top.toPixel();
-	this->rect.h += this->styles->mpadding.bottom.toPixel();
+
+	this->rect.h += this->styles->mpadding.top.toPixel() + this->styles->mpadding.bottom.toPixel();
+	this->rect.h += this->styles->mborder.top.toPixel() + this->styles->mborder.bottom.borderWidth.toPixel();
+
+
 	cout << this->element->tagName
 		<< "   ";
 	cout << endl;
@@ -274,23 +318,23 @@ void RenderTree::calculateBox() {
 	//no margin for now
 	border.left.x = this->rect.x;
 	border.left.y = this->rect.y;
-	border.left.w = this->styles->mborder.left.borderWidth.toPixel();
+	border.left.w = this->styles->mborder.left.toPixel();
 	border.left.h = this->rect.h;
 
-	border.right.x = this->rect.x + this->rect.w - this->styles->mborder.right.borderWidth.toPixel();
+	border.right.x = this->rect.x + this->rect.w - this->styles->mborder.right.toPixel();
 	border.right.y = this->rect.y;
-	border.right.w = this->styles->mborder.right.borderWidth.toPixel();
+	border.right.w = this->styles->mborder.right.toPixel();
 	border.right.h = this->rect.h;
 
 	border.top.x = this->rect.x;
 	border.top.y = this->rect.y;
 	border.top.w = this->rect.w;
-	border.top.h = this->styles->mborder.top.borderWidth.toPixel();
+	border.top.h = this->styles->mborder.top.toPixel();
 
 	border.bottom.x = this->rect.x;
-	border.bottom.y = this->rect.y + this->rect.h - this->styles->mborder.bottom.borderWidth.toPixel();
+	border.bottom.y = this->rect.y + this->rect.h - this->styles->mborder.bottom.toPixel();
 	border.bottom.w = this->rect.w;
-	border.bottom.h = this->styles->mborder.bottom.borderWidth.toPixel();
+	border.bottom.h = this->styles->mborder.bottom.toPixel();
 
 	padding.left.x = this->rect.x + border.left.w;
 	padding.left.y = border.top.y + border.top.h;
@@ -320,8 +364,58 @@ void RenderTree::calculateBox() {
 	content.h = padding.left.h - padding.top.h - padding.bottom.h;
 	//box = content;
 }
+void RenderTree::setStatic(Window* window) {
+	windowptr = window;
+}
 
+void RenderTree::addRootStyle() {
+	this->styles->mbackgroundColor = { 255,255,255,255 };
+	this->styles->mcolor = { 0,0,0,255 };
+}
 
+static bool operator==(const SDL_Color& c1, const SDL_Color& c2) {
+	if (c1.r != c2.r)return false;
+	if (c1.g != c2.g)return false;
+	if (c1.b != c2.b)return false;
+	if (c1.a != c2.a)return false;
+	return true;
+}
+
+SDL_Color RenderTree::getBgColor() const {
+	if (this->styles->mbackgroundColor != SDL_Color{ 0,0,0,0 }) {
+		return this->styles->mbackgroundColor;
+	}
+	auto currtree = this->parent;
+	while (currtree) {
+		if (currtree->styles->mbackgroundColor != SDL_Color{ 0,0,0,0 }) {
+			return this->styles->mbackgroundColor;
+		}
+		currtree = currtree->parent;
+	}
+	cout << "This element doesnot have specified bg color";
+	exit(EXIT_FAILURE);
+}
+
+SDL_Color RenderTree::getColor() const {
+	/*
+	it the elements color is equal to 0,0,0,0 or 205,205,205,205
+	the element has no color
+	*/
+
+	if (!(this->styles->mcolor == SDL_Color{ 0,0,0,0 } || this->styles->mcolor == SDL_Color{ 205,205,205,205} )){
+	//MUST MUST remove : temporary
+		return this->styles->mcolor;
+	}
+	auto currtree = this->parent;
+	while (currtree) {
+	if (!(currtree->styles->mcolor == SDL_Color{ 0,0,0,0 } ||currtree->styles->mcolor == SDL_Color{ 205,205,205,205} )){
+			return currtree->styles->mcolor;
+		}
+		currtree = currtree->parent;
+	}
+	cout << "This element doesnot have specified bg color";
+	exit(EXIT_FAILURE);
+}
 
 SDL_Color RenderTree::getColor() {
 
@@ -333,7 +427,7 @@ void RenderTree::addStyle(const CssParser& css) {
 	//for every css property in find the corresponding element and override styles
 	for (auto& cssrule : css.cssRules) {
 		int c = this->applyCss(cssrule);
-		cout << c << "  total Match" << endl<<endl;
+		cout << c << "  total Match" << endl << endl;
 	}
 }
 
@@ -357,12 +451,12 @@ int RenderTree::applyCss(const CSSRule& rule) {
 	return count;
 }
 
-void RenderTree::applyStyle(const Declaration& style) {
+void RenderTree::applyStyle(Declaration& style) {
 	using namespace styles;
 	switch (style.property)
 	{
 	case CSSProperty::COLOR:
-
+		this->styles->mcolor = styles::parseColor(style.value);
 		break;
 	case CSSProperty::MARGIN:
 		this->styles->mmargin = parseLengthList(style.value);
@@ -395,14 +489,25 @@ void RenderTree::applyStyle(const Declaration& style) {
 		this->styles->mpadding.left = parseLength(style.value);
 		break;
 	case CSSProperty::BORDER:
+	{
+		styles::Border border = styles::parseBorder(style.value);
+		this->styles->mborder = { border, border, border, border };
 		break;
+	}
 	case CSSProperty::BORDER_TOP:
+		this->styles->mborder.top = styles::parseBorder(style.value);
 		break;
 	case CSSProperty::BORDER_RIGHT:
+		this->styles->mborder.right = styles::parseBorder(style.value);
 		break;
 	case CSSProperty::BORDER_BOTTOM:
+		this->styles->mborder.bottom = styles::parseBorder(style.value);
 		break;
 	case CSSProperty::BORDER_LEFT:
+		this->styles->mborder.left = styles::parseBorder(style.value);
+		break;
+	case CSSProperty::BACKGROUND_COLOR:
+		this->styles->mbackgroundColor = styles::parseColor(style.value);
 		break;
 	case CSSProperty::WIDTH:
 		break;

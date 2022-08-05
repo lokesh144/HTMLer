@@ -89,6 +89,8 @@ CssToken CssTokenizer::getNextToken(const std::string& str, int& currPosition) {
 				break;
 			case '{':
 				tokenState = CssTokenState::DECLARATION;
+				returnType = ReturnType::SELECTOR;
+				returnToken = true;
 				break;
 			default:
 				cout << "Illegal Character: '" << str[currPosition] << "'" << endl;

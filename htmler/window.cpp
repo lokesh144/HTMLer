@@ -51,7 +51,7 @@ bool Window::init() {
 			success = false;
 		}
 		else {
-			//SDL_SetRenderDrawColor(mrenderer, 255, 255, 255, 255);
+			SDL_SetRenderDrawColor(mrenderer, 255, 255, 255, 255);
 			if (TTF_Init() == -1) {
 				cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << endl;
 				exit(EXIT_FAILURE);
@@ -97,7 +97,9 @@ void Window::eventloop(RenderTree* tree) {
 
 		//render(tree->children[0]);
 		//SDL_RenderPresent(mrenderer);
+		this->setRootColor();
 		SDL_RenderPresent(mrenderer);
+		this->setRootColor();
 		refresh++;
 	}
 	cout << " refresh rate" << refresh << " Hz" << endl;
@@ -105,26 +107,30 @@ void Window::eventloop(RenderTree* tree) {
 void Window::getWindowSize(int* w) {
 	SDL_GetWindowSize(mwindow, w, nullptr);
 }
+
 std::pair<int, int> Window::getFontSize(const std::string& text) {
 	return mfont.fontSize(text.c_str());
 }
 
+/*
+To render an element first render it and then render its child
+To render itself we require the rect it convers
+the x, y, w and h value of the rect is already calculated
+iterate through the child  nodes :
+if child node is text node find its x,y width and height and render it
+if child node is element node call render(rendertree)
+*/
 void Window::render(const RenderTree* tree) {
-	//SDL_RenderPresent(mrenderer);
 	//free texture
 	if (mtexture != nullptr) {
 		SDL_DestroyTexture(mtexture);
 		mtexture = nullptr;
 	}
-	SDL_Rect parentRect = {
-		tree->rect.x,
-		tree->rect.y,
-		tree->rect.w,
-		tree->rect.h,
-	};
-	SDL_SetRenderDrawColor(mrenderer, 100, 100, 100, 100);
-	//rendering the tree element
-	SDL_RenderFillRect(mrenderer, &parentRect);
+	//set draw color to the background color of the element
+
+	SDL_Color bgColor(tree->getBgColor());
+	SDL_SetRenderDrawColor(mrenderer, bgColor.r, bgColor.g, bgColor.b, bgColor.a);
+	SDL_RenderFillRect(mrenderer, &tree->rect);
 
 	auto isTextNode = [](Node* node) {
 		if (dynamic_cast<Text*>(node))
@@ -149,52 +155,48 @@ void Window::render(const RenderTree* tree) {
 			//curr Node is textNode
 			auto& text = textNodeptr->getText();
 			auto [width, height] = RenderTree::windowptr->getFontSize(text);
-			auto pwidth = tree->rect.w;
-			int linecount = static_cast<int>(width / pwidth);
-			if (width > pwidth * linecount) {
+			int textwidth = tree->parent->rect.w -
+				tree->parent->styles->mpadding.left.toPixel() -
+				tree->parent->styles->mpadding.right.toPixel() -
+				tree->parent->styles->mborder.left.toPixel() -
+				tree->parent->styles->mborder.right.toPixel();
+			int linecount = static_cast<int>(width / textwidth);
+			if (width > textwidth * linecount) {
 				linecount++;
 			}
-			//tree.getColor();
-			SDL_Color textColor = { 0,255,0 };
-			SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(mfont.mfont, text.c_str(), textColor, mSCREEN_WIDTH);
+			SDL_Color textColor{ tree->getColor() };
+			SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(mfont.mfont, text.c_str(), textColor, textwidth);
 			if (textSurface == nullptr) {
 				cout << "cannot load text" << endl;
 				exit(EXIT_FAILURE);
 			}
 
-			SDL_Rect fillRect = {
-				tree->rect.x,
-				tree->rect.y + sumOfSiblingsHeight,
-				width > tree->rect.w ? tree->rect.w : width,
+			SDL_Rect textRect = {
+				tree->rect.x + tree->styles->mpadding.left.toPixel() + tree->styles->mborder.left.toPixel(),
+				tree->rect.y + tree->styles->mpadding.top.toPixel() + tree->styles->mborder.top.toPixel(),
+				width,
 				linecount * height
 			};
-			if (tree->element->attributes.size() != 0) {
-				if (tree->element->attributes[0].getValue() == "imp") {
-					tree->styles->mpadding.left = { 100,styles::LengthType::PIXEL };
-					tree->styles->mpadding.top = { 10,styles::LengthType::PIXEL };
-			tree->styles->mpadding.bottom = { 10,styles::LengthType::PIXEL };
-					tree->styles->mpadding.right = { 100,styles::LengthType::PIXEL };
-					this->renderBox(tree, fillRect);
-				}
-			}
 
-			sumOfSiblingsHeight += linecount * height;
-			//sumOfSiblingsHeight += linecount * height + tree->styles->mpadding.top.toPixel() + tree->styles->mpadding.bottom.toPixel() ;
-
+			/*
+			The x and y for the text node will be its containing blocks x,y - its padding and border in corr direction
+			*/
+			this->renderBox(tree);
+			//sumOfSiblingsHeight += linecount * height;
 			mtexture = SDL_CreateTextureFromSurface(mrenderer, textSurface);
-			SDL_RenderCopyEx(mrenderer, mtexture, NULL, &fillRect, 0.0, NULL, SDL_FLIP_NONE);
+			SDL_RenderCopyEx(mrenderer, mtexture, NULL, &textRect, 0.0, NULL, SDL_FLIP_NONE);
 			SDL_FreeSurface(textSurface);
 
 		}
 		else {
 			//if not text node apply recursion
 			render(tree->children[i++]);
-			sumOfSiblingsHeight += tree->children[i - 1]->rect.h;
+			//sumOfSiblingsHeight += tree->children[i - 1]->rect.h;
 		}
 	}
 }
 
-void Window::renderBox(const RenderTree* tree, SDL_Rect& box) {
+void Window::renderBox(const RenderTree* tree) {
 	constexpr int fontSize = 18;
 	struct FourRect {
 		SDL_Rect top, right, bottom, left;
@@ -205,23 +207,23 @@ void Window::renderBox(const RenderTree* tree, SDL_Rect& box) {
 	//no margin for now
 	border.left.x = tree->rect.x;
 	border.left.y = tree->rect.y;
-	border.left.w = tree->styles->mborder.left.borderWidth.toPixel();
+	border.left.w = tree->styles->mborder.left.toPixel();
 	border.left.h = tree->rect.h;
 
-	border.right.x = tree->rect.x + tree->rect.w - tree->styles->mborder.right.borderWidth.toPixel();
+	border.right.x = tree->rect.x + tree->rect.w - tree->styles->mborder.right.toPixel();
 	border.right.y = tree->rect.y;
-	border.right.w = tree->styles->mborder.right.borderWidth.toPixel();
+	border.right.w = tree->styles->mborder.right.toPixel();
 	border.right.h = tree->rect.h;
 
 	border.top.x = tree->rect.x;
 	border.top.y = tree->rect.y;
 	border.top.w = tree->rect.w;
-	border.top.h = tree->styles->mborder.top.borderWidth.toPixel();
+	border.top.h = tree->styles->mborder.top.toPixel();
 
 	border.bottom.x = tree->rect.x;
-	border.bottom.y = tree->rect.y + tree->rect.h - tree->styles->mborder.bottom.borderWidth.toPixel();
+	border.bottom.y = tree->rect.y + tree->rect.h - tree->styles->mborder.bottom.toPixel();
 	border.bottom.w = tree->rect.w;
-	border.bottom.h = tree->styles->mborder.bottom.borderWidth.toPixel();
+	border.bottom.h = tree->styles->mborder.bottom.toPixel();
 
 	padding.left.x = tree->rect.x + border.left.w;
 	padding.left.y = border.top.y + border.top.h;
@@ -251,7 +253,8 @@ void Window::renderBox(const RenderTree* tree, SDL_Rect& box) {
 	content.h = padding.left.h - padding.top.h - padding.bottom.h;
 
 
-	SDL_SetRenderDrawColor(mrenderer, 0, 0, 255, 100);
+	//SDL_SetRenderDrawColor(mrenderer, 0, 0, 255, 100);
+	/*
 	if (padding.top.h != 0)
 		SDL_RenderDrawRect(mrenderer, &padding.top);
 	if (padding.right.w != 0)
@@ -260,31 +263,34 @@ void Window::renderBox(const RenderTree* tree, SDL_Rect& box) {
 		SDL_RenderDrawRect(mrenderer, &padding.bottom);
 	if (padding.left.w != 0)
 		SDL_RenderDrawRect(mrenderer, &padding.left);
+	*/
 
 	//if border-color apply border color
 	//else border-color=text color
-	SDL_SetRenderDrawColor(mrenderer, 255, 0, 0, 100);
-	if (border.top.h != 0)
-		SDL_RenderDrawRect(mrenderer, &border.top);
-	if (border.right.w != 0)
-		SDL_RenderDrawRect(mrenderer, &border.right);
-	if (border.bottom.h != 0)
-		SDL_RenderDrawRect(mrenderer, &border.bottom);
-	if (border.left.w != 0)
-		SDL_RenderDrawRect(mrenderer, &border.left);
+	if (border.right.w != 0) {
+		SDL_SetRenderDrawColor(mrenderer, tree->styles->mborder.right.borderColor.r, tree->styles->mborder.right.borderColor.g, tree->styles->mborder.right.borderColor.b, 255);
+		SDL_RenderFillRect(mrenderer, &border.right);
+	}
+	if (border.top.h != 0) {
+		SDL_SetRenderDrawColor(mrenderer, tree->styles->mborder.top.borderColor.r, tree->styles->mborder.top.borderColor.g, tree->styles->mborder.top.borderColor.b, 255);
+		SDL_RenderFillRect(mrenderer, &border.top);
+	}
+	if (border.left.w != 0) {
+		SDL_SetRenderDrawColor(mrenderer, tree->styles->mborder.left.borderColor.r, tree->styles->mborder.left.borderColor.g, tree->styles->mborder.left.borderColor.b, 255);
+		SDL_RenderFillRect(mrenderer, &border.left);
+	}
+	if (border.bottom.h != 0) {
+		SDL_SetRenderDrawColor(mrenderer, tree->styles->mborder.bottom.borderColor.r, tree->styles->mborder.bottom.borderColor.g, tree->styles->mborder.bottom.borderColor.b, 255);
+		SDL_RenderFillRect(mrenderer, &border.bottom);
+	}
 
-
-	box = {
-		content.x,
-		content.y,
-		box.w,
-		box.h
-	};
-
-	box = content;
-	SDL_SetRenderDrawColor(mrenderer, 100, 100, 100, 100);
+	//SDL_SetRenderDrawColor(mrenderer, 100, 100, 100, 100);
 }
 
+
+void Window::setRootColor() {
+	SDL_SetRenderDrawColor(mrenderer, 255, 255, 255, 255);
+}
 
 
 /*===================================================================*/

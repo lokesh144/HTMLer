@@ -1,19 +1,35 @@
-
-#id1{
-	margin: 2px   ;
-	color: red    ;
+#i1 {
+	color: red;
+	margin: 20px;
 }
 
-#id2{
-	margin: 4rem;
-	padding : 4px;
-	color: white;
-	border: 2px solid green;
+#id80 {
+	color: green;
 }
 
-#more{
-	width:1000px;
-	margin-left: 20px;
-	padding-top: 3em;
+#i80 {
+	background-color: green;
 }
 
+#i2 {
+
+	margin-left: 3em;
+	background-color: red;
+	color: green;
+	padding: 14px;
+	border: 20px solid green;
+}
+
+#i4 {
+	color: blue;
+	background-color: green;
+}
+
+#id2 {
+	background-color: red;
+	color: green;
+}
+
+#ip {
+	margin-right: 20px;
+}

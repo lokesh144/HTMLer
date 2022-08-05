@@ -20,6 +20,7 @@ enum class CSSProperty {
 	PADDING_BOTTOM,
 	PADDING_LEFT,
 	WIDTH,
+	BACKGROUND_COLOR,
 	UNKNOWN
 };
 enum class SelectorType {

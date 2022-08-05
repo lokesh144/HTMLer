@@ -19,16 +19,31 @@ static inline std::string getPropertyName(CSSProperty prop) {
 	case CSSProperty::PADDING_BOTTOM:return "padding_bottom";
 	case CSSProperty::PADDING_LEFT:return "padding_left";
 	case CSSProperty::WIDTH:return "width";
+	case CSSProperty::BACKGROUND_COLOR:return "background-color";
 	case CSSProperty::UNKNOWN:return "unknownn ";
 	}
 }
 
 inline CSSProperty getPropertyNameAsEnum(const std::string& prop) {
-	if (prop == "color")return CSSProperty::COLOR;
-	if (prop == "padding")return CSSProperty::PADDING;
-	if (prop == "width")return CSSProperty::WIDTH;
-	if (prop == "border")return CSSProperty::BORDER;
 	if (prop == "margin")return CSSProperty::MARGIN;
+	if (prop == "color")return CSSProperty::COLOR;
+	if (prop == "margin")return CSSProperty::MARGIN;
+	if (prop == "margin-top")return CSSProperty::MARGIN_TOP;
+	if (prop == "margin-right")return CSSProperty::MARGIN_RIGHT;
+	if (prop == "margin-bottom")return CSSProperty::MARGIN_BOTTOM;
+	if (prop == "margin-left")return CSSProperty::MARGIN_LEFT;
+	if (prop == "border")return CSSProperty::BORDER;
+	if (prop == "border-top")return CSSProperty::BORDER_TOP;
+	if (prop == "border-right")return CSSProperty::BORDER_RIGHT;
+	if (prop == "border-bottom")return CSSProperty::BORDER_BOTTOM;
+	if (prop == "border-left")return CSSProperty::BORDER_LEFT;
+	if (prop == "padding")return CSSProperty::PADDING;
+	if (prop == "padding-top")return CSSProperty::PADDING_TOP;
+	if (prop == "padding-right")return CSSProperty::PADDING_RIGHT;
+	if (prop == "padding-bottom")return CSSProperty::PADDING_BOTTOM;
+	if (prop == "padding-left")return CSSProperty::PADDING_LEFT;
+	if (prop == "width")return CSSProperty::WIDTH;
+	if (prop == "background-color")return CSSProperty::BACKGROUND_COLOR;
 	else return CSSProperty::UNKNOWN;
 }
 

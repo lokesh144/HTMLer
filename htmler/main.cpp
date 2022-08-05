@@ -10,23 +10,7 @@
 #include "rendertree.h" 
 #include"window.h"
 #define endl '\n'
-using std::cout;
-std::string str = "\
-<!DOCTYPE html>\
-< html lang = \"en\">\
-<head > \
-<title>Page Title</title>\
-</head>\
-<body hello=\"hifads\">   \
-<div id='in-div'>\
-<span id='span a'> Span A</span>\
-<span id='span b'> Span B</span>\
-</div>\
-</body>\
-</html>\
-";
 
-//const char* str2 = "1abcdefghijklmnop 2abcdefghijklmnop 3abcdefghijklmnop 4abcdefghijklmnop 5abcdefghijklmnop 6abcdefghijklmnop 7abcdefghijklmnop 8abcdefghijklmnop 9abcdefghijklmnop 10abcdefghijklmnop 11abcdefghijklmnop 12abcdefghijklmnop 13abcdefghijklmnop";
 int main(int mainc, char* argv[]) {
 	std::ifstream file{ "index.html" };
 	std::ifstream cssfile{ "style.css" };
@@ -47,15 +31,20 @@ int main(int mainc, char* argv[]) {
 
 	RenderTree* rendertree = new RenderTree;
 	rendertree->createFromDom(document);
-	rendertree->addStyle(cssparser);
 
+
+	rendertree->addRootStyle();
+	rendertree->addStyle(cssparser);
 
 	Window window;
 	RenderTree::setStatic(&window);
 	int w{};
 	window.getWindowSize(&w);
 	rendertree->calculateLayout(w);
+
+	window.setRootColor();
 	window.eventloop(rendertree);
+	//	SDL_Delay(100000);
 
 	//auto hi = window.getFontSize(str2);
 	//cout << "=======================================" << endl;

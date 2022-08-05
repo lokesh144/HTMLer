@@ -26,6 +26,7 @@ namespace styles {
 		inline 	int toPixel(int size = 18)const;
 		friend int operator+(const styles::Length& l1, const styles::Length& l2);
 
+
 	};
 	enum  class Display {
 		BLOCK,
@@ -72,10 +73,14 @@ namespace styles {
 	public:
 		Length borderWidth;
 		BorderStyle borderStyle;
-		SDL_Color color;
+		SDL_Color borderColor;
 	public:
+		Border();
+		Border(const Length& l, const BorderStyle s, const SDL_Color& c);
 		friend inline  int operator+(const Border& b1, const Border& b2);
+		int toPixel(int size = 18);
 	};
+	Border parseBorder(std::string bordertext);
 
 	struct Dimension {
 		Length top;
@@ -93,6 +98,7 @@ namespace styles {
 		Border bottom;
 		Border left;
 	};
+	SDL_Color parseColor(std::string& clr);
 
 };
 

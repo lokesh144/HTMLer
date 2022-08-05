@@ -9,30 +9,25 @@
 
 class CssParser;
 
-
-struct Rect {
-	float x;
-	float y;
-	float w;
-	float h;
-
-};
 class RenderTree {
 private:
 	static Window* windowptr;
 	Element* element = nullptr;
 	Style* styles = nullptr;
-	Rect rect;
+	SDL_Rect rect;
 	RenderTree* parent{ nullptr };
+	RenderTree* prevSibling{ nullptr };
 	std::vector<RenderTree*> children;
 	int applyCss(const CSSRule& rule);
-	void applyStyle(const Declaration& style);
+	void applyStyle( Declaration& style);
 	void calculateLayout();
 	void calculateBox();
 public:
-	static void setStatic(Window* window) {
-		windowptr = window;
-	}
+	void addRootStyle();
+	static void setStatic(Window* window);
+	SDL_Color getBgColor()const;
+	SDL_Color getColor()const;
+
 	friend class Window;
 	RenderTree();
 	RenderTree(Element* elem, Style* stptr);
