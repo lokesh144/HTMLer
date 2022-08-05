@@ -307,63 +307,6 @@ void RenderTree::calculateLayout() {
 	cout << "width: " << this->rect.w << " height: " << rect.h << endl << endl;
 }
 
-void RenderTree::calculateBox() {
-	constexpr int fontSize = 18;
-	struct FourRect {
-		SDL_Rect top, right, bottom, left;
-	};
-	struct FourRect margin, padding, border;
-	SDL_Rect content;
-	//assume border-box for now
-	//no margin for now
-	border.left.x = this->rect.x;
-	border.left.y = this->rect.y;
-	border.left.w = this->styles->mborder.left.toPixel();
-	border.left.h = this->rect.h;
-
-	border.right.x = this->rect.x + this->rect.w - this->styles->mborder.right.toPixel();
-	border.right.y = this->rect.y;
-	border.right.w = this->styles->mborder.right.toPixel();
-	border.right.h = this->rect.h;
-
-	border.top.x = this->rect.x;
-	border.top.y = this->rect.y;
-	border.top.w = this->rect.w;
-	border.top.h = this->styles->mborder.top.toPixel();
-
-	border.bottom.x = this->rect.x;
-	border.bottom.y = this->rect.y + this->rect.h - this->styles->mborder.bottom.toPixel();
-	border.bottom.w = this->rect.w;
-	border.bottom.h = this->styles->mborder.bottom.toPixel();
-
-	padding.left.x = this->rect.x + border.left.w;
-	padding.left.y = border.top.y + border.top.h;
-	padding.left.w = this->styles->mpadding.left.toPixel();
-	padding.left.h = this->rect.h - border.top.h - border.bottom.h;
-
-	padding.right.x = border.right.x - this->styles->mpadding.right.toPixel();
-	padding.right.y = border.top.y + border.top.h;
-	padding.right.w = this->styles->mpadding.right.toPixel();
-	padding.right.h = this->rect.h - border.top.h - border.bottom.h;
-
-
-	padding.top.x = padding.left.x;
-	padding.top.y = padding.right.y;
-	padding.top.w = border.top.w - border.left.w - border.right.w;
-	padding.top.h = this->styles->mpadding.top.toPixel();
-
-	padding.bottom.x = padding.left.x;
-	padding.bottom.y = border.bottom.y - this->styles->mpadding.bottom.toPixel();
-	padding.bottom.w = padding.top.w;
-	padding.bottom.h = this->styles->mpadding.bottom.toPixel();
-
-	content.x = padding.left.x + padding.left.w;
-	content.y = padding.top.y + padding.top.h;
-
-	content.w = padding.top.w - padding.left.w - padding.right.w;
-	content.h = padding.left.h - padding.top.h - padding.bottom.h;
-	//box = content;
-}
 void RenderTree::setStatic(Window* window) {
 	windowptr = window;
 }
@@ -402,13 +345,13 @@ SDL_Color RenderTree::getColor() const {
 	the element has no color
 	*/
 
-	if (!(this->styles->mcolor == SDL_Color{ 0,0,0,0 } || this->styles->mcolor == SDL_Color{ 205,205,205,205} )){
-	//MUST MUST remove : temporary
+	if (!(this->styles->mcolor == SDL_Color{ 0,0,0,0 } || this->styles->mcolor == SDL_Color{ 205,205,205,205 })) {
+		//MUST MUST remove : temporary
 		return this->styles->mcolor;
 	}
 	auto currtree = this->parent;
 	while (currtree) {
-	if (!(currtree->styles->mcolor == SDL_Color{ 0,0,0,0 } ||currtree->styles->mcolor == SDL_Color{ 205,205,205,205} )){
+		if (!(currtree->styles->mcolor == SDL_Color{ 0,0,0,0 } || currtree->styles->mcolor == SDL_Color{ 205,205,205,205 })) {
 			return currtree->styles->mcolor;
 		}
 		currtree = currtree->parent;

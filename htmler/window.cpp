@@ -155,11 +155,11 @@ void Window::render(const RenderTree* tree) {
 			//curr Node is textNode
 			auto& text = textNodeptr->getText();
 			auto [width, height] = RenderTree::windowptr->getFontSize(text);
-			int textwidth = tree->parent->rect.w -
-				tree->parent->styles->mpadding.left.toPixel() -
-				tree->parent->styles->mpadding.right.toPixel() -
-				tree->parent->styles->mborder.left.toPixel() -
-				tree->parent->styles->mborder.right.toPixel();
+			int textwidth = tree->rect.w -
+				tree->styles->mpadding.left.toPixel() -
+				tree->styles->mpadding.right.toPixel() -
+				tree->styles->mborder.left.toPixel() -
+				tree->styles->mborder.right.toPixel();
 			int linecount = static_cast<int>(width / textwidth);
 			if (width > textwidth * linecount) {
 				linecount++;
@@ -174,7 +174,7 @@ void Window::render(const RenderTree* tree) {
 			SDL_Rect textRect = {
 				tree->rect.x + tree->styles->mpadding.left.toPixel() + tree->styles->mborder.left.toPixel(),
 				tree->rect.y + tree->styles->mpadding.top.toPixel() + tree->styles->mborder.top.toPixel(),
-				width,
+				width<textwidth?width:textwidth,
 				linecount * height
 			};
 
