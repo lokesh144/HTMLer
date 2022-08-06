@@ -1,5 +1,6 @@
 #include<iostream>
 #include<SDL_ttf.h>
+#include<algorithm>
 //#include"winuser.h"
 #include "window.h"
 #include "rendertree.h"
@@ -76,10 +77,24 @@ void Window::close() {
 void Window::eventloop(RenderTree* tree) {
 	bool quit = false;
 	SDL_Event event;
-	Uint8 r{ 255 }, g{ 255 }, b{ 255 };
-	int refresh{};
+	int currentypos{ 0 }; //for scrolling
+	const int contentWidth = tree->children[0]->rect.w;
+	const int contentHeight = tree->children[0]->rect.h;
+
+	SDL_Texture* result = SDL_CreateTexture(mrenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, contentWidth, contentHeight);//currentRenderingtexture
+	SDL_SetRenderTarget(mrenderer, result);
 	render(tree->children[0]);
+
+	SDL_SetRenderTarget(mrenderer, nullptr);//setting the target to window
+	const SDL_Rect DestRect = {
+		0,
+		0,
+		std::min(mSCREEN_WIDTH,contentWidth),
+		std::min(mSCREEN_HEIGHT,contentHeight)
+	};
+
 	while (!quit) {//main loop
+
 		while (SDL_PollEvent(&event) != 0) {//event loop 
 			if (event.type == SDL_QUIT) {
 				quit = true;
@@ -89,21 +104,43 @@ void Window::eventloop(RenderTree* tree) {
 				case SDLK_q:
 					quit = true;
 					break;
+				case SDLK_d:
+					if (contentHeight > mSCREEN_HEIGHT) {
+						currentypos += 100;
+						currentypos = std::min(currentypos, contentHeight - mSCREEN_HEIGHT);
+					}
+					break;
+				case SDLK_j:
+					if (contentHeight > mSCREEN_HEIGHT) {
+						currentypos += 10;
+						currentypos = std::min(currentypos, contentHeight - mSCREEN_HEIGHT);
+					}
+					break;
+				case SDLK_u:
+					currentypos -= 100;
+					currentypos = std::max(0, currentypos);
+					break;
+				case SDLK_k:
+					currentypos -= 20;
+					currentypos = std::max(0, currentypos);
+					break;
 				}
 			}
 		}
-		//SDL_SetRenderDrawColor(mrenderer, 255, 255, 255, 255);
-		//	SDL_RenderClear(mrenderer);
 
-		//render(tree->children[0]);
-		//SDL_RenderPresent(mrenderer);
-		this->setRootColor();
+		const SDL_Rect sourceRect = {
+			0,
+			currentypos,
+			std::min(mSCREEN_WIDTH,contentWidth),
+			std::min(mSCREEN_HEIGHT,contentHeight)
+		};
+
+		SDL_RenderClear(mrenderer);
+		SDL_RenderCopy(mrenderer, result, &sourceRect, &DestRect);
 		SDL_RenderPresent(mrenderer);
-		this->setRootColor();
-		refresh++;
 	}
-	cout << " refresh rate" << refresh << " Hz" << endl;
 }
+
 void Window::getWindowSize(int* w) {
 	SDL_GetWindowSize(mwindow, w, nullptr);
 }
@@ -120,6 +157,7 @@ iterate through the child  nodes :
 if child node is text node find its x,y width and height and render it
 if child node is element node call render(rendertree)
 */
+
 void Window::render(const RenderTree* tree) {
 	//free texture
 	if (mtexture != nullptr) {
@@ -174,8 +212,8 @@ void Window::render(const RenderTree* tree) {
 			SDL_Rect textRect = {
 				tree->rect.x + tree->styles->mpadding.left.toPixel() + tree->styles->mborder.left.toPixel(),
 				tree->rect.y + tree->styles->mpadding.top.toPixel() + tree->styles->mborder.top.toPixel(),
-				width<textwidth?width:textwidth,
-				linecount * height
+				width < textwidth ? width : textwidth,
+				linecount* height
 			};
 
 			/*
@@ -184,7 +222,7 @@ void Window::render(const RenderTree* tree) {
 			this->renderBox(tree);
 			//sumOfSiblingsHeight += linecount * height;
 			mtexture = SDL_CreateTextureFromSurface(mrenderer, textSurface);
-			SDL_RenderCopyEx(mrenderer, mtexture, NULL, &textRect, 0.0, NULL, SDL_FLIP_NONE);
+			SDL_RenderCopy(mrenderer, mtexture, NULL, &textRect);
 			SDL_FreeSurface(textSurface);
 
 		}

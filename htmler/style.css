@@ -1,42 +1,35 @@
-#i1 {
-	color: red;
-	margin: 20px;
+.parent2 {
+	color: #230F2F;
 }
 
-#id80 {
-	color: green;
+.parent1 {
+	color: #A0AF00;
 }
 
-#i80 {
-	background-color: green;
+.parent3 {
+	color: #F00016;
 }
 
-#i2 {
-
-	margin-left: 3em;
-	background-color: red;
-	color: green;
-	padding: 14px;
-	border: 20px solid green;
+.parent4 {
+	color: #00F0F0;
 }
 
-#imp {
-	color: red;
-	margin: 10px;
-	padding: 22px;
-	background-color: green;
+.parent5 {
+	color: #0F0FA0;
 }
 
-#i4 {
-	color: blue;
-	background-color: green;
+.parent6 {
+	color: #626262;
 }
 
-#id2 {
-	background-color: red;
-	color: green;
+.parent7 {
+	color: #1b4f5b;
 }
 
-#ip {
-	margin-right: 20px;
+.parent8 {
+	color: #d050ac;
+}
+
+.parent9 {
+	color: blueviolet;
 }
