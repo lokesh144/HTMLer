@@ -148,7 +148,6 @@ void Window::getWindowSize(int* w) {
 std::pair<int, int> Window::getFontSize(const std::string& text) {
 	return mfont.fontSize(text.c_str());
 }
-
 /*
 To render an element first render it and then render its child
 To render itself we require the rect it convers
@@ -169,6 +168,7 @@ void Window::render(const RenderTree* tree) {
 	SDL_Color bgColor(tree->getBgColor());
 	SDL_SetRenderDrawColor(mrenderer, bgColor.r, bgColor.g, bgColor.b, bgColor.a);
 	SDL_RenderFillRect(mrenderer, &tree->rect);
+	this->renderBox(tree);
 
 	auto isTextNode = [](Node* node) {
 		if (dynamic_cast<Text*>(node))
@@ -219,7 +219,6 @@ void Window::render(const RenderTree* tree) {
 			/*
 			The x and y for the text node will be its containing blocks x,y - its padding and border in corr direction
 			*/
-			this->renderBox(tree);
 			//sumOfSiblingsHeight += linecount * height;
 			mtexture = SDL_CreateTextureFromSurface(mrenderer, textSurface);
 			SDL_RenderCopy(mrenderer, mtexture, NULL, &textRect);
@@ -291,17 +290,6 @@ void Window::renderBox(const RenderTree* tree) {
 	content.h = padding.left.h - padding.top.h - padding.bottom.h;
 
 
-	//SDL_SetRenderDrawColor(mrenderer, 0, 0, 255, 100);
-	/*
-	if (padding.top.h != 0)
-		SDL_RenderDrawRect(mrenderer, &padding.top);
-	if (padding.right.w != 0)
-		SDL_RenderDrawRect(mrenderer, &padding.right);
-	if (padding.bottom.h != 0)
-		SDL_RenderDrawRect(mrenderer, &padding.bottom);
-	if (padding.left.w != 0)
-		SDL_RenderDrawRect(mrenderer, &padding.left);
-	*/
 
 	//if border-color apply border color
 	//else border-color=text color
@@ -321,8 +309,6 @@ void Window::renderBox(const RenderTree* tree) {
 		SDL_SetRenderDrawColor(mrenderer, tree->styles->mborder.bottom.borderColor.r, tree->styles->mborder.bottom.borderColor.g, tree->styles->mborder.bottom.borderColor.b, 255);
 		SDL_RenderFillRect(mrenderer, &border.bottom);
 	}
-
-	//SDL_SetRenderDrawColor(mrenderer, 100, 100, 100, 100);
 }
 
 
@@ -371,5 +357,4 @@ std::pair<int, int> Font::fontSize(const char* text) {
 }
 
 
-//TODO: add previous sibling whil initializing node
 //TODO: active formatting elements

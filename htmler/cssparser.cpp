@@ -127,8 +127,6 @@ Declaration CssParser::parsePropValue(const std::string& propValue) {
 	ignoreWhiteSpace(propValue, pos);
 	while (pos < propValue.length()) {
 		decl.value += propValue[pos++];
-		//TODO: must check if value is empty
-		//MUST
 	}
 	return decl;
 }

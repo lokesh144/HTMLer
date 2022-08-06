@@ -19,7 +19,7 @@ private:
 	RenderTree* prevSibling{ nullptr };
 	std::vector<RenderTree*> children;
 	int applyCss(const CSSRule& rule);
-	void applyStyle( Declaration& style);
+	void applyStyle(Declaration& style);
 	void calculateLayout();
 	void calculateBox();
 public:

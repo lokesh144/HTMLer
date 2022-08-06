@@ -212,7 +212,7 @@ namespace SS {
 			//border style = inset;
 			// Border to add
 			//mborder={Length(1,LengthType::PIXEL),INSET}
-			//TODO MANDIP
+			//TO
 		}
 	};
 	class HTMLEmStyle :public Style {

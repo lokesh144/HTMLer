@@ -101,7 +101,7 @@ Style* RenderTree::addDefaultStyleSheets(Element* el) {
 		styleptr = new SS::HTMLStrikeStyle{};
 		break;
 	default:
-		cout << "NOT IMPLEMENTED" << endl;
+		cout << "TAG NOT IMPLEMENTED" << endl;
 		exit(EXIT_FAILURE);
 	}
 	//
@@ -325,13 +325,13 @@ static bool operator==(const SDL_Color& c1, const SDL_Color& c2) {
 }
 
 SDL_Color RenderTree::getBgColor() const {
-	if (this->styles->mbackgroundColor != SDL_Color{ 0,0,0,0 }) {
+	if (!(this->styles->mbackgroundColor == SDL_Color{ 0,0,0,0 } || this->styles->mbackgroundColor == SDL_Color{ 205,205,205,205 })) {
 		return this->styles->mbackgroundColor;
 	}
 	auto currtree = this->parent;
 	while (currtree) {
-		if (currtree->styles->mbackgroundColor != SDL_Color{ 0,0,0,0 }) {
-			return this->styles->mbackgroundColor;
+		if (!(currtree->styles->mbackgroundColor == SDL_Color{ 0,0,0,0 } || currtree->styles->mbackgroundColor == SDL_Color{ 205,205,205,205 })) {
+			return currtree->styles->mbackgroundColor;
 		}
 		currtree = currtree->parent;
 	}
@@ -360,11 +360,6 @@ SDL_Color RenderTree::getColor() const {
 	exit(EXIT_FAILURE);
 }
 
-SDL_Color RenderTree::getColor() {
-
-	return { 0,0,0 };
-
-}
 
 void RenderTree::addStyle(const CssParser& css) {
 	//for every css property in find the corresponding element and override styles
@@ -459,5 +454,6 @@ void RenderTree::applyStyle(Declaration& style) {
 	default:
 		break;
 	}
-
 }
+
+//TODO: add support for font size

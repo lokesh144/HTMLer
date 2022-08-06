@@ -1,18 +1,25 @@
 .parent2 {
 	color: #230F2F;
+	background-color: red;
 }
 
 .parent1 {
+	border: 22px solid green;
 	color: #A0AF00;
+	background-color: black;
 }
+
+.child1 {}
 
 .parent3 {
 	color: #F00016;
 }
 
 .parent4 {
-	color: #00F0F0;
+	color: bisque;
 }
+
+.hi {}
 
 .parent5 {
 	color: #0F0FA0;

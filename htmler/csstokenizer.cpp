@@ -88,7 +88,7 @@ CssToken CssTokenizer::getNextToken(const std::string& str, int& currPosition) {
 				//ignore whitespaces
 				break;
 			case '{':
-				tokenState = CssTokenState::DECLARATION;
+				tokenState = CssTokenState::BEFORE_DECLARATION;
 				returnType = ReturnType::SELECTOR;
 				returnToken = true;
 				break;
@@ -101,6 +101,9 @@ CssToken CssTokenizer::getNextToken(const std::string& str, int& currPosition) {
 			switch (str[currPosition]) {
 			case WHITESPACE:
 				//ignore all preceding whitespace
+				break;
+			case ';':
+				//ignore empty semicolon
 				break;
 			case '}':
 				tokenState = CssTokenState::INITIAL;
