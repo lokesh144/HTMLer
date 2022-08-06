@@ -20,6 +20,23 @@ CssTokenizer::CssTokenizer()
 {
 }
 
+static void ignoreComment(const std::string& str, int& currPosition) {
+	if (str[currPosition] != '*') {
+		cout << "Invalid comment string" << endl;
+		exit(EXIT_FAILURE);
+	}
+	while (currPosition++) {
+		if (currPosition >= str.length()) {
+			cout << "Invalid comment string" << endl;
+			exit(EXIT_FAILURE);
+		}
+		if (str[currPosition] == '*') {
+			if (str[++currPosition] == '/') {
+				return;
+			}
+		}
+	}
+}
 CssToken CssTokenizer::getNextToken(const std::string& str, int& currPosition) {
 	reset();
 
@@ -31,6 +48,9 @@ CssToken CssTokenizer::getNextToken(const std::string& str, int& currPosition) {
 			switch (str[currPosition]) {
 			case WHITESPACE:
 				//ignore allwhitespace
+				break;
+			case '/':
+				ignoreComment(str, ++currPosition);
 				break;
 			case '.':
 			case '#':
@@ -87,6 +107,9 @@ CssToken CssTokenizer::getNextToken(const std::string& str, int& currPosition) {
 			case WHITESPACE:
 				//ignore whitespaces
 				break;
+			case '/':
+				ignoreComment(str, ++currPosition);
+				break;
 			case '{':
 				tokenState = CssTokenState::BEFORE_DECLARATION;
 				returnType = ReturnType::SELECTOR;
@@ -101,6 +124,9 @@ CssToken CssTokenizer::getNextToken(const std::string& str, int& currPosition) {
 			switch (str[currPosition]) {
 			case WHITESPACE:
 				//ignore all preceding whitespace
+				break;
+			case '/':
+				ignoreComment(str, ++currPosition);
 				break;
 			case ';':
 				//ignore empty semicolon
