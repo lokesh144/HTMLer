@@ -25,6 +25,7 @@ class Window {
 	SDL_Window* mwindow;
 	SDL_Renderer* mrenderer;
 	SDL_Texture* mtexture;
+	//static std::string title;
 	//std::vector<Font> fonts;
 	Font mfont;
 public:

@@ -64,6 +64,12 @@ class HTMLBodyElement : public HTMLElement {
 public:
 	HTMLBodyElement() :HTMLElement{ "body" } {}
 };
+
+class HTMLHeadingElement : public HTMLElement {
+	std::string align;
+public:
+	HTMLHeadingElement(const std::string& tagName) :HTMLElement(tagName) {}
+};
 /*-----------------------------------------------------------------*/
 class HTMLCollection {
 public:
@@ -262,9 +268,6 @@ class HTMLLIElement : public HTMLElement {
 };
 class HTMLBlockquoteElement : public HTMLElement {
 	std::string cite;
-};
-class HTMLHeadingElement : public HTMLElement {
-	std::string align;
 };
 class HTMLQuoteElement : public HTMLElement {
 	std::string cite;

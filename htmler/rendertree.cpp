@@ -95,15 +95,32 @@ Style* RenderTree::addDefaultStyleSheets(Element* el) {
 	case UL:
 		styleptr = new SS::HTMLUlStyle{};
 		break;
-		//case MAIN:
-			//styleptr = new Style;
-	case SPAN:
-		styleptr = new SS::HTMLStrikeStyle{};
+	case H1:
+		styleptr = new SS::HTMLH1Style{};
 		break;
+	case H2:
+		styleptr = new SS::HTMLH2Style{};
+		break;
+	case H3:
+		styleptr = new SS::HTMLH3Style{};
+		break;
+	case H4:
+		styleptr = new SS::HTMLH4Style{};
+		break;
+	case H5:
+		styleptr = new SS::HTMLH5Style{};
+		break;
+	case H6:
+		styleptr = new SS::HTMLH6Style{};
+		break;
+	case SPAN:
+		//styleptr = new SS::HTMLStrikeStyle{};
+		//break;
 	default:
 		cout << "TAG NOT IMPLEMENTED" << endl;
 		exit(EXIT_FAILURE);
 	}
+	return styleptr;
 	//
 	//SDL_Color c=this->getColor();
 }

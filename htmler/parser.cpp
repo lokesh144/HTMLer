@@ -40,9 +40,25 @@ Element* Parser::createNewHtmlElement(TagName tn) {
 	case DIV:
 		el = new HTMLDivElement{};
 		break;
-	case SPAN:
-		el = new HTMLSpanElement{};
+	case H1:
+		el = new HTMLHeadingElement{ "h1" };
 		break;
+	case H2:
+		el = new HTMLHeadingElement{ "h2" };
+		break;
+	case H3:
+		el = new HTMLHeadingElement{ "h3" };
+		break;
+	case H4:
+		el = new HTMLHeadingElement{ "h4" };
+		break;
+	case H5:
+		el = new HTMLHeadingElement{ "h5" };
+		break;
+	case H6:
+		el = new HTMLHeadingElement{ "h6" };
+		break;
+	case SPAN:
 	default:
 		el = new HTMLElement{ "el" };
 		break;
