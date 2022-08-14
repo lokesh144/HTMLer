@@ -209,7 +209,7 @@ void RenderTree::calculateLayout() {
 	//if prev sibling is text node then 
 	if (auto textNodeptr = dynamic_cast<Text*>(this->element->prevSibling)) {
 		auto& text = textNodeptr->getText();
-		auto [width, height] = RenderTree::windowptr->getFontSize(text);
+		auto [width, height] = RenderTree::windowptr->getFontSize(text,getFontName(),getFontSize());
 
 		int pwidth = this->parent->rect.w -
 			this->parent->styles->mpadding.left.toPixel() -
@@ -288,7 +288,7 @@ void RenderTree::calculateLayout() {
 		if (textNodeptr) {
 			//curr Node is textNode
 			auto& text = textNodeptr->getText();
-			auto [width, height] = RenderTree::windowptr->getFontSize(text);
+			auto [width, height] = RenderTree::windowptr->getFontSize(text,getFontName(),getFontSize());
 			int pwidth = this->rect.w -
 				this->styles->mpadding.left.toPixel() -
 				this->styles->mpadding.right.toPixel() -
@@ -331,6 +331,8 @@ void RenderTree::setStatic(Window* window) {
 void RenderTree::addRootStyle() {
 	this->styles->mbackgroundColor = { 255,255,255,255 };
 	this->styles->mcolor = { 0,0,0,255 };
+	this->styles->mfontSize = 16;
+	this->styles->mfontName = "Roboto";
 }
 
 static bool operator==(const SDL_Color& c1, const SDL_Color& c2) {
@@ -377,7 +379,42 @@ SDL_Color RenderTree::getColor() const {
 	exit(EXIT_FAILURE);
 }
 
-
+int RenderTree::getFontSize() const {
+	int fontsize = this->styles->mfontSize.toPixel();
+	if (fontsize!=0)
+	{
+		return fontsize;
+	}
+	auto currtree = this->parent;
+	while (currtree) {
+		fontsize = this->styles->mfontSize.toPixel();
+		if (fontsize!=0)
+		{
+			return fontsize;
+		}
+		currtree = currtree->parent;
+	}
+	cout << "This element doesnot have specified font size";
+	exit(EXIT_FAILURE);
+}
+std::string RenderTree::getFontName() const {
+	auto fontname = this->styles->mfontName;
+	if (!fontname.empty() )
+	{
+		return fontname;
+	}
+	auto currtree = this->parent;
+	while (currtree) {
+		fontname = this->styles->mfontName;
+		if (!fontname.empty())
+		{
+			return fontname;
+		}
+		currtree = currtree->parent;
+	}
+	cout << "This element doesnot have specified font ";
+	exit(EXIT_FAILURE);
+}
 void RenderTree::addStyle(const CssParser& css) {
 	//for every css property in find the corresponding element and override styles
 	for (auto& cssrule : css.cssRules) {

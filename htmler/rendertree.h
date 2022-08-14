@@ -28,6 +28,8 @@ public:
 	SDL_Color getBgColor()const;
 	SDL_Color getColor()const;
 
+	int getFontSize() const;
+	std::string getFontName() const;
 	friend class Window;
 	RenderTree();
 	RenderTree(Element* elem, Style* stptr);

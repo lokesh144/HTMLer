@@ -9,15 +9,18 @@ class Window;
 class Font {
 private:
 	std::string mname;
-	TTF_Font* mfont;
-	int size{ 18 };
+	//TTF_Font* mfont;
+	//int size{ 18 };
+	std::vector<std::pair<int, TTF_Font*>> fontsizeptrs;
 public:
 	friend class Window;
 	Font(const std::string& nam = "Roboto");
 	~Font();
 	void test(const std::string& t = "a");
-	bool loadFont(const std::string& n);
-	std::pair<int, int> fontSize(const char* text);
+	TTF_Font* loadFont(const std::string& n,int fontsize=18);
+	TTF_Font* loadFont(int fontsize);
+	TTF_Font* getFontPtr(int fontsize);
+
 };
 
 class Window {
@@ -29,7 +32,8 @@ class Window {
 	SDL_Texture* mtexture;
 	//static std::string title;
 	//std::vector<Font> fonts;
-	Font mfont;
+	//Font mfont;
+	std::vector<Font> mFonts;
 public:
 	Window(int scrollbarwidth);
 	~Window();
@@ -38,8 +42,9 @@ public:
 	void eventloop(RenderTree*);
 	void test();
 	void getWindowSize(int* w);
-	std::pair<int, int> getFontSize(const std::string& text);
+	std::pair<int, int> getFontSize(const std::string& text, const std::string& fontname, int fontsize);
 	void render(const RenderTree* tree);
+	TTF_Font* getFontPtr(std::string fontname, int fontsize);
 	void renderBox(const RenderTree* tree);
 void 	setRootColor();
 

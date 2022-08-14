@@ -110,6 +110,7 @@ public:
 	styles::Display mdisplay{ Display::NOT_SPECIFIED };
 	styles::ListStyleType mliststyletype{ ListStyleType::NOT_SPECIFIED };
 	styles::Length mfontSize;
+	std::string mfontName;
 	SDL_Color mcolor;
 	SDL_Color mbackgroundColor;
 	styles::FontStyle mfontStyle{ FontStyle::NOT_SPECIFIED };

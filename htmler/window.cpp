@@ -27,7 +27,7 @@ Window::Window(int scrollBarWidth) :
 {
 	init();
 	SDL_GetWindowSize(mwindow, &mSCREEN_WIDTH, &mSCREEN_HEIGHT);
-	mfont.loadFont("Roboto");
+	//mfont.loadFont("Roboto");
 }
 
 Window::~Window() {
@@ -165,8 +165,17 @@ void Window::getWindowSize(int* w) {
 	SDL_GetWindowSize(mwindow, w, nullptr);
 }
 
-std::pair<int, int> Window::getFontSize(const std::string& text) {
-	return mfont.fontSize(text.c_str());
+std::pair<int, int> Window::getFontSize(const std::string& text,const std::string& fontname,int fontsize) {
+	auto fptr = this->getFontPtr(fontname, fontsize);
+	int w, h;
+	if (TTF_SizeText(fptr, text.c_str(), &w, &h) == 0) {
+		return { w,h };
+	}
+	else {
+		cout << "Error calculating text width and height: " << TTF_GetError() << endl;
+		exit(EXIT_FAILURE);
+	};
+
 }
 /*
 To render an element first render it and then render its child
@@ -212,7 +221,7 @@ void Window::render(const RenderTree* tree) {
 		if (textNodeptr) {
 			//curr Node is textNode
 			auto& text = textNodeptr->getText();
-			auto [width, height] = RenderTree::windowptr->getFontSize(text);
+			auto [width, height] = RenderTree::windowptr->getFontSize(text,tree->getFontName(),tree->getFontSize() );
 			int textwidth = tree->rect.w -
 				tree->styles->mpadding.left.toPixel() -
 				tree->styles->mpadding.right.toPixel() -
@@ -223,7 +232,8 @@ void Window::render(const RenderTree* tree) {
 				linecount++;
 			}
 			SDL_Color textColor{ tree->getColor() };
-			SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(mfont.mfont, text.c_str(), textColor, textwidth);
+			auto fptr = this->getFontPtr(tree->getFontName(), tree->getFontSize());
+			SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(fptr, text.c_str(), textColor, textwidth);
 			if (textSurface == nullptr) {
 				cout << "cannot load text" << endl;
 				exit(EXIT_FAILURE);
@@ -335,46 +345,66 @@ void Window::renderBox(const RenderTree* tree) {
 void Window::setRootColor() {
 	SDL_SetRenderDrawColor(mrenderer, 255, 255, 255, 255);
 }
-
+TTF_Font* Window::getFontPtr(std::string fontname, int fontsize) {
+	auto font = std::find(mFonts.begin(), mFonts.end(), [fontname](Font font) {
+		return (font.mname == fontname);
+	});
+	if (font!=mFonts.end())
+	{
+		return font->getFontPtr(fontsize);
+	}
+	else {
+		mFonts.push_back(Font{ fontname });
+		return mFonts.back().getFontPtr(fontsize);
+	}
+}
 
 /*===================================================================*/
 /**************************** FONT CLASS *****************************/
 /*===================================================================*/
+
+TTF_Font* Font::getFontPtr(int fontsize) {
+	auto font = std::find(fontsizeptrs.begin(), fontsizeptrs.end(), [fontsize](auto font) {
+		return (font.first == fontsize);
+		});
+	if (font != fontsizeptrs.end())
+	{
+		return font->second;
+	}
+	else {
+		auto fptr = this->loadFont(fontsize);
+		fontsizeptrs.push_back(std::pair<int , TTF_Font*>{fontsize,fptr});
+		return fptr;
+	}
+}
+
 Font::Font(const std::string& name) {
 }
 Font::~Font() {
-	TTF_CloseFont(mfont);
+	for (auto fptr:fontsizeptrs) {
+		TTF_CloseFont(fptr.second);
+
+	}
 	cout << "closing font  " << mname << endl;
 	TTF_Quit();
 	SDL_Quit();
 	//leave it here for now//warning
 }
-bool Font::loadFont(const std::string& n) {
-	bool success = true;
-	mfont = TTF_OpenFont(("../fonts/" + n + ".ttf").c_str(), 18);
-	if (mfont == nullptr) {
+TTF_Font* Font::loadFont(const std::string& n,int fontsize) {
+	TTF_Font*fptr = TTF_OpenFont(("../fonts/" + n + ".ttf").c_str(), fontsize);
+	if (fptr== nullptr) {
 		cout << "couldnot load font: " << TTF_GetError() << endl;
-		success = false;
 	}
-	return success;
+	return fptr;
+}
+TTF_Font* Font::loadFont(int fontsize) {
+	return loadFont(mname,fontsize);
 }
 void Font::test(const std::string& t) {
-	int w{}, h{};
-	TTF_SizeText(mfont, t.c_str(), &w, &h);
-	cout << t << "  w " << w << " h " << h << endl;
-
+	
 }
 
-std::pair<int, int> Font::fontSize(const char* text) {
-	int w, h;
-	if (TTF_SizeText(mfont, text, &w, &h) == 0) {
-		return { w,h };
-	}
-	else {
-		cout << "Error calculating text width and height: " << TTF_GetError() << endl;
-		exit(EXIT_FAILURE);
-	};
-}
+ 
 
 
 //TODO: active formatting elements
