@@ -36,11 +36,13 @@ int main(int mainc, char* argv[]) {
 	rendertree->addRootStyle();
 	rendertree->addStyle(cssparser);
 
-	Window window;
+	int scrollbarWidth = 20;
+	Window window{scrollbarWidth};
 	RenderTree::setStatic(&window);
 	int w{};
 	window.getWindowSize(&w);
-	rendertree->calculateLayout(w);
+	rendertree->calculateLayout(w-scrollbarWidth);
+	//decrease the size of w by width of scroll bar
 
 	window.setRootColor();
 	window.eventloop(rendertree);

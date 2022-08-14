@@ -19,10 +19,11 @@ void Window::test() {
 	//mfont.test("ooooo");
 }
 
-Window::Window() :
+Window::Window(int scrollBarWidth) :
 	mwindow{ nullptr },
 	mrenderer{ nullptr },
-	mtexture{ nullptr }
+	mtexture{ nullptr },
+	mscrollbar{scrollBarWidth}
 {
 	init();
 	SDL_GetWindowSize(mwindow, &mSCREEN_WIDTH, &mSCREEN_HEIGHT);
@@ -85,6 +86,8 @@ void Window::eventloop(RenderTree* tree) {
 	SDL_SetRenderTarget(mrenderer, result);
 	render(tree->children[0]);
 
+	mscrollbar.setTotalHeight(contentHeight, mSCREEN_HEIGHT);
+
 	SDL_SetRenderTarget(mrenderer, nullptr);//setting the target to window
 	const SDL_Rect DestRect = {
 		0,
@@ -126,6 +129,21 @@ void Window::eventloop(RenderTree* tree) {
 					break;
 				}
 			}
+			if (event.type == SDL_MOUSEWHEEL) {
+				//cout << event.wheel.y<<endl;
+				if (event.wheel.y < 0 )
+				{
+					if (contentHeight > mSCREEN_HEIGHT) {
+						currentypos += 100;
+						currentypos = std::min(currentypos, contentHeight - mSCREEN_HEIGHT);
+					}
+				}
+				else if (event.wheel.y > 0 )
+				{
+					currentypos -= 100;
+					currentypos = std::max(0, currentypos);
+				}
+			}
 		}
 
 		const SDL_Rect sourceRect = {
@@ -136,7 +154,9 @@ void Window::eventloop(RenderTree* tree) {
 		};
 
 		SDL_RenderClear(mrenderer);
+
 		SDL_RenderCopy(mrenderer, result, &sourceRect, &DestRect);
+		mscrollbar.render(mrenderer, currentypos, mSCREEN_WIDTH, mSCREEN_HEIGHT);
 		SDL_RenderPresent(mrenderer);
 	}
 }

@@ -2,6 +2,7 @@
 #include<vector>
 #include<SDL.h>
 #include<SDL_ttf.h>
+#include "scrollbar.h"
 
 class RenderTree;
 class Window;
@@ -22,6 +23,7 @@ public:
 class Window {
 	int mSCREEN_WIDTH;
 	int mSCREEN_HEIGHT;
+	Scrollbar mscrollbar;
 	SDL_Window* mwindow;
 	SDL_Renderer* mrenderer;
 	SDL_Texture* mtexture;
@@ -29,7 +31,7 @@ class Window {
 	//std::vector<Font> fonts;
 	Font mfont;
 public:
-	Window();
+	Window(int scrollbarwidth);
 	~Window();
 	bool init();
 	void close();
