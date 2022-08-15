@@ -30,6 +30,10 @@ inline  int operator+(const Border& b1, const Border& b2) {
 int styles::Border::toPixel(int size) {
 	return borderWidth.toPixel(size);
 }
+int styles::operator+(const styles::Length& l1, const styles::Length& l2)
+{
+	return 0;
+}
 Border styles::parseBorder(std::string bordertext) {
 	trim(bordertext);
 	/*

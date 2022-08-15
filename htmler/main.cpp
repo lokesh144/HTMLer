@@ -37,11 +37,11 @@ int main(int mainc, char* argv[]) {
 	rendertree->addStyle(cssparser);
 
 	int scrollbarWidth = 20;
-	Window window{scrollbarWidth};
+	Window window{ scrollbarWidth };
 	RenderTree::setStatic(&window);
 	int w{};
 	window.getWindowSize(&w);
-	rendertree->calculateLayout(w-scrollbarWidth);
+	rendertree->calculateLayout(w - scrollbarWidth);
 	//decrease the size of w by width of scroll bar
 
 	window.setRootColor();
@@ -54,6 +54,8 @@ int main(int mainc, char* argv[]) {
 	//cout << "=======================================" << endl;
 	delete rendertree;
 	delete document;
+	TTF_Quit();
+	SDL_Quit();
 	return 0;
 }
 int mainm(int argc, char* argv[]) {

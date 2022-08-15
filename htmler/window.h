@@ -14,7 +14,7 @@ private:
 	std::vector<std::pair<int, TTF_Font*>> fontsizeptrs;
 public:
 	friend class Window;
-	Font(const std::string& nam = "Roboto");
+	Font(const std::string& name = "Roboto");
 	~Font();
 	void test(const std::string& t = "a");
 	TTF_Font* loadFont(const std::string& n,int fontsize=18);

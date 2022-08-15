@@ -25,8 +25,6 @@ namespace styles {
 		Length(int val, LengthType lt = LengthType::PIXEL);
 		inline 	int toPixel(int size = 18)const;
 		friend int operator+(const styles::Length& l1, const styles::Length& l2);
-
-
 	};
 	enum  class Display {
 		BLOCK,

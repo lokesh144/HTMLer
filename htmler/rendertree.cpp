@@ -387,7 +387,7 @@ int RenderTree::getFontSize() const {
 	}
 	auto currtree = this->parent;
 	while (currtree) {
-		fontsize = this->styles->mfontSize.toPixel();
+		fontsize = currtree->styles->mfontSize.toPixel();
 		if (fontsize!=0)
 		{
 			return fontsize;
@@ -405,7 +405,7 @@ std::string RenderTree::getFontName() const {
 	}
 	auto currtree = this->parent;
 	while (currtree) {
-		fontname = this->styles->mfontName;
+		fontname = currtree->styles->mfontName;
 		if (!fontname.empty())
 		{
 			return fontname;

@@ -23,7 +23,7 @@ Window::Window(int scrollBarWidth) :
 	mwindow{ nullptr },
 	mrenderer{ nullptr },
 	mtexture{ nullptr },
-	mscrollbar{scrollBarWidth}
+	mscrollbar{ scrollBarWidth }
 {
 	init();
 	SDL_GetWindowSize(mwindow, &mSCREEN_WIDTH, &mSCREEN_HEIGHT);
@@ -131,14 +131,14 @@ void Window::eventloop(RenderTree* tree) {
 			}
 			if (event.type == SDL_MOUSEWHEEL) {
 				//cout << event.wheel.y<<endl;
-				if (event.wheel.y < 0 )
+				if (event.wheel.y < 0)
 				{
 					if (contentHeight > mSCREEN_HEIGHT) {
 						currentypos += 100;
 						currentypos = std::min(currentypos, contentHeight - mSCREEN_HEIGHT);
 					}
 				}
-				else if (event.wheel.y > 0 )
+				else if (event.wheel.y > 0)
 				{
 					currentypos -= 100;
 					currentypos = std::max(0, currentypos);
@@ -165,16 +165,22 @@ void Window::getWindowSize(int* w) {
 	SDL_GetWindowSize(mwindow, w, nullptr);
 }
 
-std::pair<int, int> Window::getFontSize(const std::string& text,const std::string& fontname,int fontsize) {
+std::pair<int, int> Window::getFontSize(const std::string& text, const std::string& fontname, int fontsize) {
 	auto fptr = this->getFontPtr(fontname, fontsize);
 	int w, h;
-	if (TTF_SizeText(fptr, text.c_str(), &w, &h) == 0) {
-		return { w,h };
+	try {
+
+		if (TTF_SizeText(fptr, text.c_str(), &w, &h) == 0) {
+			return { w,h };
+		}
+		else {
+			cout << "Error calculating text width and height: " << TTF_GetError() << endl;
+			exit(EXIT_FAILURE);
+		};
 	}
-	else {
-		cout << "Error calculating text width and height: " << TTF_GetError() << endl;
-		exit(EXIT_FAILURE);
-	};
+	catch (char* ex) {
+		cout << "EXCEPTION: " << ex << endl;
+	}
 
 }
 /*
@@ -221,7 +227,7 @@ void Window::render(const RenderTree* tree) {
 		if (textNodeptr) {
 			//curr Node is textNode
 			auto& text = textNodeptr->getText();
-			auto [width, height] = RenderTree::windowptr->getFontSize(text,tree->getFontName(),tree->getFontSize() );
+			auto [width, height] = RenderTree::windowptr->getFontSize(text, tree->getFontName(), tree->getFontSize());
 			int textwidth = tree->rect.w -
 				tree->styles->mpadding.left.toPixel() -
 				tree->styles->mpadding.right.toPixel() -
@@ -341,15 +347,15 @@ void Window::renderBox(const RenderTree* tree) {
 	}
 }
 
-
 void Window::setRootColor() {
 	SDL_SetRenderDrawColor(mrenderer, 255, 255, 255, 255);
 }
+
 TTF_Font* Window::getFontPtr(std::string fontname, int fontsize) {
-	auto font = std::find(mFonts.begin(), mFonts.end(), [fontname](Font font) {
+	auto font = std::find_if(mFonts.begin(), mFonts.end(), [fontname](const Font& font) {
 		return (font.mname == fontname);
-	});
-	if (font!=mFonts.end())
+		});
+	if (font != mFonts.end())
 	{
 		return font->getFontPtr(fontsize);
 	}
@@ -359,12 +365,14 @@ TTF_Font* Window::getFontPtr(std::string fontname, int fontsize) {
 	}
 }
 
+
 /*===================================================================*/
 /**************************** FONT CLASS *****************************/
 /*===================================================================*/
 
+
 TTF_Font* Font::getFontPtr(int fontsize) {
-	auto font = std::find(fontsizeptrs.begin(), fontsizeptrs.end(), [fontsize](auto font) {
+	auto font = std::find_if(fontsizeptrs.begin(), fontsizeptrs.end(), [fontsize](std::pair<int, TTF_Font*> font) {
 		return (font.first == fontsize);
 		});
 	if (font != fontsizeptrs.end())
@@ -373,38 +381,37 @@ TTF_Font* Font::getFontPtr(int fontsize) {
 	}
 	else {
 		auto fptr = this->loadFont(fontsize);
-		fontsizeptrs.push_back(std::pair<int , TTF_Font*>{fontsize,fptr});
+		fontsizeptrs.push_back(std::pair<int, TTF_Font*>{fontsize, fptr});
 		return fptr;
 	}
 }
 
-Font::Font(const std::string& name) {
+Font::Font(const std::string& name) :mname{ name } {
 }
 Font::~Font() {
-	for (auto fptr:fontsizeptrs) {
+	for (auto fptr : fontsizeptrs) {
 		TTF_CloseFont(fptr.second);
 
 	}
 	cout << "closing font  " << mname << endl;
-	TTF_Quit();
-	SDL_Quit();
 	//leave it here for now//warning
 }
-TTF_Font* Font::loadFont(const std::string& n,int fontsize) {
-	TTF_Font*fptr = TTF_OpenFont(("../fonts/" + n + ".ttf").c_str(), fontsize);
-	if (fptr== nullptr) {
+
+TTF_Font* Font::loadFont(const std::string& n, int fontsize) {
+	TTF_Font* fptr = TTF_OpenFont(("../fonts/" + n + ".ttf").c_str(), fontsize);
+	if (fptr == nullptr) {
 		cout << "couldnot load font: " << TTF_GetError() << endl;
 	}
 	return fptr;
 }
 TTF_Font* Font::loadFont(int fontsize) {
-	return loadFont(mname,fontsize);
+	return loadFont(mname, fontsize);
 }
 void Font::test(const std::string& t) {
-	
+
 }
 
- 
+
 
 
 //TODO: active formatting elements
