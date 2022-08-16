@@ -22,11 +22,11 @@ void Window::test() {
 Window::Window(int scrollBarWidth) :
 	mwindow{ nullptr },
 	mrenderer{ nullptr },
-	mtexture{ nullptr },
-	mscrollbar{ scrollBarWidth }
+	mtexture{ nullptr }
 {
 	init();
 	SDL_GetWindowSize(mwindow, &mSCREEN_WIDTH, &mSCREEN_HEIGHT);
+	mscrollbar = Scrollbar(scrollBarWidth, mSCREEN_WIDTH, mSCREEN_HEIGHT);
 	//mfont.loadFont("Roboto");
 }
 
@@ -108,6 +108,7 @@ void Window::eventloop(RenderTree* tree) {
 					quit = true;
 					break;
 				case SDLK_d:
+				case SDLK_DOWN:
 					if (contentHeight > mSCREEN_HEIGHT) {
 						currentypos += 100;
 						currentypos = std::min(currentypos, contentHeight - mSCREEN_HEIGHT);
@@ -120,6 +121,7 @@ void Window::eventloop(RenderTree* tree) {
 					}
 					break;
 				case SDLK_u:
+				case SDLK_UP:
 					currentypos -= 100;
 					currentypos = std::max(0, currentypos);
 					break;
@@ -142,6 +144,26 @@ void Window::eventloop(RenderTree* tree) {
 				{
 					currentypos -= 100;
 					currentypos = std::max(0, currentypos);
+				}
+			}
+			if (event.type = SDL_MOUSEBUTTONDOWN)
+			{
+				if (event.button.button == SDL_BUTTON_LEFT)
+				{
+					int pos = mscrollbar.handleMouseClick(event);
+					cout << pos << endl;
+					if (pos == 1)
+					{
+						if (contentHeight > mSCREEN_HEIGHT) {
+							currentypos += mSCREEN_HEIGHT / 2;
+							currentypos = std::min(currentypos, contentHeight - mSCREEN_HEIGHT);
+						}
+					}
+					else if (pos == -1)
+					{
+						currentypos -= mSCREEN_HEIGHT / 2;
+						currentypos = std::max(0, currentypos);
+					}
 				}
 			}
 		}
