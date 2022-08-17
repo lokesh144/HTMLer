@@ -101,6 +101,16 @@ namespace styles {
 };
 
 using namespace styles;
+class DynamicStyle {
+public:
+	bool activeState{ false };
+	std::pair<bool, SDL_Color>  mcolor{ false,{} };
+	std::pair<bool, SDL_Color>  mbackgroundColor{ false,{} };
+	bool hasEffect() const{
+		return (mcolor.first || mbackgroundColor.first);
+	}
+
+};
 class Style {
 public:
 	styles::TextDecoration mTextDecoration{ TextDecoration::NOT_SPECIFIED };

@@ -1,8 +1,34 @@
+.child3:hover {
+	color: red;
+}
+
+.child1:hover {
+	background-color: green;
+	color: aqua;
+}
+
+.temp:hover {
+	color: blueviolet;
+}
+
+.child4:hover {
+	color: white;
+}
+
+.child5:hover {
+	color: aqua;
+}
+
+.child2:hover {
+	color: blue;
+}
+
 .parent2 {
 	color: #230F2F;
 	background-color: red;
 	/* font: Lato; */
 }
+
 
 .parent3 {
 	font: Merriweather;
@@ -15,7 +41,6 @@
 .child1 {
 	font: Raleway;
 }
-
 
 .child3 {
 	font: Roboto;

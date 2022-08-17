@@ -92,7 +92,8 @@ CssToken CssTokenizer::getNextToken(const std::string& str, int& currPosition) {
 					std::isalpha(str[currPosition]) ||
 					std::isdigit(str[currPosition]) ||
 					str[currPosition] == '_' ||
-					str[currPosition] == '-'
+					str[currPosition] == '-'||
+					str[currPosition]==':'
 					) {
 					currToken.push_back(str[currPosition]);
 				}

@@ -102,10 +102,11 @@ void Window::eventloop(RenderTree* tree) {
 	while (!quit) {//main loop
 
 		while (SDL_PollEvent(&event) != 0) {//event loop 
-			if (event.type == SDL_QUIT) {
+			switch (event.type) {
+			case SDL_QUIT:
 				quit = true;
-			}
-			if (event.type == SDL_KEYDOWN) {
+				break;
+			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym) {
 				case SDLK_q:
 					quit = true;
@@ -133,9 +134,9 @@ void Window::eventloop(RenderTree* tree) {
 					currentypos = std::max(0, currentypos);
 					break;
 				}
-			}
-			if (event.type == SDL_MOUSEWHEEL) {
-				//cout << event.wheel.y<<endl;
+				break;
+			case SDL_MOUSEWHEEL:
+			{
 				if (event.wheel.y < 0)
 				{
 					if (contentHeight > mSCREEN_HEIGHT) {
@@ -149,7 +150,8 @@ void Window::eventloop(RenderTree* tree) {
 					currentypos = std::max(0, currentypos);
 				}
 			}
-			if (event.type = SDL_MOUSEBUTTONDOWN)
+			break;
+			case SDL_MOUSEBUTTONDOWN:
 			{
 				if (event.button.button == SDL_BUTTON_LEFT)
 				{
@@ -169,6 +171,22 @@ void Window::eventloop(RenderTree* tree) {
 					}
 				}
 			}
+			break;
+			case SDL_MOUSEMOTION:
+			{
+				cout << event.motion.x << endl;
+				bool hasHoverEffect = this->handleHover(tree->children[0], event, currentypos);
+				if (hasHoverEffect) {
+					SDL_SetRenderTarget(mrenderer, result);
+					render(tree->children[0]);
+					SDL_SetRenderTarget(mrenderer, nullptr);
+
+				}
+
+				cout << std::boolalpha << "hasHoverEffect " << hasHoverEffect << endl;
+			}
+			break;
+			}
 		}
 
 		const SDL_Rect sourceRect = {
@@ -184,6 +202,31 @@ void Window::eventloop(RenderTree* tree) {
 		mscrollbar.render(mrenderer, currentypos, mSCREEN_WIDTH, mSCREEN_HEIGHT);
 		SDL_RenderPresent(mrenderer);
 	}
+}
+
+/*
+returns true if atleast one including has an effect on hover
+*/
+bool Window::handleHover(RenderTree* tree, const SDL_Event& event, int currYPos) {
+	/*first check for parent if the mouse lies in parent iterate through child
+	else go to next sibling
+	*/
+	bool hasEffect = tree->hoverStyle.hasEffect();
+	for (auto childtree : tree->children) {
+		if (isPointInsideRect(childtree->rect, event.motion.x, event.motion.y + currYPos)) {
+			childtree->hoverStyle.activeState = true;
+			hasEffect = hasEffect || handleHover(childtree, event, currYPos);
+			break;
+		}
+	}
+	return hasEffect;
+}
+
+bool Window::isPointInsideRect(const SDL_Rect& rect, int x, int y) {
+	if (x > rect.x && x<rect.x+rect.w && y>rect.y && y < rect.y+rect.h)
+		return true;
+	else
+		return false;
 }
 
 void Window::getWindowSize(int* w) {
@@ -217,7 +260,7 @@ if child node is text node find its x,y width and height and render it
 if child node is element node call render(rendertree)
 */
 
-void Window::render(const RenderTree* tree) {
+void Window::render( RenderTree* tree) {
 	//free texture
 	if (mtexture != nullptr) {
 		SDL_DestroyTexture(mtexture);
@@ -225,7 +268,12 @@ void Window::render(const RenderTree* tree) {
 	}
 	//set draw color to the background color of the element
 
-	SDL_Color bgColor(tree->getBgColor());
+	SDL_Color bgColor(tree->hoverStyle.activeState &&
+		tree->hoverStyle.mbackgroundColor.first ?
+		tree->hoverStyle.mbackgroundColor.second :
+		tree->getBgColor()
+	);
+
 	SDL_SetRenderDrawColor(mrenderer, bgColor.r, bgColor.g, bgColor.b, bgColor.a);
 	SDL_RenderFillRect(mrenderer, &tree->rect);
 	this->renderBox(tree);
@@ -262,7 +310,12 @@ void Window::render(const RenderTree* tree) {
 			if (width > textwidth * linecount) {
 				linecount++;
 			}
-			SDL_Color textColor{ tree->getColor() };
+ 
+			SDL_Color textColor{ tree->hoverStyle.activeState &&
+				tree->hoverStyle.mcolor.first ?
+				tree->hoverStyle.mcolor.second :
+				tree->getColor()
+			};
 			auto fptr = this->getFontPtr(tree->getFontName(), tree->getFontSize());
 			//SDL_Surface* textSurface = TTF_RenderText_Shaded_Wrapped(fptr, text.c_str(), SDL_Color{}, textColor, textwidth);
 			SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(fptr, text.c_str(), textColor, textwidth);
@@ -293,6 +346,7 @@ void Window::render(const RenderTree* tree) {
 			//sumOfSiblingsHeight += tree->children[i - 1]->rect.h;
 		}
 	}
+	tree->hoverStyle.activeState = false;
 }
 
 void Window::renderBox(const RenderTree* tree) {
