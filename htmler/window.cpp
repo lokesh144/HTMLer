@@ -116,7 +116,7 @@ void Window::eventloop(RenderTree* tree) {
 					break;
 				case SDLK_j:
 					if (contentHeight > mSCREEN_HEIGHT) {
-						currentypos += 10;
+						currentypos += 20;
 						currentypos = std::min(currentypos, contentHeight - mSCREEN_HEIGHT);
 					}
 					break;
