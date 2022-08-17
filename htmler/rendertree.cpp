@@ -209,7 +209,7 @@ void RenderTree::calculateLayout() {
 	//if prev sibling is text node then 
 	if (auto textNodeptr = dynamic_cast<Text*>(this->element->prevSibling)) {
 		auto& text = textNodeptr->getText();
-		auto [width, height] = RenderTree::windowptr->getFontSize(text,getFontName(),getFontSize());
+		auto [width, height] = RenderTree::windowptr->getFontSize(text, getFontName(), getFontSize());
 
 		int pwidth = this->parent->rect.w -
 			this->parent->styles->mpadding.left.toPixel() -
@@ -288,7 +288,7 @@ void RenderTree::calculateLayout() {
 		if (textNodeptr) {
 			//curr Node is textNode
 			auto& text = textNodeptr->getText();
-			auto [width, height] = RenderTree::windowptr->getFontSize(text,getFontName(),getFontSize());
+			auto [width, height] = RenderTree::windowptr->getFontSize(text, getFontName(), getFontSize());
 			int pwidth = this->rect.w -
 				this->styles->mpadding.left.toPixel() -
 				this->styles->mpadding.right.toPixel() -
@@ -314,14 +314,14 @@ void RenderTree::calculateLayout() {
 	this->rect.h += this->styles->mborder.top.toPixel() + this->styles->mborder.bottom.borderWidth.toPixel();
 
 
-	cout << this->element->tagName
-		<< "   ";
-	cout << endl;
-	if (this->element->attributes.size() != 0) {
-		cout << this->element->attributes[0].getName() << " : " << this->element->attributes[0].getValue() << endl;
-	}
-	cout << "(x,y)= " << this->rect.x << "," << this->rect.y << ")" << endl;
-	cout << "width: " << this->rect.w << " height: " << rect.h << endl << endl;
+	//cout << this->element->tagName
+		//<< "   ";
+	//cout << endl;
+	//if (this->element->attributes.size() != 0) {
+		//cout << this->element->attributes[0].getName() << " : " << this->element->attributes[0].getValue() << endl;
+	//}
+	//cout << "(x,y)= " << this->rect.x << "," << this->rect.y << ")" << endl;
+	//cout << "width: " << this->rect.w << " height: " << rect.h << endl << endl;
 }
 
 void RenderTree::setStatic(Window* window) {
@@ -381,14 +381,14 @@ SDL_Color RenderTree::getColor() const {
 
 int RenderTree::getFontSize() const {
 	int fontsize = this->styles->mfontSize.toPixel();
-	if (fontsize!=0)
+	if (fontsize != 0)
 	{
 		return fontsize;
 	}
 	auto currtree = this->parent;
 	while (currtree) {
 		fontsize = currtree->styles->mfontSize.toPixel();
-		if (fontsize!=0)
+		if (fontsize != 0)
 		{
 			return fontsize;
 		}
@@ -399,7 +399,7 @@ int RenderTree::getFontSize() const {
 }
 std::string RenderTree::getFontName() const {
 	auto fontname = this->styles->mfontName;
-	if (!fontname.empty() )
+	if (!fontname.empty())
 	{
 		return fontname;
 	}
@@ -419,7 +419,7 @@ void RenderTree::addStyle(const CssParser& css) {
 	//for every css property in find the corresponding element and override styles
 	for (auto& cssrule : css.cssRules) {
 		int c = this->applyCss(cssrule);
-		cout << c << "  total Match" << endl << endl;
+		//cout << c << "  total Match" << endl << endl;
 	}
 }
 

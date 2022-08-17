@@ -84,12 +84,12 @@ void CssParser::parse(const std::string& str) {
 				exit(EXIT_FAILURE);
 
 			}
-			cout << "Selector: " << token.second << endl;
+			//cout << "Selector: " << token.second << endl;
 		}
 		else if (token.first == ReturnType::DECLARATION) {
 			Declaration declaration = this->parsePropValue(token.second);
 			this->cssRules.back().second.push_back(declaration);
-			cout << "PropValue: Prop: " << getPropertyName(declaration.property) << " Value: " << declaration.value << endl;
+			//cout << "PropValue: Prop: " << getPropertyName(declaration.property) << " Value: " << declaration.value << endl;
 		}
 		else if (token.first == ReturnType::END_OF_FILE) {
 			return;

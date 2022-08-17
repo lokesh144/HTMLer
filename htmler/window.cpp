@@ -261,6 +261,7 @@ void Window::render(const RenderTree* tree) {
 			}
 			SDL_Color textColor{ tree->getColor() };
 			auto fptr = this->getFontPtr(tree->getFontName(), tree->getFontSize());
+			//SDL_Surface* textSurface = TTF_RenderText_Shaded_Wrapped(fptr, text.c_str(), SDL_Color{}, textColor, textwidth);
 			SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(fptr, text.c_str(), textColor, textwidth);
 			if (textSurface == nullptr) {
 				cout << "cannot load text" << endl;
