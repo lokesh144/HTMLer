@@ -32,6 +32,9 @@ Window::Window(int scrollBarWidth) :
 
 Window::~Window() {
 	cout << "closing window" << endl;
+	for (auto font : mFonts) {
+		font.freeFont();
+	}
 	close();
 }
 bool Window::init() {
@@ -412,12 +415,16 @@ TTF_Font* Font::getFontPtr(int fontsize) {
 Font::Font(const std::string& name) :mname{ name } {
 }
 Font::~Font() {
+	//leave it here for now//warning
+}
+void Font::freeFont() {
+	cout << "freeing font  " << mname << endl;
 	for (auto fptr : fontsizeptrs) {
+		cout << "\tsize " << fptr.first << endl;
 		TTF_CloseFont(fptr.second);
 
 	}
-	cout << "closing font  " << mname << endl;
-	//leave it here for now//warning
+
 }
 
 TTF_Font* Font::loadFont(const std::string& n, int fontsize) {

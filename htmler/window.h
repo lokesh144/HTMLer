@@ -20,6 +20,7 @@ public:
 	TTF_Font* loadFont(const std::string& n,int fontsize=18);
 	TTF_Font* loadFont(int fontsize);
 	TTF_Font* getFontPtr(int fontsize);
+	void freeFont();
 
 };
 

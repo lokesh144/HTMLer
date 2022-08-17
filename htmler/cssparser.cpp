@@ -20,6 +20,9 @@ static inline std::string getPropertyName(CSSProperty prop) {
 	case CSSProperty::PADDING_LEFT:return "padding_left";
 	case CSSProperty::WIDTH:return "width";
 	case CSSProperty::BACKGROUND_COLOR:return "background-color";
+	case CSSProperty::FONT:return "font";
+	case CSSProperty::FONT_SIZE:return "font-size";
+	case CSSProperty::FONT_STYLE:return "font-style";
 	case CSSProperty::UNKNOWN:return "unknownn ";
 	}
 }
@@ -44,6 +47,9 @@ inline CSSProperty getPropertyNameAsEnum(const std::string& prop) {
 	if (prop == "padding-left")return CSSProperty::PADDING_LEFT;
 	if (prop == "width")return CSSProperty::WIDTH;
 	if (prop == "background-color")return CSSProperty::BACKGROUND_COLOR;
+	if (prop == "font")return CSSProperty::FONT;
+	if (prop == "font-style")return CSSProperty::FONT_STYLE;
+	if (prop == "font-size")return CSSProperty::FONT_SIZE;
 	else return CSSProperty::UNKNOWN;
 }
 

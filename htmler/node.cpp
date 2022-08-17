@@ -8,7 +8,7 @@ Node::Node() = default;
 Node::~Node() {
 	for (std::vector<Node*>::iterator it = childNodes.begin(); it != childNodes.end(); it++) {
 		delete(*it);
-		std::cout << "delete " << std::endl;
+		//std::cout << "delete " << std::endl;
 	}
 }
 

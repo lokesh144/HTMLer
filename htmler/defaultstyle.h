@@ -19,10 +19,10 @@ namespace styles {
 	class Length {
 	public:
 		LengthType mlengthType;
-		int mvalue;
+		float mvalue;
 	public:
 		Length();
-		Length(int val, LengthType lt = LengthType::PIXEL);
+		Length(float val, LengthType lt = LengthType::PIXEL);
 		inline 	int toPixel(int size = 18)const;
 		friend int operator+(const styles::Length& l1, const styles::Length& l2);
 	};
@@ -42,7 +42,6 @@ namespace styles {
 		NOT_SPECIFIED,
 		NORMAL,
 		ITALIC,
-		UNDERLINE,
 	};
 	enum class BorderStyle {
 		SOLID,
@@ -80,13 +79,14 @@ namespace styles {
 	};
 	Border parseBorder(std::string bordertext);
 
+	FontStyle parseFontStyle(const std::string& str);
 	struct Dimension {
 		Length top;
 		Length right;
 		Length bottom;
 		Length left;
 	};
-	static int getLength(const std::string& str);
+	static float getLength(const std::string& str);
 	LengthType getLengthType(const std::string& str);
 	Length parseLength(const std::string& length);
 	struct Dimension parseLengthList(std::string lengths);
