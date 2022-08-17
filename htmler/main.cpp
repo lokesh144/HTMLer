@@ -3,6 +3,8 @@
 #include<fstream>
 #include<sstream>
 #include<stack>
+#include<chrono>
+#include<thread>
 #include "parser.h"
 #include "cssparser.h"
 #include "tokenizer.h"
@@ -10,8 +12,11 @@
 #include "rendertree.h" 
 #include"window.h"
 #define endl '\n'
+using namespace std::chrono;
 
 int main(int mainc, char* argv[]) {
+	auto start = system_clock::now();
+
 	std::ifstream file{ "index.html" };
 	std::ifstream cssfile{ "style.css" };
 	if (!file || !cssfile) {
@@ -29,6 +34,16 @@ int main(int mainc, char* argv[]) {
 	CssParser cssparser{ };
 	cssparser.parse(cssbuffer.str());
 
+
+	auto end = system_clock::now();
+	auto timetaken = (end - start);
+	cout << endl;
+	cout << endl;
+	cout << "timetaken " << timetaken / 1ms << " ms" << endl;
+	cout << "timetaken " << timetaken / 1s << " s" << endl;
+	cout << endl;
+	cout << endl;
+
 	RenderTree* rendertree = new RenderTree;
 	rendertree->createFromDom(document);
 
@@ -44,6 +59,17 @@ int main(int mainc, char* argv[]) {
 	rendertree->calculateLayout(w - scrollbarWidth);
 	//decrease the size of w by width of scroll bar
 
+
+
+	 end = system_clock::now();
+	 timetaken = (end - start);
+	cout << endl;
+	cout << endl;
+	cout << "timetaken " << timetaken / 1ms << " ms" << endl;
+	cout << "timetaken " << timetaken / 1s << " s" << endl;
+	cout << endl;
+	cout << endl;
+
 	window.setRootColor();
 	window.eventloop(rendertree);
 	//	SDL_Delay(100000);
@@ -56,10 +82,5 @@ int main(int mainc, char* argv[]) {
 	delete document;
 	TTF_Quit();
 	SDL_Quit();
-	return 0;
-}
-int mainm(int argc, char* argv[]) {
-	//window.test();
-	//window.eventloop();
 	return 0;
 }
