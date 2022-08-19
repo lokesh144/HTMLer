@@ -21,6 +21,9 @@ enum class CSSProperty {
 	PADDING_LEFT,
 	WIDTH,
 	BACKGROUND_COLOR,
+	FONT,
+	FONT_SIZE,
+	FONT_STYLE,
 	UNKNOWN
 };
 enum class SelectorType {

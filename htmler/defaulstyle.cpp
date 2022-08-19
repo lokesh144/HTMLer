@@ -67,7 +67,7 @@ styles::Border::Border(const Length & l, const BorderStyle s, const SDL_Color & 
 	borderColor{ c }
 { }
 
-styles::Length::Length(int val, LengthType lt) :
+styles::Length::Length(float val, LengthType lt) :
 	mvalue{ val },
 	mlengthType{ lt }
 {
@@ -78,10 +78,10 @@ int operator+(const styles::Length & l1, const styles::Length & l2) {
 	return l1.toPixel() + l2.toPixel();
 }
 
-static int styles::getLength(const std::string & str) {
+static float styles::getLength(const std::string & str) {
 	try
 	{
-		const int i{ std::stoi(str) };
+		const float i{ std::stof(str) };
 		return i;
 	}
 	catch (std::invalid_argument const& ex)
@@ -98,7 +98,7 @@ static int styles::getLength(const std::string & str) {
 	}
 }
 
-LengthType styles::getLengthType(const std::string & str) {
+styles::LengthType styles::getLengthType(const std::string & str) {
 	if (str.ends_with("px"))
 		return LengthType::PIXEL;
 	else if (str.ends_with("rem"))//should be above em 
@@ -106,9 +106,9 @@ LengthType styles::getLengthType(const std::string & str) {
 	else if (str.ends_with("em"))
 		return LengthType::EM;
 }
-Length styles::parseLength(const std::string & length) {
+styles::Length styles::parseLength(const std::string & length) {
 	//MUST : validate length
-	int value{ getLength(length) };
+	float value{ getLength(length) };
 	LengthType ltype = value == 0 ? LengthType::PIXEL : getLengthType(length);
 	return Length{ value,ltype };
 }
@@ -371,3 +371,10 @@ SDL_Color styles::parseColor(std::string & clr) {
 		exit(EXIT_FAILURE);
 	}
 }
+
+styles::FontStyle styles::parseFontStyle(const std::string & str) {
+	if (str == "italic")return styles::FontStyle::ITALIC;
+	styles::FontStyle::NORMAL;
+}
+
+

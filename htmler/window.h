@@ -17,9 +17,10 @@ public:
 	Font(const std::string& name = "Roboto");
 	~Font();
 	void test(const std::string& t = "a");
-	TTF_Font* loadFont(const std::string& n,int fontsize=18);
+	TTF_Font* loadFont(const std::string& n, int fontsize = 18);
 	TTF_Font* loadFont(int fontsize);
 	TTF_Font* getFontPtr(int fontsize);
+	void freeFont();
 
 };
 
@@ -43,10 +44,12 @@ public:
 	void test();
 	void getWindowSize(int* w);
 	std::pair<int, int> getFontSize(const std::string& text, const std::string& fontname, int fontsize);
-	void render(const RenderTree* tree);
+	void render(RenderTree* tree);
 	TTF_Font* getFontPtr(std::string fontname, int fontsize);
 	void renderBox(const RenderTree* tree);
-void 	setRootColor();
+	void 	setRootColor();
+	bool handleHover(RenderTree* tree, const SDL_Event& event, int currYPos);
+	bool isPointInsideRect(const SDL_Rect& rect, int x, int y);
 
 };
 

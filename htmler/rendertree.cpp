@@ -2,6 +2,8 @@
 #include"rendertree.h"
 #include"cssparser.h"
 
+#define RENDERTREE_LOG 
+
 #define endl '\n'
 using std::cout;
 RenderTree::RenderTree() {}
@@ -314,14 +316,16 @@ void RenderTree::calculateLayout() {
 	this->rect.h += this->styles->mborder.top.toPixel() + this->styles->mborder.bottom.borderWidth.toPixel();
 
 
-	//cout << this->element->tagName
-		//<< "   ";
-	//cout << endl;
-	//if (this->element->attributes.size() != 0) {
-		//cout << this->element->attributes[0].getName() << " : " << this->element->attributes[0].getValue() << endl;
-	//}
-	//cout << "(x,y)= " << this->rect.x << "," << this->rect.y << ")" << endl;
-	//cout << "width: " << this->rect.w << " height: " << rect.h << endl << endl;
+#ifdef RENDERTREE_LOG
+	cout << this->element->tagName
+		<< "   ";
+	cout << endl;
+	if (this->element->attributes.size() != 0) {
+		cout << this->element->attributes[0].getName() << " : " << this->element->attributes[0].getValue() << endl;
+	}
+	cout << "(x,y)= " << this->rect.x << "," << this->rect.y << ")" << endl;
+	cout << "width: " << this->rect.w << " height: " << rect.h << endl << endl;
+#endif
 }
 
 void RenderTree::setStatic(Window* window) {
@@ -397,6 +401,7 @@ int RenderTree::getFontSize() const {
 	cout << "This element doesnot have specified font size";
 	exit(EXIT_FAILURE);
 }
+
 std::string RenderTree::getFontName() const {
 	auto fontname = this->styles->mfontName;
 	if (!fontname.empty())
@@ -433,15 +438,46 @@ int RenderTree::applyCss(const CSSRule& rule) {
 	struct Selector selector = rule.first;
 	std::string selString = selector.type == SelectorType::ID ? "id" : "class";
 
+	bool isHover = selector.name.ends_with("hover");
+	if (isHover)
+		selector.name.erase(selector.name.length() - std::string{ ":hover" }.length());
+
 	for (auto attribute : this->element->attributes) {
 		if (attribute.getName() == selString && attribute.getValue() == selector.name) {
-			for (auto propValue : rule.second) {
-				this->applyStyle(propValue);
+			if (isHover) {
+				/* if pseudo class then add hover action to effect when hovered*/
+				for (auto propValue : rule.second) {
+					this->addHoverAction(propValue);
+				}
+			}
+			else {
+				for (auto propValue : rule.second) {
+					this->applyStyle(propValue);
+				}
 			}
 		}
 	}
 	return count;
 }
+void RenderTree::addHoverAction(Declaration& style) {
+	/*Effect that can be use on hover
+	- color -backgroundColor */
+
+	//cout << "hover style" << style.value << endl;
+
+	switch (style.property) {
+	case CSSProperty::COLOR:
+		this->hoverStyle.mcolor.first = true;
+		this->hoverStyle.mcolor.second = styles::parseColor(style.value);
+		break;
+	case CSSProperty::BACKGROUND_COLOR:
+		this->hoverStyle.mbackgroundColor.first = true;
+		this->hoverStyle.mbackgroundColor.second = styles::parseColor(style.value);
+		break;
+	}
+
+
+};
 
 void RenderTree::applyStyle(Declaration& style) {
 	using namespace styles;
@@ -500,6 +536,15 @@ void RenderTree::applyStyle(Declaration& style) {
 		break;
 	case CSSProperty::BACKGROUND_COLOR:
 		this->styles->mbackgroundColor = styles::parseColor(style.value);
+		break;
+	case CSSProperty::FONT:
+		this->styles->mfontName = style.value;
+		break;
+	case CSSProperty::FONT_SIZE:
+		this->styles->mfontSize = styles::parseLength(style.value);
+		break;
+	case CSSProperty::FONT_STYLE:
+		//this->styles->mfontStyle = styles::parseFontStyle(style.value);
 		break;
 	case CSSProperty::WIDTH:
 		break;
