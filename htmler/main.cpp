@@ -17,8 +17,8 @@ using namespace std::chrono;
 int main(int mainc, char* argv[]) {
 	auto start = system_clock::now();
 
-	std::ifstream file{ "index1.html" };
-	std::ifstream cssfile{ "style1.css" };
+	std::ifstream file{ "index.html" };
+	std::ifstream cssfile{ "style.css" };
 	if (!file || !cssfile) {
 		cout << "Cannot open file" << endl;
 		exit(EXIT_FAILURE);

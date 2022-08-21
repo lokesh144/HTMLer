@@ -1,3 +1,11 @@
+.h1{
+	margin: 0 300px;
+}
+
+.h2:hover{
+	background-color: black;
+	color: white;
+}
 .child3:hover {
 	color: red;
 }
@@ -29,26 +37,6 @@
 	/* font: Lato; */
 }
 
-
-.parent3 {
-	font: Merriweather;
-}
-
-.parent1 {
-	/* font-size: 3rem; */
-}
-
-.child1 {
-	font: Raleway;
-}
-
-.child3 {
-	font: Roboto;
-}
-
-.child4 {
-	font: Merriweather;
-}
 
 /*
 
@@ -91,7 +79,7 @@
 
 /*comment*/
 .parent4 {
-	color: bisque;
+	color: yellow;
 	/*comment*/
 }
 
