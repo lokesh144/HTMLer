@@ -1,0 +1,39 @@
+#id80{
+	background-color: blue;
+	color: white;
+	padding: 10px;
+	margin:10px;
+}
+.parent1{
+	background-color: red;
+	margin:10px;
+	padding:10px;
+}
+.parent1:hover{
+	background-color: white;
+	color: black;
+}
+.h1{
+	font: WorkSans-Bold;
+	margin: 0 400px;
+}
+.h2{
+	font: WorkSans-Bold;
+}
+.parent2{
+	background-color: red;
+	margin:10px;
+	padding:10px;
+}
+.child10{
+	background-color: black;
+	color: white;
+}
+.child10:hover{
+	background-color: white;
+	color: black;
+}
+.parent2kop:hover{
+	background-color: yellow;
+	color: black;
+}
