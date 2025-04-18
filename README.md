@@ -63,12 +63,10 @@ cd cpp-html-css-renderer
 ## 🖼 Rendering Previews
 
 ### ✔ Browser View
-![Browser](https://github.com/user-attachments/assets/1e6c351e-14dc-4815-8351-aa80f718dce6)
-
-
+![Browser](https://github.com/user-attachments/assets/34be8ccc-fa5d-4c18-b6e8-07b68babb25d)
 
 ### ✔ HTMLer Output
-![HTMlLer](https://github.com/user-attachments/assets/cd5f42ce-998d-4ea9-bbd4-dbc3245714ee)
+![HTMlLer](https://github.com/user-attachments/assets/46400032-b68d-4d44-8475-5c523792cce6)
 
 
 ---
